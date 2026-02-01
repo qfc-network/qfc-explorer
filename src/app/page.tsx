@@ -4,6 +4,7 @@ import type { ApiBlocksList, ApiStats, ApiTransactionsList } from '@/lib/api-typ
 import { formatNumber, formatTimestampMs, shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import StatsCard from '@/components/StatsCard';
+import LiveStats from '@/components/LiveStats';
 import StatChart from '@/components/StatChart';
 import Table from '@/components/Table';
 import AutoRefresh from '@/components/AutoRefresh';
@@ -45,6 +46,8 @@ export default async function Home() {
           Track QFC network activity, recent blocks, and transactions as the chain grows.
         </p>
       </header>
+
+      <LiveStats />
 
       <section className="grid gap-4 sm:grid-cols-3">
         <StatsCard label="Latest Block" value={formatNumber(latestHeight)} />
