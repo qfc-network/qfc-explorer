@@ -148,19 +148,99 @@ async function upsertTransaction(
   );
 }
 
-async function upsertAccounts(client: PoolClient, addresses: string[], blockHeight: bigint): Promise<void> {
-  for (const address of addresses) {
-    await client.query(
-      `
-      INSERT INTO accounts (address, first_seen_block, last_seen_block)
-      VALUES ($1, $2, $3)
-      ON CONFLICT (address) DO UPDATE SET
-        last_seen_block = EXCLUDED.last_seen_block,
-        updated_at = NOW()
-      `,
-      [address, blockHeight.toString(10), blockHeight.toString(10)]
+async function bulkUpsertTransactions(
+  client: PoolClient,
+  txs: RpcTransaction[],
+  blockHash: string,
+  blockHeight: bigint
+): Promise<void> {
+  if (txs.length === 0) {
+    return;
+  }
+
+  const values: string[] = [];
+  const params: Array<string | number | Buffer | null> = [];
+  let idx = 1;
+
+  for (let i = 0; i < txs.length; i += 1) {
+    const tx = txs[i];
+    values.push(
+      `($${idx++}, $${idx++}, $${idx++}, $${idx++}, $${idx++}, $${idx++}, $${idx++}, $${idx++}, $${idx++}, $${idx++}, $${idx++}, $${idx++}, $${idx++})`
+    );
+    params.push(
+      tx.hash,
+      blockHash,
+      blockHeight.toString(10),
+      i,
+      'unknown',
+      tx.from,
+      tx.to ?? null,
+      stripHexPrefix(tx.value) ?? '0',
+      parseHeight(tx.nonce).toString(10),
+      parseHeight(tx.gas).toString(10),
+      stripHexPrefix(tx.gasPrice) ?? '0',
+      'unknown',
+      hexToBuffer(tx.input)
     );
   }
+
+  await client.query(
+    `
+    INSERT INTO transactions (
+      hash,
+      block_hash,
+      block_height,
+      tx_index,
+      type,
+      from_address,
+      to_address,
+      value,
+      nonce,
+      gas_limit,
+      gas_price,
+      status,
+      data
+    ) VALUES ${values.join(',')}
+    ON CONFLICT (hash) DO UPDATE SET
+      block_hash = EXCLUDED.block_hash,
+      block_height = EXCLUDED.block_height,
+      tx_index = EXCLUDED.tx_index,
+      from_address = EXCLUDED.from_address,
+      to_address = EXCLUDED.to_address,
+      value = EXCLUDED.value,
+      nonce = EXCLUDED.nonce,
+      gas_limit = EXCLUDED.gas_limit,
+      gas_price = EXCLUDED.gas_price,
+      status = EXCLUDED.status,
+      data = EXCLUDED.data
+    `,
+    params
+  );
+}
+
+async function upsertAccounts(client: PoolClient, addresses: string[], blockHeight: bigint): Promise<void> {
+  if (addresses.length === 0) {
+    return;
+  }
+
+  const values: string[] = [];
+  const params: Array<string> = [];
+  let idx = 1;
+  for (const address of addresses) {
+    values.push(`($${idx++}, $${idx++}, $${idx++})`);
+    params.push(address, blockHeight.toString(10), blockHeight.toString(10));
+  }
+
+  await client.query(
+    `
+    INSERT INTO accounts (address, first_seen_block, last_seen_block)
+    VALUES ${values.join(',')}
+    ON CONFLICT (address) DO UPDATE SET
+      last_seen_block = EXCLUDED.last_seen_block,
+      updated_at = NOW()
+    `,
+    params
+  );
 }
 
 async function refreshAccountState(
@@ -258,6 +338,108 @@ async function upsertReceipt(
   );
 }
 
+async function bulkUpsertReceipts(
+  client: PoolClient,
+  receipts: RpcReceipt[],
+  blockHeight: bigint
+): Promise<void> {
+  if (receipts.length === 0) {
+    return;
+  }
+
+  const logValues: string[] = [];
+  const logParams: Array<string | number | Buffer | null> = [];
+  const contractValues: string[] = [];
+  const contractParams: Array<string | number> = [];
+  const statusValues: string[] = [];
+  const statusParams: Array<string> = [];
+  let logIdx = 1;
+  let contractIdx = 1;
+  let statusIdx = 1;
+
+  for (const receipt of receipts) {
+    const status = receipt.status === '0x1' ? 'success' : 'failure';
+    statusValues.push(`($${statusIdx++}, $${statusIdx++})`);
+    statusParams.push(receipt.transactionHash, status);
+
+    if (receipt.contractAddress) {
+      contractValues.push(`($${contractIdx++}, $${contractIdx++}, $${contractIdx++})`);
+      contractParams.push(receipt.contractAddress, receipt.transactionHash, blockHeight.toString(10));
+    }
+
+    for (let i = 0; i < receipt.logs.length; i += 1) {
+      const log = receipt.logs[i];
+      logValues.push(
+        `($${logIdx++}, $${logIdx++}, $${logIdx++}, $${logIdx++}, $${logIdx++}, $${logIdx++}, $${logIdx++}, $${logIdx++}, $${logIdx++})`
+      );
+      logParams.push(
+        receipt.transactionHash,
+        blockHeight.toString(10),
+        i,
+        log.address,
+        log.topics[0] ?? null,
+        log.topics[1] ?? null,
+        log.topics[2] ?? null,
+        log.topics[3] ?? null,
+        hexToBuffer(log.data)
+      );
+    }
+  }
+
+  if (logValues.length > 0) {
+    await client.query(
+      `
+      INSERT INTO events (
+        tx_hash,
+        block_height,
+        log_index,
+        contract_address,
+        topic0,
+        topic1,
+        topic2,
+        topic3,
+        data
+      ) VALUES ${logValues.join(',')}
+      ON CONFLICT (tx_hash, log_index) DO UPDATE SET
+        block_height = EXCLUDED.block_height,
+        contract_address = EXCLUDED.contract_address,
+        topic0 = EXCLUDED.topic0,
+        topic1 = EXCLUDED.topic1,
+        topic2 = EXCLUDED.topic2,
+        topic3 = EXCLUDED.topic3,
+        data = EXCLUDED.data
+      `,
+      logParams
+    );
+  }
+
+  if (contractValues.length > 0) {
+    await client.query(
+      `
+      INSERT INTO contracts (address, creator_tx_hash, created_at_block)
+      VALUES ${contractValues.join(',')}
+      ON CONFLICT (address) DO UPDATE SET
+        creator_tx_hash = EXCLUDED.creator_tx_hash,
+        created_at_block = EXCLUDED.created_at_block,
+        updated_at = NOW()
+      `,
+      contractParams
+    );
+  }
+
+  if (statusValues.length > 0) {
+    await client.query(
+      `
+      UPDATE transactions AS t
+      SET status = v.status
+      FROM (VALUES ${statusValues.join(',')}) AS v(hash, status)
+      WHERE t.hash = v.hash
+      `,
+      statusParams
+    );
+  }
+}
+
 async function indexBlock(client: RpcClient, height: bigint): Promise<void> {
   const blockHex = `0x${height.toString(16)}`;
   const block = await client.callWithRetry<RpcBlock>('eth_getBlockByNumber', [blockHex, true]);
@@ -276,15 +458,17 @@ async function indexBlock(client: RpcClient, height: bigint): Promise<void> {
 
     await upsertBlock(dbClient, block);
 
-    for (let i = 0; i < txs.length; i += 1) {
-      const tx = txs[i];
-      await upsertTransaction(dbClient, tx, block.hash, height, i, null);
-      const addresses = [tx.from, tx.to].filter(Boolean) as string[];
-      await upsertAccounts(dbClient, addresses, height);
-      for (const address of addresses) {
-        addressSet.add(address);
+    await bulkUpsertTransactions(dbClient, txs, block.hash, height);
+
+    for (const tx of txs) {
+      if (tx.from) {
+        addressSet.add(tx.from);
+      }
+      if (tx.to) {
+        addressSet.add(tx.to);
       }
     }
+    await upsertAccounts(dbClient, Array.from(addressSet), height);
 
     await dbClient.query('COMMIT');
   } catch (error) {
@@ -298,8 +482,13 @@ async function indexBlock(client: RpcClient, height: bigint): Promise<void> {
     const accountClient = await pool.connect();
     try {
       await accountClient.query('BEGIN');
-      for (const address of addressSet) {
-        await refreshAccountState(accountClient, client, address, blockHex, height);
+      const addresses = Array.from(addressSet);
+      const concurrency = 5;
+      for (let i = 0; i < addresses.length; i += concurrency) {
+        const batch = addresses.slice(i, i + concurrency);
+        await Promise.all(
+          batch.map((address) => refreshAccountState(accountClient, client, address, blockHex, height))
+        );
       }
       await accountClient.query('COMMIT');
     } catch (error) {
@@ -313,11 +502,16 @@ async function indexBlock(client: RpcClient, height: bigint): Promise<void> {
   const receiptClient = await pool.connect();
   try {
     await receiptClient.query('BEGIN');
-    for (const tx of txs) {
-      const receipt = await client.callWithRetry<RpcReceipt>('eth_getTransactionReceipt', [tx.hash]);
-      if (receipt) {
-        await upsertReceipt(receiptClient, receipt, height);
-      }
+    const concurrency = 8;
+    for (let i = 0; i < txs.length; i += concurrency) {
+      const batch = txs.slice(i, i + concurrency);
+      const receipts = await Promise.all(
+        batch.map((tx) =>
+          client.callWithRetry<RpcReceipt>('eth_getTransactionReceipt', [tx.hash])
+        )
+      );
+      const filtered = receipts.filter(Boolean) as RpcReceipt[];
+      await bulkUpsertReceipts(receiptClient, filtered, height);
     }
     await receiptClient.query('COMMIT');
   } catch (error) {
@@ -330,23 +524,69 @@ async function indexBlock(client: RpcClient, height: bigint): Promise<void> {
   await setLastProcessedHeight(height);
 }
 
-async function runOnce(client: RpcClient, startHeight: bigint): Promise<bigint> {
-  const latestHex = await client.callWithRetry<string>('eth_blockNumber');
-  const latest = parseHeight(latestHex);
-
-  if (startHeight > latest) {
-    console.log(`Indexer up to date at height ${latest}`);
-    return latest;
+async function indexBlockWithRetry(
+  client: RpcClient,
+  height: bigint,
+  attempts: number,
+  skipOnError: boolean
+): Promise<boolean> {
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      await indexBlock(client, height);
+      return true;
+    } catch (error) {
+      lastError = error;
+      console.error(`Failed to index block ${height} (attempt ${attempt}/${attempts})`, error);
+    }
   }
 
-  console.log(`Indexing from ${startHeight} to ${latest}`);
-  for (let height = startHeight; height <= latest; height += 1n) {
+  if (skipOnError) {
+    console.warn(`Skipping block ${height} after ${attempts} failed attempts`);
+    return false;
+  }
+
+  throw lastError instanceof Error ? lastError : new Error('Failed to index block');
+}
+
+async function resolveFinalizedHeight(client: RpcClient, latest: bigint): Promise<bigint> {
+  try {
+    const finalizedHex = await client.callWithRetry<string>('qfc_getFinalizedBlock');
+    const finalized = parseHeight(finalizedHex);
+    return finalized <= latest ? finalized : latest;
+  } catch (error) {
+    console.warn('Failed to fetch finalized block, falling back to latest', error);
+    return latest;
+  }
+}
+
+async function runOnce(
+  client: RpcClient,
+  startHeight: bigint,
+  useFinalized: boolean,
+  blockRetries: number,
+  skipOnError: boolean
+): Promise<bigint> {
+  const latestHex = await client.callWithRetry<string>('eth_blockNumber');
+  const latest = parseHeight(latestHex);
+  const target = useFinalized ? await resolveFinalizedHeight(client, latest) : latest;
+
+  if (startHeight > target) {
+    console.log(`Indexer up to date at height ${target}`);
+    return target;
+  }
+
+  console.log(`Indexing from ${startHeight} to ${target}`);
+  for (let height = startHeight; height <= target; height += 1n) {
     console.log(`Indexing block ${height}`);
-    await indexBlock(client, height);
+    const ok = await indexBlockWithRetry(client, height, blockRetries, skipOnError);
+    if (!ok && skipOnError) {
+      continue;
+    }
   }
 
   console.log('Indexing complete');
-  return latest;
+  return target;
 }
 
 async function run(): Promise<void> {
@@ -360,20 +600,25 @@ async function run(): Promise<void> {
   const pollIntervalMs = process.env.INDEXER_POLL_INTERVAL_MS
     ? Number(process.env.INDEXER_POLL_INTERVAL_MS)
     : 10_000;
+  const useFinalized = process.env.INDEXER_USE_FINALIZED !== 'false';
+  const blockRetries = process.env.INDEXER_BLOCK_RETRIES
+    ? Number(process.env.INDEXER_BLOCK_RETRIES)
+    : 3;
+  const skipOnError = process.env.INDEXER_SKIP_ON_ERROR === 'true';
 
   const client = new RpcClient(rpcUrl);
 
   const lastProcessed = await getLastProcessedHeight();
   let current = lastProcessed !== null ? lastProcessed + 1n : startHeight;
 
-  await runOnce(client, current);
+  await runOnce(client, current, useFinalized, blockRetries, skipOnError);
 
   // Continuous polling mode
   while (pollIntervalMs > 0) {
     await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
     const last = await getLastProcessedHeight();
     current = last !== null ? last + 1n : startHeight;
-    await runOnce(client, current);
+    await runOnce(client, current, useFinalized, blockRetries, skipOnError);
   }
 }
 
