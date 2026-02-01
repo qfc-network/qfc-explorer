@@ -1,30 +1,27 @@
 import SectionHeader from '@/components/SectionHeader';
 import StatsCard from '@/components/StatsCard';
 import Table from '@/components/Table';
-import { RpcClient } from '@/indexer/rpc';
-import { fetchEpoch, fetchNodeInfo, fetchValidators } from '@/indexer/qfc';
+import { fetchJsonSafe } from '@/lib/api-client';
 import { formatNumber, shortenHash } from '@/lib/format';
 import { formatPercentage, formatQfcAmount } from '@/lib/qfc-format';
 
-export const revalidate = 15;
-
-const rpcUrl = process.env.RPC_URL;
-
 export default async function NetworkPage() {
-  if (!rpcUrl) {
+  const response = await fetchJsonSafe<{
+    epoch: { number: string; startTime: string; durationMs: string };
+    nodeInfo: { version: string; chainId: string; peerCount: number; isValidator: boolean; syncing: boolean };
+    validators: Array<{ address: string; stake: string; contributionScore: string; uptime: string; isActive: boolean }>;
+  }>('/api/network', { next: { revalidate: 15 } });
+
+  if (!response) {
     return (
       <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-6 px-6 py-12">
-        <SectionHeader title="Network" description="RPC_URL is not configured" />
+        <SectionHeader title="Network" description="Network data not available" />
       </main>
     );
   }
 
-  const client = new RpcClient(rpcUrl);
-  const [epoch, nodeInfo, validatorsRaw] = await Promise.all([
-    fetchEpoch(client),
-    fetchNodeInfo(client),
-    fetchValidators(client),
-  ]);
+  const { epoch, nodeInfo } = response;
+  const validatorsRaw = response.validators ?? [];
   const validators = validatorsRaw.sort((a, b) => {
     const aScore = Number(a.contributionScore);
     const bScore = Number(b.contributionScore);
