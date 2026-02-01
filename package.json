@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "db:migrate": "node scripts/migrate.js",
     "indexer": "tsx src/indexer/index.ts",
-    "indexer:health": "node scripts/indexer-health.js"
+    "indexer:health": "node scripts/indexer-health.js",
+    "data:check": "node scripts/data-check.js"
   },
   "dependencies": {
     "next": "^14.1.0",
