@@ -22,7 +22,7 @@ export default async function SearchPage({
     blockByHash: { hash: string; height: string } | null;
     transaction: { hash: string } | null;
     address: { address: string } | null;
-  }>(`/api/search?q=${encodeURIComponent(query)}`);
+  }>(`/api/search?q=${encodeURIComponent(query)}`, { next: { revalidate: 5 } });
 
   const blockByHeight = response?.blockByHeight ?? null;
   const blockByHash = response?.blockByHash ?? null;
@@ -34,7 +34,7 @@ export default async function SearchPage({
     blockHashes: Array<{ hash: string; height: string }>;
     txHashes: Array<{ hash: string; block_height: string }>;
     addresses: string[];
-  }>(`/api/search/suggest?q=${encodeURIComponent(query)}`);
+  }>(`/api/search/suggest?q=${encodeURIComponent(query)}`, { next: { revalidate: 5 } });
 
   const hasSuggestions =
     (suggestions?.blockHeights?.length ?? 0) > 0 ||

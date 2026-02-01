@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getTransactionsPage } from '@/db/queries';
+import { fetchJsonSafe } from '@/lib/api-client';
 import { shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
@@ -12,8 +12,11 @@ export default async function TransactionsPage({
   searchParams: { page?: string };
 }) {
   const page = Math.max(1, Number(searchParams.page ?? '1'));
-  const offset = (page - 1) * PAGE_SIZE;
-  const transactions = await getTransactionsPage(PAGE_SIZE, offset);
+  const response = await fetchJsonSafe<{ items: Array<{ hash: string; from_address: string; to_address: string | null; value: string; status: string }> }>(
+    `/api/transactions?page=${page}&limit=${PAGE_SIZE}`,
+    { next: { revalidate: 10 } }
+  );
+  const transactions = response?.items ?? [];
 
   return (
     <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 px-6 py-12">

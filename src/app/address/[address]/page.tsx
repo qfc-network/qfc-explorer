@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getAddressOverview, getAddressTransactions } from '@/db/queries';
+import { fetchJsonSafe } from '@/lib/api-client';
 import { formatNumber, shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
@@ -15,10 +15,24 @@ export default async function AddressDetailPage({
 }) {
   const address = params.address;
   const page = Math.max(1, Number(searchParams.page ?? '1'));
-  const offset = (page - 1) * PAGE_SIZE;
+  const response = await fetchJsonSafe<{
+    address: {
+      address: string;
+      balance: string;
+      nonce: string;
+      last_seen_block: string;
+    };
+    transactions: Array<{
+      hash: string;
+      from_address: string;
+      to_address: string | null;
+      value: string;
+      status: string;
+    }>;
+  }>(`/api/address/${address}?page=${page}&limit=${PAGE_SIZE}`, { next: { revalidate: 20 } });
 
-  const overview = await getAddressOverview(address);
-  const transactions = await getAddressTransactions(address, PAGE_SIZE, offset);
+  const overview = response?.address ?? null;
+  const transactions = response?.transactions ?? [];
 
   if (!overview) {
     return (

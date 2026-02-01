@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getBlocksPage } from '@/db/queries';
+import { fetchJsonSafe } from '@/lib/api-client';
 import { formatNumber, formatTimestampMs, shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
@@ -12,8 +12,11 @@ export default async function BlocksPage({
   searchParams: { page?: string };
 }) {
   const page = Math.max(1, Number(searchParams.page ?? '1'));
-  const offset = (page - 1) * PAGE_SIZE;
-  const blocks = await getBlocksPage(PAGE_SIZE, offset);
+  const response = await fetchJsonSafe<{ items: Array<{ height: string; hash: string; producer: string | null; timestamp_ms: string; tx_count: number }> }>(
+    `/api/blocks?page=${page}&limit=${PAGE_SIZE}`,
+    { next: { revalidate: 10 } }
+  );
+  const blocks = response?.items ?? [];
 
   return (
     <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 px-6 py-12">

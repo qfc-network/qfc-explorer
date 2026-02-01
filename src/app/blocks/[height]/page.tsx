@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getBlockByHeight, getTransactionsByBlockHeight } from '@/db/queries';
+import { fetchJsonSafe } from '@/lib/api-client';
 import { formatNumber, formatTimestampMs, shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
@@ -15,10 +15,30 @@ export default async function BlockDetailPage({
 }) {
   const height = params.height;
   const page = Math.max(1, Number(searchParams.page ?? '1'));
-  const offset = (page - 1) * PAGE_SIZE;
+  const response = await fetchJsonSafe<{
+    block: {
+      hash: string;
+      height: string;
+      parent_hash: string | null;
+      producer: string | null;
+      timestamp_ms: string;
+      gas_limit: string;
+      gas_used: string;
+      state_root: string | null;
+      transactions_root: string | null;
+      receipts_root: string | null;
+    };
+    transactions: Array<{
+      hash: string;
+      from_address: string;
+      to_address: string | null;
+      value: string;
+      status: string;
+    }>;
+  }>(`/api/blocks/${height}?page=${page}&limit=${PAGE_SIZE}`, { next: { revalidate: 10 } });
 
-  const block = await getBlockByHeight(height);
-  const transactions = await getTransactionsByBlockHeight(height, PAGE_SIZE, offset);
+  const block = response?.block ?? null;
+  const transactions = response?.transactions ?? [];
 
   if (!block) {
     return (

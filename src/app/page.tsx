@@ -1,15 +1,23 @@
 import Link from 'next/link';
-import { getLatestBlocks, getLatestTransactions } from '@/db/queries';
+import { fetchJsonSafe } from '@/lib/api-client';
 import { formatNumber, formatTimestampMs, shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import StatsCard from '@/components/StatsCard';
 import Table from '@/components/Table';
 
 export default async function Home() {
-  const [blocks, transactions] = await Promise.all([
-    getLatestBlocks(6),
-    getLatestTransactions(6),
+  const [blocksResponse, transactionsResponse] = await Promise.all([
+    fetchJsonSafe<{ items: Array<{ height: string; hash: string; producer: string | null; timestamp_ms: string; tx_count: number }> }>(
+      '/api/blocks?limit=6&page=1',
+      { next: { revalidate: 5 } }
+    ),
+    fetchJsonSafe<{ items: Array<{ hash: string; from_address: string; to_address: string | null; value: string; status: string }> }>(
+      '/api/transactions?limit=6&page=1',
+      { next: { revalidate: 5 } }
+    ),
   ]);
+  const blocks = blocksResponse?.items ?? [];
+  const transactions = transactionsResponse?.items ?? [];
 
   const latestHeight = blocks[0]?.height ?? '0';
   const latestTimestamp = blocks[0]?.timestamp_ms ?? '0';

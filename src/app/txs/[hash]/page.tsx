@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getTransactionByHash } from '@/db/queries';
+import { fetchJsonSafe } from '@/lib/api-client';
 import { formatNumber, shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 
@@ -9,7 +9,20 @@ export default async function TransactionDetailPage({
   params: { hash: string };
 }) {
   const hash = params.hash;
-  const tx = await getTransactionByHash(hash);
+  const response = await fetchJsonSafe<{ transaction: {
+    hash: string;
+    block_height: string;
+    from_address: string;
+    to_address: string | null;
+    value: string;
+    status: string;
+    gas_limit: string;
+    gas_price: string;
+    nonce: string;
+    data: string | null;
+  } }>(`/api/txs/${hash}`, { next: { revalidate: 10 } });
+
+  const tx = response?.transaction ?? null;
 
   if (!tx) {
     return (
