@@ -65,6 +65,8 @@ npm test                  # 测试
 - `GET /api/transactions?page&limit&order&address&status`
 - `GET /api/txs/:hash`
 - `GET /api/address/:address?page&limit&order`
+- `GET /api/tokens?page&limit&order`
+- `GET /api/tokens/:address?page&limit&order`
 - `GET /api/search?q=`
 - `GET /api/search/suggest?q=`
 - `GET /api/network`

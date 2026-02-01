@@ -138,3 +138,38 @@ export type ApiStats = ApiOk<{
     active_addresses: Array<{ label: string; value: number }>;
   };
 }>;
+
+export type ApiTokensList = ApiOk<{
+  page: number;
+  limit: number;
+  order: string;
+  items: Array<{
+    address: string;
+    name: string | null;
+    symbol: string | null;
+    decimals: number | null;
+    total_supply: string | null;
+    last_seen_block: string | null;
+  }>;
+}>;
+
+export type ApiTokenDetail = ApiOk<{
+  token: {
+    address: string;
+    name: string | null;
+    symbol: string | null;
+    decimals: number | null;
+    total_supply: string | null;
+    last_seen_block: string | null;
+  };
+  page: number;
+  limit: number;
+  order: string;
+  transfers: Array<{
+    tx_hash: string;
+    block_height: string;
+    from_address: string;
+    to_address: string;
+    value: string;
+  }>;
+}>;

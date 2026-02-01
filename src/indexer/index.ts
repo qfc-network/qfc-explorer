@@ -3,11 +3,18 @@ import { getPool } from '@/db/pool';
 import type { PoolClient } from 'pg';
 import { RpcClient } from './rpc';
 import type { RpcBlock, RpcReceipt, RpcTransaction } from './types';
-import { hexToBigIntString, hexToBuffer, stripHexPrefix } from './utils';
+import { decodeString, decodeUint256, hexToBigIntString, hexToBuffer, parseAddressFromTopic, stripHexPrefix } from './utils';
 
 const INDEXER_STATE_KEY = 'last_processed_height';
 const INDEXER_STATS_KEY = 'last_batch_stats';
 const INDEXER_FAILED_KEY = 'failed_blocks';
+const ERC20_TRANSFER_TOPIC = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a7a5c6b6e0f';
+const ERC20_NAME = '0x06fdde03';
+const ERC20_SYMBOL = '0x95d89b41';
+const ERC20_DECIMALS = '0x313ce567';
+const ERC20_TOTAL_SUPPLY = '0x18160ddd';
+
+const tokenMetadataCache = new Map<string, { name: string | null; symbol: string | null; decimals: number | null; totalSupply: string | null }>();
 
 async function getLastProcessedHeight(): Promise<bigint | null> {
   const pool = getPool();
@@ -351,11 +358,17 @@ async function bulkUpsertReceipts(
 
   const logValues: string[] = [];
   const logParams: Array<string | number | Buffer | null> = [];
+  const tokenTransferValues: string[] = [];
+  const tokenTransferParams: Array<string | number> = [];
+  const tokenInsertValues: string[] = [];
+  const tokenInsertParams: Array<string | number> = [];
+  const tokenAddresses = new Set<string>();
   const contractValues: string[] = [];
   const contractParams: Array<string | number> = [];
   const statusValues: string[] = [];
   const statusParams: Array<string> = [];
   let logIdx = 1;
+  let transferIdx = 1;
   let contractIdx = 1;
   let statusIdx = 1;
 
@@ -385,6 +398,28 @@ async function bulkUpsertReceipts(
         log.topics[3] ?? null,
         hexToBuffer(log.data)
       );
+
+      if ((log.topics[0] ?? '').toLowerCase() === ERC20_TRANSFER_TOPIC) {
+        const from = parseAddressFromTopic(log.topics[1] ?? '');
+        const to = parseAddressFromTopic(log.topics[2] ?? '');
+        const value = decodeUint256(log.data ?? '');
+        if (from && to && value) {
+          const tokenAddress = log.address.toLowerCase();
+          tokenAddresses.add(tokenAddress);
+          tokenTransferValues.push(
+            `($${transferIdx++}, $${transferIdx++}, $${transferIdx++}, $${transferIdx++}, $${transferIdx++}, $${transferIdx++}, $${transferIdx++})`
+          );
+          tokenTransferParams.push(
+            tokenAddress,
+            receipt.transactionHash,
+            blockHeight.toString(10),
+            i,
+            from,
+            to,
+            value
+          );
+        }
+      }
     }
   }
 
@@ -415,6 +450,44 @@ async function bulkUpsertReceipts(
     );
   }
 
+  if (tokenAddresses.size > 0) {
+    for (const address of tokenAddresses) {
+      tokenInsertValues.push(`($${tokenInsertParams.length + 1})`);
+      tokenInsertParams.push(address);
+    }
+    await client.query(
+      `
+      INSERT INTO tokens (address)
+      VALUES ${tokenInsertValues.join(',')}
+      ON CONFLICT (address) DO NOTHING
+      `,
+      tokenInsertParams
+    );
+  }
+
+  if (tokenTransferValues.length > 0) {
+    await client.query(
+      `
+      INSERT INTO token_transfers (
+        token_address,
+        tx_hash,
+        block_height,
+        log_index,
+        from_address,
+        to_address,
+        value
+      ) VALUES ${tokenTransferValues.join(',')}
+      ON CONFLICT (tx_hash, log_index) DO UPDATE SET
+        token_address = EXCLUDED.token_address,
+        block_height = EXCLUDED.block_height,
+        from_address = EXCLUDED.from_address,
+        to_address = EXCLUDED.to_address,
+        value = EXCLUDED.value
+      `,
+      tokenTransferParams
+    );
+  }
+
   if (contractValues.length > 0) {
     await client.query(
       `
@@ -440,6 +513,64 @@ async function bulkUpsertReceipts(
       statusParams
     );
   }
+}
+
+async function callString(client: RpcClient, to: string, data: string): Promise<string | null> {
+  try {
+    const result = await client.callWithRetry<string>('eth_call', [{ to, data }, 'latest']);
+    return decodeString(result);
+  } catch {
+    return null;
+  }
+}
+
+async function callUint256(client: RpcClient, to: string, data: string): Promise<string | null> {
+  try {
+    const result = await client.callWithRetry<string>('eth_call', [{ to, data }, 'latest']);
+    return decodeUint256(result);
+  } catch {
+    return null;
+  }
+}
+
+async function callDecimals(client: RpcClient, to: string): Promise<number | null> {
+  try {
+    const result = await client.callWithRetry<string>('eth_call', [{ to, data: ERC20_DECIMALS }, 'latest']);
+    const value = decodeUint256(result);
+    return value ? Number(value) : null;
+  } catch {
+    return null;
+  }
+}
+
+async function upsertTokenMetadata(client: PoolClient, rpc: RpcClient, tokenAddress: string, blockHeight: bigint): Promise<void> {
+  if (tokenMetadataCache.has(tokenAddress)) {
+    return;
+  }
+
+  const [name, symbol, decimals, totalSupply] = await Promise.all([
+    callString(rpc, tokenAddress, ERC20_NAME),
+    callString(rpc, tokenAddress, ERC20_SYMBOL),
+    callDecimals(rpc, tokenAddress),
+    callUint256(rpc, tokenAddress, ERC20_TOTAL_SUPPLY),
+  ]);
+
+  tokenMetadataCache.set(tokenAddress, { name, symbol, decimals, totalSupply });
+
+  await client.query(
+    `
+    INSERT INTO tokens (address, name, symbol, decimals, total_supply, last_seen_block)
+    VALUES ($1, $2, $3, $4, $5, $6)
+    ON CONFLICT (address) DO UPDATE SET
+      name = EXCLUDED.name,
+      symbol = EXCLUDED.symbol,
+      decimals = EXCLUDED.decimals,
+      total_supply = EXCLUDED.total_supply,
+      last_seen_block = EXCLUDED.last_seen_block,
+      updated_at = NOW()
+    `,
+    [tokenAddress, name, symbol, decimals, totalSupply, blockHeight.toString(10)]
+  );
 }
 
 async function setLastBatchStats(stats: {
@@ -578,6 +709,19 @@ async function indexBlock(client: RpcClient, height: bigint): Promise<number> {
       );
       const filtered = receipts.filter(Boolean) as RpcReceipt[];
       await bulkUpsertReceipts(receiptClient, filtered, height);
+
+      const tokenAddresses = new Set<string>();
+      for (const receipt of filtered) {
+        for (const log of receipt.logs) {
+          if ((log.topics[0] ?? '').toLowerCase() === ERC20_TRANSFER_TOPIC) {
+            tokenAddresses.add(log.address.toLowerCase());
+          }
+        }
+      }
+
+      for (const tokenAddress of tokenAddresses) {
+        await upsertTokenMetadata(receiptClient, client, tokenAddress, height);
+      }
     }
     await receiptClient.query('COMMIT');
   } catch (error) {

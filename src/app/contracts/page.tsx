@@ -10,6 +10,9 @@ export default function ContractsPage() {
         <p className="mt-3 text-sm text-slate-400">
           Meanwhile, see <Link href="/token/qfc" className="text-slate-200">QFC tokenomics</Link>.
         </p>
+        <p className="mt-2 text-sm text-slate-400">
+          Indexed ERC-20 tokens: <Link href="/tokens" className="text-slate-200">Tokens list</Link>.
+        </p>
       </div>
     </main>
   );

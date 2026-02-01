@@ -471,3 +471,64 @@ export async function getStatsSeries(): Promise<{
 
   return { block_time_ms, tps, active_addresses };
 }
+
+export async function getTokensPage(
+  limit: number,
+  offset: number,
+  order: 'asc' | 'desc' = 'desc'
+): Promise<Array<{ address: string; name: string | null; symbol: string | null; decimals: number | null; total_supply: string | null; last_seen_block: string | null }>> {
+  const pool = getPool();
+  const direction = order === 'asc' ? 'ASC' : 'DESC';
+  const result = await pool.query(
+    `
+    SELECT address, name, symbol, decimals, total_supply, last_seen_block
+    FROM tokens
+    ORDER BY last_seen_block ${direction} NULLS LAST
+    LIMIT $1 OFFSET $2
+    `,
+    [limit, offset]
+  );
+  return result.rows;
+}
+
+export async function getTokenByAddress(address: string): Promise<{
+  address: string;
+  name: string | null;
+  symbol: string | null;
+  decimals: number | null;
+  total_supply: string | null;
+  last_seen_block: string | null;
+} | null> {
+  const pool = getPool();
+  const result = await pool.query(
+    `
+    SELECT address, name, symbol, decimals, total_supply, last_seen_block
+    FROM tokens
+    WHERE address = $1
+    LIMIT 1
+    `,
+    [address]
+  );
+  return result.rows[0] ?? null;
+}
+
+export async function getTokenTransfers(
+  tokenAddress: string,
+  limit: number,
+  offset: number,
+  order: 'asc' | 'desc' = 'desc'
+): Promise<Array<{ tx_hash: string; block_height: string; from_address: string; to_address: string; value: string }>> {
+  const pool = getPool();
+  const direction = order === 'asc' ? 'ASC' : 'DESC';
+  const result = await pool.query(
+    `
+    SELECT tx_hash, block_height, from_address, to_address, value
+    FROM token_transfers
+    WHERE token_address = $1
+    ORDER BY block_height ${direction}, log_index ${direction}
+    LIMIT $2 OFFSET $3
+    `,
+    [tokenAddress, limit, offset]
+  );
+  return result.rows;
+}

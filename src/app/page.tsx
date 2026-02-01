@@ -156,6 +156,12 @@ export default async function Home() {
               >
                 Tokenomics
               </Link>
+              <Link
+                href="/tokens"
+                className="rounded-full border border-slate-800 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-300"
+              >
+                Tokens
+              </Link>
             </div>
           }
         />
