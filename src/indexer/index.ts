@@ -163,6 +163,32 @@ async function upsertAccounts(client: PoolClient, addresses: string[], blockHeig
   }
 }
 
+async function refreshAccountState(
+  client: PoolClient,
+  rpc: RpcClient,
+  address: string,
+  blockHex: string,
+  blockHeight: bigint
+): Promise<void> {
+  const balanceHex = await rpc.callWithRetry<string>('eth_getBalance', [address, blockHex]);
+  const nonceHex = await rpc.callWithRetry<string>('eth_getTransactionCount', [address, blockHex]);
+  const balance = hexToBigIntString(balanceHex) ?? '0';
+  const nonce = parseHeight(nonceHex).toString(10);
+
+  await client.query(
+    `
+    INSERT INTO accounts (address, balance, nonce, first_seen_block, last_seen_block)
+    VALUES ($1, $2, $3, $4, $5)
+    ON CONFLICT (address) DO UPDATE SET
+      balance = EXCLUDED.balance,
+      nonce = EXCLUDED.nonce,
+      last_seen_block = EXCLUDED.last_seen_block,
+      updated_at = NOW()
+    `,
+    [address, balance, nonce, blockHeight.toString(10), blockHeight.toString(10)]
+  );
+}
+
 async function upsertReceipt(
   client: PoolClient,
   receipt: RpcReceipt,
@@ -241,6 +267,7 @@ async function indexBlock(client: RpcClient, height: bigint): Promise<void> {
   }
 
   const txs = block.transactions ?? [];
+  const addressSet = new Set<string>();
 
   const pool = getPool();
   const dbClient = await pool.connect();
@@ -254,6 +281,9 @@ async function indexBlock(client: RpcClient, height: bigint): Promise<void> {
       await upsertTransaction(dbClient, tx, block.hash, height, i, null);
       const addresses = [tx.from, tx.to].filter(Boolean) as string[];
       await upsertAccounts(dbClient, addresses, height);
+      for (const address of addresses) {
+        addressSet.add(address);
+      }
     }
 
     await dbClient.query('COMMIT');
@@ -262,6 +292,22 @@ async function indexBlock(client: RpcClient, height: bigint): Promise<void> {
     throw error;
   } finally {
     dbClient.release();
+  }
+
+  if (addressSet.size > 0) {
+    const accountClient = await pool.connect();
+    try {
+      await accountClient.query('BEGIN');
+      for (const address of addressSet) {
+        await refreshAccountState(accountClient, client, address, blockHex, height);
+      }
+      await accountClient.query('COMMIT');
+    } catch (error) {
+      await accountClient.query('ROLLBACK');
+      throw error;
+    } finally {
+      accountClient.release();
+    }
   }
 
   const receiptClient = await pool.connect();
@@ -284,6 +330,25 @@ async function indexBlock(client: RpcClient, height: bigint): Promise<void> {
   await setLastProcessedHeight(height);
 }
 
+async function runOnce(client: RpcClient, startHeight: bigint): Promise<bigint> {
+  const latestHex = await client.callWithRetry<string>('eth_blockNumber');
+  const latest = parseHeight(latestHex);
+
+  if (startHeight > latest) {
+    console.log(`Indexer up to date at height ${latest}`);
+    return latest;
+  }
+
+  console.log(`Indexing from ${startHeight} to ${latest}`);
+  for (let height = startHeight; height <= latest; height += 1n) {
+    console.log(`Indexing block ${height}`);
+    await indexBlock(client, height);
+  }
+
+  console.log('Indexing complete');
+  return latest;
+}
+
 async function run(): Promise<void> {
   const rpcUrl = process.env.RPC_URL;
   if (!rpcUrl) {
@@ -292,27 +357,24 @@ async function run(): Promise<void> {
 
   const startHeightEnv = process.env.INDEXER_START_HEIGHT;
   const startHeight = startHeightEnv ? BigInt(startHeightEnv) : 0n;
+  const pollIntervalMs = process.env.INDEXER_POLL_INTERVAL_MS
+    ? Number(process.env.INDEXER_POLL_INTERVAL_MS)
+    : 10_000;
 
   const client = new RpcClient(rpcUrl);
 
   const lastProcessed = await getLastProcessedHeight();
   let current = lastProcessed !== null ? lastProcessed + 1n : startHeight;
 
-  const latestHex = await client.callWithRetry<string>('eth_blockNumber');
-  const latest = parseHeight(latestHex);
+  await runOnce(client, current);
 
-  if (current > latest) {
-    console.log(`Indexer up to date at height ${latest}`);
-    return;
+  // Continuous polling mode
+  while (pollIntervalMs > 0) {
+    await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
+    const last = await getLastProcessedHeight();
+    current = last !== null ? last + 1n : startHeight;
+    await runOnce(client, current);
   }
-
-  console.log(`Indexing from ${current} to ${latest}`);
-  for (let height = current; height <= latest; height += 1n) {
-    console.log(`Indexing block ${height}`);
-    await indexBlock(client, height);
-  }
-
-  console.log('Indexing complete');
 }
 
 run().catch((error) => {
