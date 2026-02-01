@@ -6,6 +6,7 @@ import type { RpcBlock, RpcReceipt, RpcTransaction } from './types';
 import { hexToBigIntString, hexToBuffer, stripHexPrefix } from './utils';
 
 const INDEXER_STATE_KEY = 'last_processed_height';
+const INDEXER_STATS_KEY = 'last_batch_stats';
 
 async function getLastProcessedHeight(): Promise<bigint | null> {
   const pool = getPool();
@@ -440,12 +441,39 @@ async function bulkUpsertReceipts(
   }
 }
 
-async function indexBlock(client: RpcClient, height: bigint): Promise<void> {
+async function setLastBatchStats(stats: {
+  height: bigint;
+  blocks: number;
+  txs: number;
+  receipts: number;
+  durationMs: number;
+}): Promise<void> {
+  const pool = getPool();
+  await pool.query(
+    `
+    INSERT INTO indexer_state (key, value)
+    VALUES ($1, $2)
+    ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = NOW()
+    `,
+    [
+      INDEXER_STATS_KEY,
+      JSON.stringify({
+        height: stats.height.toString(10),
+        blocks: stats.blocks,
+        txs: stats.txs,
+        receipts: stats.receipts,
+        durationMs: stats.durationMs,
+      }),
+    ]
+  );
+}
+
+async function indexBlock(client: RpcClient, height: bigint): Promise<number> {
   const blockHex = `0x${height.toString(16)}`;
   const block = await client.callWithRetry<RpcBlock>('eth_getBlockByNumber', [blockHex, true]);
 
   if (!block) {
-    return;
+    return 0;
   }
 
   const txs = block.transactions ?? [];
@@ -522,6 +550,7 @@ async function indexBlock(client: RpcClient, height: bigint): Promise<void> {
   }
 
   await setLastProcessedHeight(height);
+  return txs.length;
 }
 
 async function indexBlockWithRetry(
@@ -529,12 +558,12 @@ async function indexBlockWithRetry(
   height: bigint,
   attempts: number,
   skipOnError: boolean
-): Promise<boolean> {
+): Promise<number | null> {
   let lastError: unknown;
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
-      await indexBlock(client, height);
-      return true;
+      const txCount = await indexBlock(client, height);
+      return txCount;
     } catch (error) {
       lastError = error;
       console.error(`Failed to index block ${height} (attempt ${attempt}/${attempts})`, error);
@@ -543,7 +572,7 @@ async function indexBlockWithRetry(
 
   if (skipOnError) {
     console.warn(`Skipping block ${height} after ${attempts} failed attempts`);
-    return false;
+    return null;
   }
 
   throw lastError instanceof Error ? lastError : new Error('Failed to index block');
@@ -570,6 +599,10 @@ async function runOnce(
   const latestHex = await client.callWithRetry<string>('eth_blockNumber');
   const latest = parseHeight(latestHex);
   const target = useFinalized ? await resolveFinalizedHeight(client, latest) : latest;
+  const startedAt = Date.now();
+  let totalTxs = 0;
+  let totalReceipts = 0;
+  let indexedBlocks = 0;
 
   if (startHeight > target) {
     console.log(`Indexer up to date at height ${target}`);
@@ -579,13 +612,29 @@ async function runOnce(
   console.log(`Indexing from ${startHeight} to ${target}`);
   for (let height = startHeight; height <= target; height += 1n) {
     console.log(`Indexing block ${height}`);
-    const ok = await indexBlockWithRetry(client, height, blockRetries, skipOnError);
-    if (!ok && skipOnError) {
+    const txCount = await indexBlockWithRetry(client, height, blockRetries, skipOnError);
+    if (txCount === null && skipOnError) {
       continue;
     }
+    indexedBlocks += 1;
+    const count = txCount ?? 0;
+    totalTxs += count;
+    totalReceipts += count;
   }
 
   console.log('Indexing complete');
+  const durationMs = Date.now() - startedAt;
+  const tps = durationMs > 0 ? (totalTxs / (durationMs / 1000)).toFixed(2) : '0';
+  console.log(
+    `Batch stats: blocks=${indexedBlocks}, txs=${totalTxs}, receipts=${totalReceipts}, duration=${durationMs}ms, tps=${tps}`
+  );
+  await setLastBatchStats({
+    height: target,
+    blocks: indexedBlocks,
+    txs: totalTxs,
+    receipts: totalReceipts,
+    durationMs,
+  });
   return target;
 }
 
