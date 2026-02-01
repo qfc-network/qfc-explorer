@@ -1,0 +1,16 @@
+export const TOKENOMICS = {
+  name: 'Quantum-Flux Coin',
+  symbol: 'QFC',
+  decimals: 18,
+  initialSupply: '1000000000',
+  maxSupply: '2000000000',
+  blockReward: '10',
+  minBlockReward: '0.625',
+  halvingPeriodYears: 1,
+  feeBurnPercent: 20,
+  producerRewardPercent: 50,
+  votersRewardPercent: 30,
+  contractCreatorFeePercent: 5,
+  minValidatorStake: '10000',
+  minDelegation: '100',
+};

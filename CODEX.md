@@ -25,6 +25,7 @@ This file tracks implementation progress for `qfc-explorer` beyond TODO checkbox
   - pagination, sorting, filtering
 - Docker deployment (Dockerfile + docker-compose)
 - Health checks + data consistency checks
+- Tokenomics page (QFC native token)
 
 ## In Progress / Not Done
 - Database index optimization (beyond initial indexes)

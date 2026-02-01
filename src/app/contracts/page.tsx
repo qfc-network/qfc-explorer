@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import SectionHeader from '@/components/SectionHeader';
 
 export default function ContractsPage() {
@@ -6,6 +7,9 @@ export default function ContractsPage() {
       <SectionHeader title="Contracts" description="Token/contract indexing not enabled yet." />
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6 text-slate-300">
         <p>Contract discovery will appear here once token metadata is indexed.</p>
+        <p className="mt-3 text-sm text-slate-400">
+          Meanwhile, see <Link href="/token/qfc" className="text-slate-200">QFC tokenomics</Link>.
+        </p>
       </div>
     </main>
   );
