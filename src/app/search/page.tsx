@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getAddressOverview, getBlockByHash, getBlockByHeight, getTransactionByHash } from '@/db/queries';
+import { fetchJsonSafe } from '@/lib/api-client';
 import SectionHeader from '@/components/SectionHeader';
 import { shortenHash } from '@/lib/format';
 
@@ -17,15 +17,30 @@ export default async function SearchPage({
     );
   }
 
-  const isNumeric = /^\d+$/.test(query);
-  const isHex = /^0x[0-9a-fA-F]+$/.test(query);
+  const response = await fetchJsonSafe<{
+    blockByHeight: { height: string } | null;
+    blockByHash: { hash: string; height: string } | null;
+    transaction: { hash: string } | null;
+    address: { address: string } | null;
+  }>(`/api/search?q=${encodeURIComponent(query)}`);
 
-  const [blockByHeight, blockByHash, txByHash, address] = await Promise.all([
-    isNumeric ? getBlockByHeight(query) : Promise.resolve(null),
-    isHex ? getBlockByHash(query) : Promise.resolve(null),
-    isHex ? getTransactionByHash(query) : Promise.resolve(null),
-    isHex && query.length === 42 ? getAddressOverview(query) : Promise.resolve(null),
-  ]);
+  const blockByHeight = response?.blockByHeight ?? null;
+  const blockByHash = response?.blockByHash ?? null;
+  const txByHash = response?.transaction ?? null;
+  const address = response?.address ?? null;
+
+  const suggestions = await fetchJsonSafe<{
+    blockHeights: string[];
+    blockHashes: Array<{ hash: string; height: string }>;
+    txHashes: Array<{ hash: string; block_height: string }>;
+    addresses: string[];
+  }>(`/api/search/suggest?q=${encodeURIComponent(query)}`);
+
+  const hasSuggestions =
+    (suggestions?.blockHeights?.length ?? 0) > 0 ||
+    (suggestions?.blockHashes?.length ?? 0) > 0 ||
+    (suggestions?.txHashes?.length ?? 0) > 0 ||
+    (suggestions?.addresses?.length ?? 0) > 0;
 
   return (
     <main className="mx-auto flex min-h-screen max-w-4xl flex-col gap-6 px-6 py-12">
@@ -70,6 +85,34 @@ export default async function SearchPage({
       {!blockByHeight && !blockByHash && !txByHash && !address ? (
         <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 text-slate-400">
           No matches found.
+        </div>
+      ) : null}
+
+      {hasSuggestions ? (
+        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Suggestions</p>
+          <div className="mt-3 grid gap-2 text-sm text-slate-300">
+            {suggestions?.blockHeights?.map((height) => (
+              <Link key={`height-${height}`} href={`/blocks/${height}`} className="text-slate-200">
+                Block {height}
+              </Link>
+            ))}
+            {suggestions?.blockHashes?.map((block) => (
+              <Link key={`block-${block.hash}`} href={`/blocks/${block.height}`} className="text-slate-200">
+                Block {block.height} ({shortenHash(block.hash)})
+              </Link>
+            ))}
+            {suggestions?.txHashes?.map((tx) => (
+              <Link key={`tx-${tx.hash}`} href={`/txs/${tx.hash}`} className="text-slate-200">
+                Transaction {shortenHash(tx.hash)}
+              </Link>
+            ))}
+            {suggestions?.addresses?.map((addr) => (
+              <Link key={`addr-${addr}`} href={`/address/${addr}`} className="text-slate-200">
+                Address {shortenHash(addr)}
+              </Link>
+            ))}
+          </div>
         </div>
       ) : null}
     </main>

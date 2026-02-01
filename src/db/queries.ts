@@ -206,3 +206,63 @@ export async function getAddressTransactions(
   );
   return result.rows;
 }
+
+export async function searchBlockHeightPrefix(prefix: string, limit: number): Promise<string[]> {
+  const pool = getPool();
+  const result = await pool.query(
+    `
+    SELECT height
+    FROM blocks
+    WHERE height LIKE $1
+    ORDER BY height DESC
+    LIMIT $2
+    `,
+    [`${prefix}%`, limit]
+  );
+  return result.rows.map((row) => row.height);
+}
+
+export async function searchBlockHashPrefix(prefix: string, limit: number): Promise<Array<{ hash: string; height: string }>> {
+  const pool = getPool();
+  const result = await pool.query(
+    `
+    SELECT hash, height
+    FROM blocks
+    WHERE hash ILIKE $1
+    ORDER BY height DESC
+    LIMIT $2
+    `,
+    [`${prefix}%`, limit]
+  );
+  return result.rows;
+}
+
+export async function searchTransactionHashPrefix(prefix: string, limit: number): Promise<Array<{ hash: string; block_height: string }>> {
+  const pool = getPool();
+  const result = await pool.query(
+    `
+    SELECT hash, block_height
+    FROM transactions
+    WHERE hash ILIKE $1
+    ORDER BY block_height DESC
+    LIMIT $2
+    `,
+    [`${prefix}%`, limit]
+  );
+  return result.rows;
+}
+
+export async function searchAddressPrefix(prefix: string, limit: number): Promise<string[]> {
+  const pool = getPool();
+  const result = await pool.query(
+    `
+    SELECT address
+    FROM accounts
+    WHERE address ILIKE $1
+    ORDER BY last_seen_block DESC NULLS LAST
+    LIMIT $2
+    `,
+    [`${prefix}%`, limit]
+  );
+  return result.rows.map((row) => row.address);
+}
