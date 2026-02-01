@@ -469,6 +469,23 @@ async function setLastBatchStats(stats: {
   );
 }
 
+async function getFailedBlockHeight(): Promise<bigint | null> {
+  const pool = getPool();
+  const result = await pool.query(
+    'SELECT value FROM indexer_state WHERE key = $1',
+    [INDEXER_FAILED_KEY]
+  );
+  if (result.rowCount === 0) {
+    return null;
+  }
+  try {
+    const data = JSON.parse(result.rows[0].value);
+    return data?.height ? BigInt(data.height) : null;
+  } catch {
+    return null;
+  }
+}
+
 async function recordFailedBlock(height: bigint, error: unknown): Promise<void> {
   const pool = getPool();
   const message = error instanceof Error ? error.message : String(error);
@@ -616,24 +633,26 @@ async function runOnce(
   startHeight: bigint,
   useFinalized: boolean,
   blockRetries: number,
-  skipOnError: boolean
+  skipOnError: boolean,
+  maxHeight: bigint | null = null
 ): Promise<bigint> {
   const latestHex = await client.callWithRetry<string>('eth_blockNumber');
   const latest = parseHeight(latestHex);
   const target = useFinalized ? await resolveFinalizedHeight(client, latest) : latest;
+  const effectiveTarget = maxHeight !== null && maxHeight < target ? maxHeight : target;
   const startedAt = Date.now();
   let totalTxs = 0;
   let totalReceipts = 0;
   let indexedBlocks = 0;
   let skippedBlocks = 0;
 
-  if (startHeight > target) {
-    console.log(`Indexer up to date at height ${target}`);
-    return target;
+  if (startHeight > effectiveTarget) {
+    console.log(`Indexer up to date at height ${effectiveTarget}`);
+    return effectiveTarget;
   }
 
-  console.log(`Indexing from ${startHeight} to ${target}`);
-  for (let height = startHeight; height <= target; height += 1n) {
+  console.log(`Indexing from ${startHeight} to ${effectiveTarget}`);
+  for (let height = startHeight; height <= effectiveTarget; height += 1n) {
     console.log(`Indexing block ${height}`);
     const txCount = await indexBlockWithRetry(client, height, blockRetries, skipOnError);
     if (txCount === null && skipOnError) {
@@ -653,13 +672,13 @@ async function runOnce(
     `Batch stats: blocks=${indexedBlocks}, skipped=${skippedBlocks}, txs=${totalTxs}, receipts=${totalReceipts}, duration=${durationMs}ms, tps=${tps}`
   );
   await setLastBatchStats({
-    height: target,
+    height: effectiveTarget,
     blocks: indexedBlocks,
     txs: totalTxs,
     receipts: totalReceipts,
     durationMs,
   });
-  return target;
+  return effectiveTarget;
 }
 
 async function run(): Promise<void> {
@@ -670,6 +689,8 @@ async function run(): Promise<void> {
 
   const startHeightEnv = process.env.INDEXER_START_HEIGHT;
   const startHeight = startHeightEnv ? BigInt(startHeightEnv) : 0n;
+  const endHeightEnv = process.env.INDEXER_END_HEIGHT;
+  const endHeight = endHeightEnv ? BigInt(endHeightEnv) : null;
   const pollIntervalMs = process.env.INDEXER_POLL_INTERVAL_MS
     ? Number(process.env.INDEXER_POLL_INTERVAL_MS)
     : 10_000;
@@ -678,11 +699,25 @@ async function run(): Promise<void> {
     ? Number(process.env.INDEXER_BLOCK_RETRIES)
     : 3;
   const skipOnError = process.env.INDEXER_SKIP_ON_ERROR === 'true';
+  const retryFailed = process.env.INDEXER_RETRY_FAILED === 'true';
 
   const client = new RpcClient(rpcUrl);
 
   const lastProcessed = await getLastProcessedHeight();
   let current = lastProcessed !== null ? lastProcessed + 1n : startHeight;
+
+  if (retryFailed) {
+    const failed = await getFailedBlockHeight();
+    if (failed !== null) {
+      console.log(`Retrying failed block ${failed}`);
+      await indexBlockWithRetry(client, failed, blockRetries, false);
+    }
+  }
+
+  if (endHeight !== null) {
+    await runOnce(client, current, useFinalized, blockRetries, skipOnError, endHeight);
+    return;
+  }
 
   await runOnce(client, current, useFinalized, blockRetries, skipOnError);
 
