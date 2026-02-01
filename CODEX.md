@@ -29,13 +29,11 @@ This file tracks implementation progress for `qfc-explorer` beyond TODO checkbox
 - ERC-20 indexing (Transfer logs) + token list/detail pages
 - Address analysis (totals sent/received)
 - ERC-20 holders (computed from transfers)
+- Admin indexer controls + DB pool stats
+- SSE live stats stream (rate limited)
 
 ## In Progress / Not Done
-- Database index optimization (beyond initial indexes)
-- Real-time updates (client polling or WS)
-- Charts/visualizations for stats
-- Token/contract pages
-- Automated tests (indexer + API)
+- ERC-721/1155 indexing
 
 ## Next Suggested Steps
 1) DB index tuning based on query patterns

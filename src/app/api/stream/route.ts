@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getStatsOverview } from '@/db/queries';
 
 export async function GET() {
+  const intervalMs = Math.max(3000, Number(process.env.SSE_INTERVAL_MS ?? 5000));
   const stream = new ReadableStream({
     async start(controller) {
       const encoder = new TextEncoder();
@@ -13,7 +14,7 @@ export async function GET() {
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(stats)}\n\n`));
       };
 
-      const interval = setInterval(send, 3000);
+      const interval = setInterval(send, intervalMs);
       await send();
 
       controller.enqueue(encoder.encode('event: ready\n\n'));

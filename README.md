@@ -17,6 +17,7 @@ QFC 区块浏览器（Next.js + PostgreSQL + Indexer）。
 | `INDEXER_SKIP_ON_ERROR` | 失败跳过 | `false` |
 | `INDEXER_RETRY_FAILED` | 启动时重试失败块 | `false` |
 | `INDEXER_HEALTH_MAX_AGE_MS` | 健康检查最大滞后 | `300000` |
+| `SSE_INTERVAL_MS` | 实时推送间隔（最小 3000） | `5000` |
 
 生产环境模板：`.env.production.example`
 

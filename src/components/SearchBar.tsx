@@ -8,10 +8,13 @@ function isHex(value: string) {
 }
 
 type SuggestionResponse = {
-  blockHeights: string[];
-  blockHashes: Array<{ hash: string; height: string }>;
-  txHashes: Array<{ hash: string; block_height: string }>;
-  addresses: string[];
+  ok: true;
+  data: {
+    blockHeights: string[];
+    blockHashes: Array<{ hash: string; height: string }>;
+    txHashes: Array<{ hash: string; block_height: string }>;
+    addresses: string[];
+  };
 };
 
 export default function SearchBar() {
@@ -38,9 +41,11 @@ export default function SearchBar() {
         if (!res.ok) {
           return;
         }
-        const data = (await res.json()) as SuggestionResponse;
+        const payload = (await res.json()) as SuggestionResponse;
         if (latestRequest.current === requestId) {
-          setSuggestions(data);
+          if (payload.ok) {
+            setSuggestions(payload);
+          }
           setOpen(true);
         }
       } catch {
@@ -109,7 +114,7 @@ export default function SearchBar() {
       {open && suggestions ? (
         <div className="absolute z-20 mt-2 w-full rounded-2xl border border-slate-800 bg-slate-950/95 p-4 text-sm text-slate-200 shadow-xl">
           <div className="space-y-2">
-            {suggestions.blockHeights?.map((height) => (
+            {suggestions.data.blockHeights?.map((height) => (
               <button
                 key={`height-${height}`}
                 type="button"
@@ -119,7 +124,7 @@ export default function SearchBar() {
                 Block {height}
               </button>
             ))}
-            {suggestions.blockHashes?.map((block) => (
+            {suggestions.data.blockHashes?.map((block) => (
               <button
                 key={`block-${block.hash}`}
                 type="button"
@@ -129,7 +134,7 @@ export default function SearchBar() {
                 Block {block.height} ({block.hash.slice(0, 10)}…)
               </button>
             ))}
-            {suggestions.txHashes?.map((tx) => (
+            {suggestions.data.txHashes?.map((tx) => (
               <button
                 key={`tx-${tx.hash}`}
                 type="button"
@@ -139,7 +144,7 @@ export default function SearchBar() {
                 Transaction {tx.hash.slice(0, 10)}…
               </button>
             ))}
-            {suggestions.addresses?.map((addr) => (
+            {suggestions.data.addresses?.map((addr) => (
               <button
                 key={`addr-${addr}`}
                 type="button"

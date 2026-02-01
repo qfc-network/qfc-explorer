@@ -12,5 +12,12 @@ export async function GET() {
     `
   );
 
-  return ok({ items: result.rows });
+  const items = result.rows as Array<{ key: string; value: string; updated_at: string }>;
+  const lastBatch = items.find((item) => item.key === 'last_batch_stats');
+  const failed = items.find((item) => item.key === 'failed_blocks');
+
+  const parsedBatch = lastBatch ? JSON.parse(lastBatch.value) : null;
+  const parsedFailed = failed ? JSON.parse(failed.value) : null;
+
+  return ok({ items, lastBatch: parsedBatch, failed: parsedFailed });
 }

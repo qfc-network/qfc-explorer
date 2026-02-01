@@ -1,16 +1,16 @@
-import { NextResponse } from 'next/server';
 import {
   searchAddressPrefix,
   searchBlockHeightPrefix,
   searchBlockHashPrefix,
   searchTransactionHashPrefix,
 } from '@/db/queries';
+import { fail, ok } from '@/lib/api-response';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const query = (searchParams.get('q') ?? '').trim();
   if (!query) {
-    return NextResponse.json({ error: 'Missing query' }, { status: 400 });
+    return fail('Missing query', 400);
   }
 
   const isNumeric = /^\d+$/.test(query);
@@ -23,7 +23,7 @@ export async function GET(request: Request) {
     isHex ? searchAddressPrefix(query, 5) : Promise.resolve([]),
   ]);
 
-  return NextResponse.json({
+  return ok({
     query,
     blockHeights,
     blockHashes,

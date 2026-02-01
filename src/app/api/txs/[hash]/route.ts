@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
 import { getReceiptLogsByTxHash, getTransactionByHash } from '@/db/queries';
+import { fail, ok } from '@/lib/api-response';
 
 export async function GET(
   _request: Request,
@@ -7,10 +7,10 @@ export async function GET(
 ) {
   const tx = await getTransactionByHash(params.hash);
   if (!tx) {
-    return NextResponse.json({ error: 'Transaction not found' }, { status: 404 });
+    return fail('Transaction not found', 404);
   }
 
   const logs = await getReceiptLogsByTxHash(params.hash);
 
-  return NextResponse.json({ transaction: tx, logs });
+  return ok({ transaction: tx, logs });
 }

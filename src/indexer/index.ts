@@ -8,6 +8,8 @@ import { decodeString, decodeUint256, hexToBigIntString, hexToBuffer, parseAddre
 const INDEXER_STATE_KEY = 'last_processed_height';
 const INDEXER_STATS_KEY = 'last_batch_stats';
 const INDEXER_FAILED_KEY = 'failed_blocks';
+const INDEXER_ADMIN_RESCAN = 'admin_rescan_from';
+const INDEXER_ADMIN_RETRY = 'admin_retry_failed';
 const ERC20_TRANSFER_TOPIC = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a7a5c6b6e0f';
 const ERC20_NAME = '0x06fdde03';
 const ERC20_SYMBOL = '0x95d89b41';
@@ -617,6 +619,17 @@ async function getFailedBlockHeight(): Promise<bigint | null> {
   }
 }
 
+async function readAndClearIndexerKey(key: string): Promise<string | null> {
+  const pool = getPool();
+  const result = await pool.query('SELECT value FROM indexer_state WHERE key = $1', [key]);
+  if (result.rowCount === 0) {
+    return null;
+  }
+  const value = result.rows[0].value as string;
+  await pool.query('DELETE FROM indexer_state WHERE key = $1', [key]);
+  return value;
+}
+
 async function recordFailedBlock(height: bigint, error: unknown): Promise<void> {
   const pool = getPool();
   const message = error instanceof Error ? error.message : String(error);
@@ -850,6 +863,29 @@ async function run(): Promise<void> {
   const lastProcessed = await getLastProcessedHeight();
   let current = lastProcessed !== null ? lastProcessed + 1n : startHeight;
 
+  const applyAdminCommands = async () => {
+    const rescan = await readAndClearIndexerKey(INDEXER_ADMIN_RESCAN);
+    if (rescan) {
+      try {
+        current = BigInt(rescan);
+        console.log(`Admin rescan requested from height ${current}`);
+      } catch {
+        console.warn(`Invalid admin rescan height: ${rescan}`);
+      }
+    }
+
+    const retry = await readAndClearIndexerKey(INDEXER_ADMIN_RETRY);
+    if (retry) {
+      const failed = await getFailedBlockHeight();
+      if (failed !== null) {
+        console.log(`Admin retry failed block ${failed}`);
+        await indexBlockWithRetry(client, failed, blockRetries, false);
+      }
+    }
+  };
+
+  await applyAdminCommands();
+
   if (retryFailed) {
     const failed = await getFailedBlockHeight();
     if (failed !== null) {
@@ -870,6 +906,7 @@ async function run(): Promise<void> {
     await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
     const last = await getLastProcessedHeight();
     current = last !== null ? last + 1n : startHeight;
+    await applyAdminCommands();
     await runOnce(client, current, useFinalized, blockRetries, skipOnError);
   }
 }
