@@ -4,33 +4,35 @@ import { formatNumber, formatTimestampMs, shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import StatsCard from '@/components/StatsCard';
 import Table from '@/components/Table';
+import AutoRefresh from '@/components/AutoRefresh';
 
 export default async function Home() {
   const [blocksResponse, transactionsResponse, statsResponse] = await Promise.all([
-    fetchJsonSafe<{ items: Array<{ height: string; hash: string; producer: string | null; timestamp_ms: string; tx_count: number }> }>(
+    fetchJsonSafe<{ ok: true; data: { items: Array<{ height: string; hash: string; producer: string | null; timestamp_ms: string; tx_count: number }> } }>(
       '/api/blocks?limit=6&page=1',
       { next: { revalidate: 5 } }
     ),
-    fetchJsonSafe<{ items: Array<{ hash: string; from_address: string; to_address: string | null; value: string; status: string }> }>(
+    fetchJsonSafe<{ ok: true; data: { items: Array<{ hash: string; from_address: string; to_address: string | null; value: string; status: string }> } }>(
       '/api/transactions?limit=6&page=1',
       { next: { revalidate: 5 } }
     ),
-    fetchJsonSafe<{ stats: { latest_block: string | null; latest_timestamp_ms: string | null; avg_block_time_ms: string | null; tps: string | null; active_addresses: string | null } }>(
+    fetchJsonSafe<{ ok: true; data: { stats: { latest_block: string | null; latest_timestamp_ms: string | null; avg_block_time_ms: string | null; tps: string | null; active_addresses: string | null } } }>(
       '/api/stats',
       { next: { revalidate: 10 } }
     ),
   ]);
-  const blocks = blocksResponse?.items ?? [];
-  const transactions = transactionsResponse?.items ?? [];
+  const blocks = blocksResponse?.data.items ?? [];
+  const transactions = transactionsResponse?.data.items ?? [];
 
-  const latestHeight = statsResponse?.stats.latest_block ?? blocks[0]?.height ?? '0';
-  const latestTimestamp = statsResponse?.stats.latest_timestamp_ms ?? blocks[0]?.timestamp_ms ?? '0';
-  const avgBlockTimeMs = statsResponse?.stats.avg_block_time_ms;
-  const tps = statsResponse?.stats.tps;
-  const activeAddresses = statsResponse?.stats.active_addresses;
+  const latestHeight = statsResponse?.data.stats.latest_block ?? blocks[0]?.height ?? '0';
+  const latestTimestamp = statsResponse?.data.stats.latest_timestamp_ms ?? blocks[0]?.timestamp_ms ?? '0';
+  const avgBlockTimeMs = statsResponse?.data.stats.avg_block_time_ms;
+  const tps = statsResponse?.data.stats.tps;
+  const activeAddresses = statsResponse?.data.stats.active_addresses;
 
   return (
     <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-10 px-6 py-12">
+      <AutoRefresh intervalMs={15000} />
       <header className="space-y-4">
         <p className="text-xs uppercase tracking-[0.4em] text-slate-500">QFC Explorer</p>
         <h1 className="text-4xl font-semibold text-white sm:text-5xl">

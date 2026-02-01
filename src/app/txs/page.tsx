@@ -3,6 +3,8 @@ import { fetchJsonSafe } from '@/lib/api-client';
 import { shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
+import StatusBadge from '@/components/StatusBadge';
+import AutoRefresh from '@/components/AutoRefresh';
 
 const PAGE_SIZE = 25;
 
@@ -12,14 +14,15 @@ export default async function TransactionsPage({
   searchParams: { page?: string };
 }) {
   const page = Math.max(1, Number(searchParams.page ?? '1'));
-  const response = await fetchJsonSafe<{ items: Array<{ hash: string; from_address: string; to_address: string | null; value: string; status: string }> }>(
+  const response = await fetchJsonSafe<{ ok: true; data: { items: Array<{ hash: string; from_address: string; to_address: string | null; value: string; status: string }> } }>(
     `/api/transactions?page=${page}&limit=${PAGE_SIZE}`,
     { next: { revalidate: 10 } }
   );
-  const transactions = response?.items ?? [];
+  const transactions = response?.data.items ?? [];
 
   return (
     <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 px-6 py-12">
+      <AutoRefresh intervalMs={20000} />
       <SectionHeader
         title="Transactions"
         description={`Showing page ${page}`}
@@ -75,7 +78,7 @@ export default async function TransactionsPage({
           {
             key: 'status',
             header: 'Status',
-            render: (row) => row.status,
+            render: (row) => <StatusBadge status={row.status} />,
           },
         ]}
       />
