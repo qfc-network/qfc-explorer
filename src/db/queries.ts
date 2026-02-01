@@ -306,3 +306,61 @@ export async function searchAddressPrefix(prefix: string, limit: number): Promis
   );
   return result.rows.map((row) => row.address);
 }
+
+export async function getStatsOverview(): Promise<{
+  latest_block: string | null;
+  latest_timestamp_ms: string | null;
+  avg_block_time_ms: string | null;
+  tps: string | null;
+  active_addresses: string | null;
+}> {
+  const pool = getPool();
+  const result = await pool.query(
+    `
+    WITH recent_blocks AS (
+      SELECT height, timestamp_ms
+      FROM blocks
+      ORDER BY height DESC
+      LIMIT 100
+    ),
+    recent_txs AS (
+      SELECT COUNT(*) AS tx_count
+      FROM transactions
+      WHERE block_height >= (SELECT MIN(height) FROM recent_blocks)
+    ),
+    address_activity AS (
+      SELECT COUNT(DISTINCT addr) AS active
+      FROM (
+        SELECT from_address AS addr FROM transactions WHERE block_height >= (SELECT MIN(height) FROM recent_blocks)
+        UNION
+        SELECT to_address AS addr FROM transactions WHERE block_height >= (SELECT MIN(height) FROM recent_blocks)
+      ) AS all_addrs
+    )
+    SELECT
+      (SELECT MAX(height) FROM recent_blocks) AS latest_block,
+      (SELECT MAX(timestamp_ms) FROM recent_blocks) AS latest_timestamp_ms,
+      CASE
+        WHEN (SELECT COUNT(*) FROM recent_blocks) > 1 THEN
+          ((SELECT MAX(timestamp_ms) FROM recent_blocks) - (SELECT MIN(timestamp_ms) FROM recent_blocks))::numeric
+          / (SELECT COUNT(*) - 1 FROM recent_blocks)
+        ELSE NULL
+      END AS avg_block_time_ms,
+      CASE
+        WHEN (SELECT COUNT(*) FROM recent_blocks) > 1 THEN
+          (SELECT tx_count FROM recent_txs)::numeric
+          / (((SELECT MAX(timestamp_ms) FROM recent_blocks) - (SELECT MIN(timestamp_ms) FROM recent_blocks)) / 1000.0)
+        ELSE NULL
+      END AS tps,
+      (SELECT active FROM address_activity) AS active_addresses
+    `,
+    []
+  );
+
+  return result.rows[0] ?? {
+    latest_block: null,
+    latest_timestamp_ms: null,
+    avg_block_time_ms: null,
+    tps: null,
+    active_addresses: null,
+  };
+}

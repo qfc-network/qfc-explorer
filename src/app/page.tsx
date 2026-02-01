@@ -6,7 +6,7 @@ import StatsCard from '@/components/StatsCard';
 import Table from '@/components/Table';
 
 export default async function Home() {
-  const [blocksResponse, transactionsResponse] = await Promise.all([
+  const [blocksResponse, transactionsResponse, statsResponse] = await Promise.all([
     fetchJsonSafe<{ items: Array<{ height: string; hash: string; producer: string | null; timestamp_ms: string; tx_count: number }> }>(
       '/api/blocks?limit=6&page=1',
       { next: { revalidate: 5 } }
@@ -15,12 +15,19 @@ export default async function Home() {
       '/api/transactions?limit=6&page=1',
       { next: { revalidate: 5 } }
     ),
+    fetchJsonSafe<{ stats: { latest_block: string | null; latest_timestamp_ms: string | null; avg_block_time_ms: string | null; tps: string | null; active_addresses: string | null } }>(
+      '/api/stats',
+      { next: { revalidate: 10 } }
+    ),
   ]);
   const blocks = blocksResponse?.items ?? [];
   const transactions = transactionsResponse?.items ?? [];
 
-  const latestHeight = blocks[0]?.height ?? '0';
-  const latestTimestamp = blocks[0]?.timestamp_ms ?? '0';
+  const latestHeight = statsResponse?.stats.latest_block ?? blocks[0]?.height ?? '0';
+  const latestTimestamp = statsResponse?.stats.latest_timestamp_ms ?? blocks[0]?.timestamp_ms ?? '0';
+  const avgBlockTimeMs = statsResponse?.stats.avg_block_time_ms;
+  const tps = statsResponse?.stats.tps;
+  const activeAddresses = statsResponse?.stats.active_addresses;
 
   return (
     <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-10 px-6 py-12">
@@ -41,6 +48,15 @@ export default async function Home() {
           value={latestTimestamp !== '0' ? formatTimestampMs(latestTimestamp) : '—'}
         />
         <StatsCard label="Tracked Blocks" value={formatNumber(blocks.length)} />
+        <StatsCard
+          label="Avg Block Time"
+          value={avgBlockTimeMs ? `${Number(avgBlockTimeMs).toFixed(0)} ms` : '—'}
+        />
+        <StatsCard label="TPS (100 blocks)" value={tps ? Number(tps).toFixed(2) : '—'} />
+        <StatsCard
+          label="Active Addresses"
+          value={activeAddresses ? formatNumber(activeAddresses) : '—'}
+        />
       </section>
 
       <section className="space-y-4">
