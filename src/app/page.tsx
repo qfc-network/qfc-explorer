@@ -60,12 +60,15 @@ export default async function Home() {
         <StatsCard label="Tracked Blocks" value={formatNumber(blocks.length)} />
         <StatsCard
           label="Avg Block Time"
-          value={avgBlockTimeMs ? `${Number(avgBlockTimeMs).toFixed(0)} ms` : '—'}
+          value={avgBlockTimeMs == null ? '—' : `${Number(avgBlockTimeMs).toFixed(0)} ms`}
         />
-        <StatsCard label="TPS (100 blocks)" value={tps ? Number(tps).toFixed(2) : '—'} />
+        <StatsCard
+          label="TPS (100 blocks)"
+          value={tps == null ? '—' : Number(tps).toFixed(2)}
+        />
         <StatsCard
           label="Active Addresses"
-          value={activeAddresses ? formatNumber(activeAddresses) : '—'}
+          value={activeAddresses == null ? '—' : formatNumber(activeAddresses)}
         />
       </section>
 
