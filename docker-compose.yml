@@ -16,6 +16,8 @@ services:
     build: .
     depends_on:
       - db
+    profiles:
+      - explorer
     environment:
       DATABASE_URL: postgres://qfc:qfc@db:5432/qfc_explorer
       RPC_URL: ${RPC_URL}
@@ -27,6 +29,8 @@ services:
     build: .
     depends_on:
       - db
+    profiles:
+      - indexer
     environment:
       DATABASE_URL: postgres://qfc:qfc@db:5432/qfc_explorer
       RPC_URL: ${RPC_URL}

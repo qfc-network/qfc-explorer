@@ -40,6 +40,12 @@ docker compose up --build
 docker compose exec explorer npm run db:migrate
 ```
 
+使用 profiles 只启动某个服务：
+```bash
+docker compose --profile explorer up --build
+docker compose --profile indexer up --build
+```
+
 访问：`http://localhost:3000`
 
 ## 常用命令
