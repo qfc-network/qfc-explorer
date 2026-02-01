@@ -11,7 +11,8 @@
     "db:migrate": "node scripts/migrate.js",
     "indexer": "tsx src/indexer/index.ts",
     "indexer:health": "node scripts/indexer-health.js",
-    "data:check": "node scripts/data-check.js"
+    "data:check": "node scripts/data-check.js",
+    "test": "vitest"
   },
   "dependencies": {
     "next": "^14.1.0",
@@ -31,6 +32,7 @@
     "postcss": "^8.4.33",
     "tailwindcss": "^3.4.1",
     "tsx": "^4.7.0",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vitest": "^1.0.0"
   }
 }
