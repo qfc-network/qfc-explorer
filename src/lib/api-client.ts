@@ -19,10 +19,14 @@ export function getBaseUrl(): string {
 
 export async function fetchJson<T>(path: string, options?: FetchOptions): Promise<T> {
   const baseUrl = getBaseUrl();
-  const response = await fetch(`${baseUrl}${path}`, {
-    cache: options?.cache ?? 'no-store',
-    next: options?.next,
-  });
+  const init: RequestInit & { next?: FetchOptions['next'] } = {};
+  if (options?.next) {
+    init.next = options.next;
+  } else {
+    init.cache = options?.cache ?? 'no-store';
+  }
+
+  const response = await fetch(`${baseUrl}${path}`, init);
 
   if (!response.ok) {
     throw new Error(`API ${response.status}: ${response.statusText}`);

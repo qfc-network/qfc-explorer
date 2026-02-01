@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getTokenByAddress, getTokenTransfers } from '@/db/queries';
 import { fail, ok } from '@/lib/api-response';
 import { clamp, parseNumber, parseOrder } from '@/lib/pagination';

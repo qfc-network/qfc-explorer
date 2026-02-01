@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { checkDatabaseHealth } from '@/db/health';
 import { ok } from '@/lib/api-response';
 

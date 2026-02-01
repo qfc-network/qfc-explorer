@@ -26,7 +26,9 @@ services:
       - "3000:3000"
 
   indexer:
-    build: .
+    build:
+      context: .
+      target: builder
     depends_on:
       - db
     profiles:
@@ -37,7 +39,7 @@ services:
       INDEXER_POLL_INTERVAL_MS: 10000
       INDEXER_USE_FINALIZED: "true"
       INDEXER_HEALTH_MAX_AGE_MS: 300000
-    command: ["node", "src/indexer/index.ts"]
+    command: ["npm", "run", "indexer"]
     healthcheck:
       test: ["CMD", "node", "scripts/indexer-health.js"]
       interval: 30s

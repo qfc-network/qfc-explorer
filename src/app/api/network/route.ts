@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { RpcClient } from '@/indexer/rpc';
 import { fetchEpoch, fetchNodeInfo, fetchValidators } from '@/indexer/qfc';
 import { fail, ok } from '@/lib/api-response';

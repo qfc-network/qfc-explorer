@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getTransactionsPage } from '@/db/queries';
 import { ok } from '@/lib/api-response';
 import { clamp, parseNumber, parseOrder } from '@/lib/pagination';

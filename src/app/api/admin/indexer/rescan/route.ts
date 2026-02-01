@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getPool } from '@/db/pool';
 import { ok } from '@/lib/api-response';
 

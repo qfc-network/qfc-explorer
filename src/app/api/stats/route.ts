@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { NextResponse } from 'next/server';
 import { getStatsOverview, getStatsSeries } from '@/db/queries';
 import { ok } from '@/lib/api-response';

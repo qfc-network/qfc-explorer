@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getAddressOverview, getBlockByHash, getBlockByHeight, getTransactionByHash } from '@/db/queries';
 import { fail, ok } from '@/lib/api-response';
 

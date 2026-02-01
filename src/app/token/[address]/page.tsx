@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Link from 'next/link';
 import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';

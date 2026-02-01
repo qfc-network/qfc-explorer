@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import SectionHeader from '@/components/SectionHeader';
 import { TOKENOMICS } from '@/lib/tokenomics';
 

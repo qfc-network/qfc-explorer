@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
 import AdminControls from '@/components/AdminControls';
