@@ -7,6 +7,7 @@ import { hexToBigIntString, hexToBuffer, stripHexPrefix } from './utils';
 
 const INDEXER_STATE_KEY = 'last_processed_height';
 const INDEXER_STATS_KEY = 'last_batch_stats';
+const INDEXER_FAILED_KEY = 'failed_blocks';
 
 async function getLastProcessedHeight(): Promise<bigint | null> {
   const pool = getPool();
@@ -468,6 +469,26 @@ async function setLastBatchStats(stats: {
   );
 }
 
+async function recordFailedBlock(height: bigint, error: unknown): Promise<void> {
+  const pool = getPool();
+  const message = error instanceof Error ? error.message : String(error);
+  await pool.query(
+    `
+    INSERT INTO indexer_state (key, value)
+    VALUES ($1, $2)
+    ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = NOW()
+    `,
+    [
+      INDEXER_FAILED_KEY,
+      JSON.stringify({
+        height: height.toString(10),
+        error: message,
+        at: new Date().toISOString(),
+      }),
+    ]
+  );
+}
+
 async function indexBlock(client: RpcClient, height: bigint): Promise<number> {
   const blockHex = `0x${height.toString(16)}`;
   const block = await client.callWithRetry<RpcBlock>('eth_getBlockByNumber', [blockHex, true]);
@@ -572,6 +593,7 @@ async function indexBlockWithRetry(
 
   if (skipOnError) {
     console.warn(`Skipping block ${height} after ${attempts} failed attempts`);
+    await recordFailedBlock(height, lastError);
     return null;
   }
 
@@ -603,6 +625,7 @@ async function runOnce(
   let totalTxs = 0;
   let totalReceipts = 0;
   let indexedBlocks = 0;
+  let skippedBlocks = 0;
 
   if (startHeight > target) {
     console.log(`Indexer up to date at height ${target}`);
@@ -614,6 +637,7 @@ async function runOnce(
     console.log(`Indexing block ${height}`);
     const txCount = await indexBlockWithRetry(client, height, blockRetries, skipOnError);
     if (txCount === null && skipOnError) {
+      skippedBlocks += 1;
       continue;
     }
     indexedBlocks += 1;
@@ -626,7 +650,7 @@ async function runOnce(
   const durationMs = Date.now() - startedAt;
   const tps = durationMs > 0 ? (totalTxs / (durationMs / 1000)).toFixed(2) : '0';
   console.log(
-    `Batch stats: blocks=${indexedBlocks}, txs=${totalTxs}, receipts=${totalReceipts}, duration=${durationMs}ms, tps=${tps}`
+    `Batch stats: blocks=${indexedBlocks}, skipped=${skippedBlocks}, txs=${totalTxs}, receipts=${totalReceipts}, duration=${durationMs}ms, tps=${tps}`
   );
   await setLastBatchStats({
     height: target,
