@@ -32,7 +32,13 @@ services:
       RPC_URL: ${RPC_URL}
       INDEXER_POLL_INTERVAL_MS: 10000
       INDEXER_USE_FINALIZED: "true"
+      INDEXER_HEALTH_MAX_AGE_MS: 300000
     command: ["node", "src/indexer/index.ts"]
+    healthcheck:
+      test: ["CMD", "node", "scripts/indexer-health.js"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 volumes:
   qfc_explorer_db:

@@ -9,7 +9,8 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "db:migrate": "node scripts/migrate.js",
-    "indexer": "tsx src/indexer/index.ts"
+    "indexer": "tsx src/indexer/index.ts",
+    "indexer:health": "node scripts/indexer-health.js"
   },
   "dependencies": {
     "next": "^14.1.0",
