@@ -1,20 +1,6 @@
-import { NextResponse } from 'next/server';
-import { getAddressOverview, getAddressStats, getAddressTransactions } from '@/db/queries';
-
-function parseNumber(value: string | null, fallback: number) {
-  if (!value) {
-    return fallback;
-  }
-  const parsed = Number(value);
-  if (!Number.isFinite(parsed) || parsed < 1) {
-    return fallback;
-  }
-  return Math.floor(parsed);
-}
-
-function clamp(value: number, min: number, max: number) {
-  return Math.min(Math.max(value, min), max);
-}
+import { getAddressAnalysis, getAddressOverview, getAddressStats, getAddressTransactions } from '@/db/queries';
+import { fail, ok } from '@/lib/api-response';
+import { clamp, parseNumber, parseOrder } from '@/lib/pagination';
 
 export async function GET(
   request: Request,
@@ -23,23 +9,27 @@ export async function GET(
   const { searchParams } = new URL(request.url);
   const page = parseNumber(searchParams.get('page'), 1);
   const limit = clamp(parseNumber(searchParams.get('limit'), 25), 1, 100);
+  const order = parseOrder(searchParams.get('order'));
   const offset = (page - 1) * limit;
 
   const overview = await getAddressOverview(params.address);
   if (!overview) {
-    return NextResponse.json({ error: 'Address not found' }, { status: 404 });
+    return fail('Address not found', 404);
   }
 
-  const [transactions, stats] = await Promise.all([
-    getAddressTransactions(params.address, limit, offset),
+  const [transactions, stats, analysis] = await Promise.all([
+    getAddressTransactions(params.address, limit, offset, order),
     getAddressStats(params.address),
+    getAddressAnalysis(params.address),
   ]);
 
-  return NextResponse.json({
+  return ok({
     address: overview,
     stats,
+    analysis,
     page,
     limit,
+    order,
     transactions,
   });
 }

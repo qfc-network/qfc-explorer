@@ -24,6 +24,7 @@ export default async function AddressDetailPage({
 
   const overview = response?.data.address ?? null;
   const stats = response?.data.stats ?? null;
+  const analysis = response?.data.analysis ?? null;
   const transactions = response?.data.transactions ?? [];
 
   if (!overview) {
@@ -75,6 +76,21 @@ export default async function AddressDetailPage({
           <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Txs</p>
           <p className="mt-2 text-lg text-white">
             {stats ? `${stats.sent} sent / ${stats.received} received` : '—'}
+          </p>
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Total Sent</p>
+          <p className="mt-2 text-lg text-white">
+            {analysis ? `${formatWeiToQfc(analysis.sent_value)} QFC` : '—'}
+          </p>
+        </div>
+        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Total Received</p>
+          <p className="mt-2 text-lg text-white">
+            {analysis ? `${formatWeiToQfc(analysis.received_value)} QFC` : '—'}
           </p>
         </div>
       </div>

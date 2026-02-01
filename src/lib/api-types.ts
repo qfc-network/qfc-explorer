@@ -89,6 +89,12 @@ export type ApiAddressDetail = ApiOk<{
     last_seen_block: string;
   };
   stats: { sent: string; received: string } | null;
+  analysis?: {
+    sent_count: string;
+    received_count: string;
+    sent_value: string;
+    received_value: string;
+  } | null;
   page: number;
   limit: number;
   order: string;

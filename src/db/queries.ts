@@ -247,6 +247,26 @@ export async function getAddressStats(address: string): Promise<{
   return result.rows[0] ?? null;
 }
 
+export async function getAddressAnalysis(address: string): Promise<{
+  sent_count: string;
+  received_count: string;
+  sent_value: string;
+  received_value: string;
+} | null> {
+  const pool = getPool();
+  const result = await pool.query(
+    `
+    SELECT
+      (SELECT COUNT(*) FROM transactions WHERE from_address = $1) AS sent_count,
+      (SELECT COUNT(*) FROM transactions WHERE to_address = $1) AS received_count,
+      (SELECT COALESCE(SUM(value::numeric), 0) FROM transactions WHERE from_address = $1) AS sent_value,
+      (SELECT COALESCE(SUM(value::numeric), 0) FROM transactions WHERE to_address = $1) AS received_value
+    `,
+    [address]
+  );
+  return result.rows[0] ?? null;
+}
+
 export async function getAddressOverview(address: string): Promise<{
   address: string;
   balance: string;
