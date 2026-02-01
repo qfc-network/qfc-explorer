@@ -48,6 +48,10 @@ export default async function TransactionDetailPage({
           </Link>
         </div>
         <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Nonce</p>
+          <p className="mt-2 text-lg text-white">{formatNumber(tx.nonce)}</p>
+        </div>
+        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
           <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Status</p>
           <p className="mt-2 text-lg text-white">{tx.status}</p>
         </div>
@@ -70,6 +74,10 @@ export default async function TransactionDetailPage({
         <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
           <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Value</p>
           <p className="mt-2 text-lg text-white">{tx.value}</p>
+        </div>
+        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Gas Price</p>
+          <p className="mt-2 text-lg text-white">{tx.gas_price}</p>
         </div>
         <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
           <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Gas</p>

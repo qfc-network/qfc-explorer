@@ -84,11 +84,14 @@ export async function getBlockByHeight(height: string): Promise<{
   timestamp_ms: string;
   gas_limit: string;
   gas_used: string;
+  state_root: string | null;
+  transactions_root: string | null;
+  receipts_root: string | null;
 } | null> {
   const pool = getPool();
   const result = await pool.query(
     `
-    SELECT hash, height, parent_hash, producer, timestamp_ms, gas_limit, gas_used
+    SELECT hash, height, parent_hash, producer, timestamp_ms, gas_limit, gas_used, state_root, transactions_root, receipts_root
     FROM blocks
     WHERE height = $1
     LIMIT 1
@@ -142,12 +145,14 @@ export async function getTransactionByHash(hash: string): Promise<{
   value: string;
   status: string;
   gas_limit: string;
+  gas_price: string;
+  nonce: string;
   data: string | null;
 } | null> {
   const pool = getPool();
   const result = await pool.query(
     `
-    SELECT hash, block_height, from_address, to_address, value, status, gas_limit, data
+    SELECT hash, block_height, from_address, to_address, value, status, gas_limit, gas_price, nonce, data
     FROM transactions
     WHERE hash = $1
     LIMIT 1

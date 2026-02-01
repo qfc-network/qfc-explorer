@@ -68,6 +68,18 @@ export default async function BlockDetailPage({
           <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Gas Limit</p>
           <p className="mt-2 text-lg text-white">{formatNumber(block.gas_limit)}</p>
         </div>
+        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-slate-500">State Root</p>
+          <p className="mt-2 break-all text-xs text-slate-200">{block.state_root ?? '—'}</p>
+        </div>
+        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Tx Root</p>
+          <p className="mt-2 break-all text-xs text-slate-200">{block.transactions_root ?? '—'}</p>
+        </div>
+        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Receipts Root</p>
+          <p className="mt-2 break-all text-xs text-slate-200">{block.receipts_root ?? '—'}</p>
+        </div>
       </div>
 
       <section className="space-y-4">
