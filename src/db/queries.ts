@@ -48,30 +48,66 @@ export async function getLatestTransactions(limit = 10): Promise<TransactionRow[
   return result.rows;
 }
 
-export async function getBlocksPage(limit: number, offset: number): Promise<BlockRow[]> {
+export async function getBlocksPage(
+  limit: number,
+  offset: number,
+  order: 'asc' | 'desc' = 'desc',
+  producer?: string | null
+): Promise<BlockRow[]> {
   const pool = getPool();
+  const direction = order === 'asc' ? 'ASC' : 'DESC';
+  const params: Array<string | number> = [limit, offset];
+  const where = producer ? 'WHERE producer = $3' : '';
+  if (producer) {
+    params.push(producer);
+  }
   const result = await pool.query(
     `
     SELECT hash, height, parent_hash, producer, timestamp_ms, tx_count
     FROM blocks
-    ORDER BY height DESC
+    ${where}
+    ORDER BY height ${direction}
     LIMIT $1 OFFSET $2
     `,
-    [limit, offset]
+    params
   );
   return result.rows;
 }
 
-export async function getTransactionsPage(limit: number, offset: number): Promise<TransactionRow[]> {
+export async function getTransactionsPage(
+  limit: number,
+  offset: number,
+  order: 'asc' | 'desc' = 'desc',
+  filters?: { address?: string; status?: string }
+): Promise<TransactionRow[]> {
   const pool = getPool();
+  const direction = order === 'asc' ? 'ASC' : 'DESC';
+  const clauses: string[] = [];
+  const params: Array<string | number> = [limit, offset];
+  let paramIndex = 3;
+
+  if (filters?.address) {
+    clauses.push(`(from_address = $${paramIndex} OR to_address = $${paramIndex})`);
+    params.push(filters.address);
+    paramIndex += 1;
+  }
+
+  if (filters?.status) {
+    clauses.push(`status = $${paramIndex}`);
+    params.push(filters.status);
+    paramIndex += 1;
+  }
+
+  const where = clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : '';
   const result = await pool.query(
     `
     SELECT hash, block_height, from_address, to_address, value, status
     FROM transactions
-    ORDER BY block_height DESC, tx_index DESC
+    ${where}
+    ORDER BY block_height ${direction}, tx_index ${direction}
     LIMIT $1 OFFSET $2
     `,
-    [limit, offset]
+    params
   );
   return result.rows;
 }
@@ -121,15 +157,17 @@ export async function getBlockByHash(hash: string): Promise<{
 export async function getTransactionsByBlockHeight(
   height: string,
   limit: number,
-  offset: number
+  offset: number,
+  order: 'asc' | 'desc' = 'desc'
 ): Promise<TransactionRow[]> {
   const pool = getPool();
+  const direction = order === 'asc' ? 'ASC' : 'DESC';
   const result = await pool.query(
     `
     SELECT hash, block_height, from_address, to_address, value, status
     FROM transactions
     WHERE block_height = $1
-    ORDER BY tx_index DESC
+    ORDER BY tx_index ${direction}
     LIMIT $2 OFFSET $3
     `,
     [height, limit, offset]
@@ -231,15 +269,17 @@ export async function getAddressOverview(address: string): Promise<{
 export async function getAddressTransactions(
   address: string,
   limit: number,
-  offset: number
+  offset: number,
+  order: 'asc' | 'desc' = 'desc'
 ): Promise<TransactionRow[]> {
   const pool = getPool();
+  const direction = order === 'asc' ? 'ASC' : 'DESC';
   const result = await pool.query(
     `
     SELECT hash, block_height, from_address, to_address, value, status
     FROM transactions
     WHERE from_address = $1 OR to_address = $1
-    ORDER BY block_height DESC, tx_index DESC
+    ORDER BY block_height ${direction}, tx_index ${direction}
     LIMIT $2 OFFSET $3
     `,
     [address, limit, offset]
@@ -363,4 +403,71 @@ export async function getStatsOverview(): Promise<{
     tps: null,
     active_addresses: null,
   };
+}
+
+export async function getStatsSeries(): Promise<{
+  block_time_ms: Array<{ label: string; value: number }>;
+  tps: Array<{ label: string; value: number }>;
+  active_addresses: Array<{ label: string; value: number }>;
+}> {
+  const pool = getPool();
+  const result = await pool.query(
+    `
+    WITH recent_blocks AS (
+      SELECT height, timestamp_ms
+      FROM blocks
+      ORDER BY height DESC
+      LIMIT 20
+    ),
+    intervals AS (
+      SELECT height,
+        timestamp_ms,
+        LAG(timestamp_ms) OVER (ORDER BY height) AS prev_ts
+      FROM recent_blocks
+    ),
+    tx_counts AS (
+      SELECT block_height, COUNT(*)::int AS tx_count
+      FROM transactions
+      WHERE block_height IN (SELECT height FROM recent_blocks)
+      GROUP BY block_height
+    ),
+    address_counts AS (
+      SELECT block_height, COUNT(DISTINCT addr)::int AS active
+      FROM (
+        SELECT block_height, from_address AS addr FROM transactions
+        UNION ALL
+        SELECT block_height, to_address AS addr FROM transactions
+      ) a
+      WHERE block_height IN (SELECT height FROM recent_blocks)
+      GROUP BY block_height
+    )
+    SELECT
+      i.height,
+      i.timestamp_ms,
+      COALESCE(i.timestamp_ms - i.prev_ts, 0) AS block_time_ms,
+      COALESCE(t.tx_count, 0) AS tx_count,
+      COALESCE(a.active, 0) AS active_addresses
+    FROM intervals i
+    LEFT JOIN tx_counts t ON t.block_height = i.height
+    LEFT JOIN address_counts a ON a.block_height = i.height
+    ORDER BY i.height ASC
+    `
+  );
+
+  const block_time_ms = result.rows.map((row) => ({
+    label: String(row.height),
+    value: Number(row.block_time_ms ?? 0),
+  }));
+
+  const tps = result.rows.map((row) => ({
+    label: String(row.height),
+    value: Number(row.tx_count ?? 0),
+  }));
+
+  const active_addresses = result.rows.map((row) => ({
+    label: String(row.height),
+    value: Number(row.active_addresses ?? 0),
+  }));
+
+  return { block_time_ms, tps, active_addresses };
 }

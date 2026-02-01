@@ -3,6 +3,7 @@ import { fetchJsonSafe } from '@/lib/api-client';
 import { formatNumber, formatTimestampMs, shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import StatsCard from '@/components/StatsCard';
+import StatChart from '@/components/StatChart';
 import Table from '@/components/Table';
 import AutoRefresh from '@/components/AutoRefresh';
 
@@ -16,7 +17,7 @@ export default async function Home() {
       '/api/transactions?limit=6&page=1',
       { next: { revalidate: 5 } }
     ),
-    fetchJsonSafe<{ ok: true; data: { stats: { latest_block: string | null; latest_timestamp_ms: string | null; avg_block_time_ms: string | null; tps: string | null; active_addresses: string | null } } }>(
+    fetchJsonSafe<{ ok: true; data: { stats: { latest_block: string | null; latest_timestamp_ms: string | null; avg_block_time_ms: string | null; tps: string | null; active_addresses: string | null }; series: { block_time_ms: Array<{ label: string; value: number }>; tps: Array<{ label: string; value: number }>; active_addresses: Array<{ label: string; value: number }> } } }>(
       '/api/stats',
       { next: { revalidate: 10 } }
     ),
@@ -29,6 +30,7 @@ export default async function Home() {
   const avgBlockTimeMs = statsResponse?.data.stats.avg_block_time_ms;
   const tps = statsResponse?.data.stats.tps;
   const activeAddresses = statsResponse?.data.stats.active_addresses;
+  const series = statsResponse?.data.series;
 
   return (
     <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-10 px-6 py-12">
@@ -60,6 +62,14 @@ export default async function Home() {
           value={activeAddresses ? formatNumber(activeAddresses) : '—'}
         />
       </section>
+
+      {series ? (
+        <section className="grid gap-4 lg:grid-cols-3">
+          <StatChart title="Block Time (ms)" points={series.block_time_ms} suffix=" ms" />
+          <StatChart title="Txs per Block" points={series.tps} />
+          <StatChart title="Active Addresses" points={series.active_addresses} />
+        </section>
+      ) : null}
 
       <section className="space-y-4">
         <SectionHeader
