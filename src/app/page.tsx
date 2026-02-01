@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
+import type { ApiBlocksList, ApiStats, ApiTransactionsList } from '@/lib/api-types';
 import { formatNumber, formatTimestampMs, shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import StatsCard from '@/components/StatsCard';
@@ -9,15 +10,15 @@ import AutoRefresh from '@/components/AutoRefresh';
 
 export default async function Home() {
   const [blocksResponse, transactionsResponse, statsResponse] = await Promise.all([
-    fetchJsonSafe<{ ok: true; data: { items: Array<{ height: string; hash: string; producer: string | null; timestamp_ms: string; tx_count: number }> } }>(
+    fetchJsonSafe<ApiBlocksList>(
       '/api/blocks?limit=6&page=1',
       { next: { revalidate: 5 } }
     ),
-    fetchJsonSafe<{ ok: true; data: { items: Array<{ hash: string; from_address: string; to_address: string | null; value: string; status: string }> } }>(
+    fetchJsonSafe<ApiTransactionsList>(
       '/api/transactions?limit=6&page=1',
       { next: { revalidate: 5 } }
     ),
-    fetchJsonSafe<{ ok: true; data: { stats: { latest_block: string | null; latest_timestamp_ms: string | null; avg_block_time_ms: string | null; tps: string | null; active_addresses: string | null }; series: { block_time_ms: Array<{ label: string; value: number }>; tps: Array<{ label: string; value: number }>; active_addresses: Array<{ label: string; value: number }> } } }>(
+    fetchJsonSafe<ApiStats>(
       '/api/stats',
       { next: { revalidate: 10 } }
     ),

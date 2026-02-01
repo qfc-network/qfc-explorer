@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
+import type { ApiAddressDetail } from '@/lib/api-types';
 import { formatNumber, formatWeiToQfc, shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
@@ -16,26 +17,14 @@ export default async function AddressDetailPage({
 }) {
   const address = params.address;
   const page = Math.max(1, Number(searchParams.page ?? '1'));
-  const response = await fetchJsonSafe<{
-    address: {
-      address: string;
-      balance: string;
-      nonce: string;
-      last_seen_block: string;
-    };
-    stats: { sent: string; received: string } | null;
-    transactions: Array<{
-      hash: string;
-      from_address: string;
-      to_address: string | null;
-      value: string;
-      status: string;
-    }>;
-  }>(`/api/address/${address}?page=${page}&limit=${PAGE_SIZE}`, { next: { revalidate: 20 } });
+  const response = await fetchJsonSafe<ApiAddressDetail>(
+    `/api/address/${address}?page=${page}&limit=${PAGE_SIZE}`,
+    { next: { revalidate: 20 } }
+  );
 
-  const overview = response?.address ?? null;
-  const stats = response?.stats ?? null;
-  const transactions = response?.transactions ?? [];
+  const overview = response?.data.address ?? null;
+  const stats = response?.data.stats ?? null;
+  const transactions = response?.data.transactions ?? [];
 
   if (!overview) {
     return (

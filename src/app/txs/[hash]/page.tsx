@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
+import type { ApiTransactionDetail } from '@/lib/api-types';
 import { formatNumber, formatWeiToQfc, shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import CopyButton from '@/components/CopyButton';
@@ -11,30 +12,13 @@ export default async function TransactionDetailPage({
   params: { hash: string };
 }) {
   const hash = params.hash;
-  const response = await fetchJsonSafe<{ transaction: {
-    hash: string;
-    block_height: string;
-    from_address: string;
-    to_address: string | null;
-    value: string;
-    status: string;
-    gas_limit: string;
-    gas_price: string;
-    nonce: string;
-    data: string | null;
-  };
-  logs: Array<{
-    contract_address: string;
-    topic0: string | null;
-    topic1: string | null;
-    topic2: string | null;
-    topic3: string | null;
-    data: string | null;
-  }>;
-  }>(`/api/txs/${hash}`, { next: { revalidate: 10 } });
+  const response = await fetchJsonSafe<ApiTransactionDetail>(
+    `/api/txs/${hash}`,
+    { next: { revalidate: 10 } }
+  );
 
-  const tx = response?.transaction ?? null;
-  const logs = response?.logs ?? [];
+  const tx = response?.data.transaction ?? null;
+  const logs = response?.data.logs ?? [];
 
   if (!tx) {
     return (

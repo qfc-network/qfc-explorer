@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
+import type { ApiBlocksList } from '@/lib/api-types';
 import { formatNumber, formatTimestampMs, shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
@@ -13,7 +14,7 @@ export default async function BlocksPage({
   searchParams: { page?: string };
 }) {
   const page = Math.max(1, Number(searchParams.page ?? '1'));
-  const response = await fetchJsonSafe<{ ok: true; data: { items: Array<{ height: string; hash: string; producer: string | null; timestamp_ms: string; tx_count: number }> } }>(
+  const response = await fetchJsonSafe<ApiBlocksList>(
     `/api/blocks?page=${page}&limit=${PAGE_SIZE}`,
     { next: { revalidate: 10 } }
   );

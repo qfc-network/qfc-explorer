@@ -2,15 +2,15 @@ import SectionHeader from '@/components/SectionHeader';
 import StatsCard from '@/components/StatsCard';
 import Table from '@/components/Table';
 import { fetchJsonSafe } from '@/lib/api-client';
+import type { ApiNetwork } from '@/lib/api-types';
 import { formatNumber, shortenHash } from '@/lib/format';
 import { formatPercentage, formatQfcAmount } from '@/lib/qfc-format';
 
 export default async function NetworkPage() {
-  const response = await fetchJsonSafe<{
-    epoch: { number: string; startTime: string; durationMs: string };
-    nodeInfo: { version: string; chainId: string; peerCount: number; isValidator: boolean; syncing: boolean };
-    validators: Array<{ address: string; stake: string; contributionScore: string; uptime: string; isActive: boolean }>;
-  }>('/api/network', { next: { revalidate: 15 } });
+  const response = await fetchJsonSafe<ApiNetwork>(
+    '/api/network',
+    { next: { revalidate: 15 } }
+  );
 
   if (!response) {
     return (
@@ -20,8 +20,8 @@ export default async function NetworkPage() {
     );
   }
 
-  const { epoch, nodeInfo } = response;
-  const validatorsRaw = response.validators ?? [];
+  const { epoch, nodeInfo } = response.data;
+  const validatorsRaw = response.data.validators ?? [];
   const validators = validatorsRaw.sort((a, b) => {
     const aScore = Number(a.contributionScore);
     const bScore = Number(b.contributionScore);

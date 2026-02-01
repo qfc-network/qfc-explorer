@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
+import type { ApiBlockDetail } from '@/lib/api-types';
 import { formatNumber, formatTimestampMs, shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
@@ -17,30 +18,13 @@ export default async function BlockDetailPage({
 }) {
   const height = params.height;
   const page = Math.max(1, Number(searchParams.page ?? '1'));
-  const response = await fetchJsonSafe<{
-    block: {
-      hash: string;
-      height: string;
-      parent_hash: string | null;
-      producer: string | null;
-      timestamp_ms: string;
-      gas_limit: string;
-      gas_used: string;
-      state_root: string | null;
-      transactions_root: string | null;
-      receipts_root: string | null;
-    };
-    transactions: Array<{
-      hash: string;
-      from_address: string;
-      to_address: string | null;
-      value: string;
-      status: string;
-    }>;
-  }>(`/api/blocks/${height}?page=${page}&limit=${PAGE_SIZE}`, { next: { revalidate: 10 } });
+  const response = await fetchJsonSafe<ApiBlockDetail>(
+    `/api/blocks/${height}?page=${page}&limit=${PAGE_SIZE}`,
+    { next: { revalidate: 10 } }
+  );
 
-  const block = response?.block ?? null;
-  const transactions = response?.transactions ?? [];
+  const block = response?.data.block ?? null;
+  const transactions = response?.data.transactions ?? [];
 
   if (!block) {
     return (

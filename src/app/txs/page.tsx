@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
+import type { ApiTransactionsList } from '@/lib/api-types';
 import { shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
@@ -14,7 +15,7 @@ export default async function TransactionsPage({
   searchParams: { page?: string };
 }) {
   const page = Math.max(1, Number(searchParams.page ?? '1'));
-  const response = await fetchJsonSafe<{ ok: true; data: { items: Array<{ hash: string; from_address: string; to_address: string | null; value: string; status: string }> } }>(
+  const response = await fetchJsonSafe<ApiTransactionsList>(
     `/api/transactions?page=${page}&limit=${PAGE_SIZE}`,
     { next: { revalidate: 10 } }
   );
