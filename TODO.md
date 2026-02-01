@@ -39,5 +39,5 @@
 
 ## 测试与部署
 - [x] 索引器单元测试
-- [ ] API 集成测试
+- [x] API 集成测试
 - [x] Docker 化与 production build
