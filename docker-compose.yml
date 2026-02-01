@@ -37,7 +37,7 @@ services:
       DATABASE_URL: postgres://qfc:qfc@db:5432/qfc_explorer
       RPC_URL: ${RPC_URL}
       INDEXER_POLL_INTERVAL_MS: 10000
-      INDEXER_USE_FINALIZED: "true"
+      INDEXER_USE_FINALIZED: "false"
       INDEXER_HEALTH_MAX_AGE_MS: 300000
     command: ["npm", "run", "indexer"]
     healthcheck:
