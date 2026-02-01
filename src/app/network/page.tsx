@@ -4,6 +4,9 @@ import Table from '@/components/Table';
 import { RpcClient } from '@/indexer/rpc';
 import { fetchEpoch, fetchNodeInfo, fetchValidators } from '@/indexer/qfc';
 import { formatNumber, shortenHash } from '@/lib/format';
+import { formatPercentage, formatQfcAmount } from '@/lib/qfc-format';
+
+export const revalidate = 15;
 
 const rpcUrl = process.env.RPC_URL;
 
@@ -17,11 +20,19 @@ export default async function NetworkPage() {
   }
 
   const client = new RpcClient(rpcUrl);
-  const [epoch, nodeInfo, validators] = await Promise.all([
+  const [epoch, nodeInfo, validatorsRaw] = await Promise.all([
     fetchEpoch(client),
     fetchNodeInfo(client),
     fetchValidators(client),
   ]);
+  const validators = validatorsRaw.sort((a, b) => {
+    const aScore = Number(a.contributionScore);
+    const bScore = Number(b.contributionScore);
+    if (Number.isFinite(aScore) && Number.isFinite(bScore)) {
+      return bScore - aScore;
+    }
+    return b.address.localeCompare(a.address);
+  });
 
   return (
     <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 px-6 py-12">
@@ -53,7 +64,7 @@ export default async function NetworkPage() {
             {
               key: 'stake',
               header: 'Stake',
-              render: (row) => row.stake,
+              render: (row) => `${formatQfcAmount(row.stake)} QFC`,
             },
             {
               key: 'score',
@@ -63,7 +74,7 @@ export default async function NetworkPage() {
             {
               key: 'uptime',
               header: 'Uptime',
-              render: (row) => row.uptime,
+              render: (row) => formatPercentage(row.uptime),
             },
             {
               key: 'active',
