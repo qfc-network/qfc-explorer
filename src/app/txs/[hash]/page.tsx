@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
-import { formatNumber, shortenHash } from '@/lib/format';
+import { formatNumber, formatWeiToQfc, shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import CopyButton from '@/components/CopyButton';
 import StatusBadge from '@/components/StatusBadge';
@@ -103,7 +103,7 @@ export default async function TransactionDetailPage({
         </div>
         <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
           <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Value</p>
-          <p className="mt-2 text-lg text-white">{tx.value}</p>
+          <p className="mt-2 text-lg text-white">{formatWeiToQfc(tx.value)} QFC</p>
         </div>
         <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
           <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Gas Price</p>
@@ -117,7 +117,10 @@ export default async function TransactionDetailPage({
 
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 text-sm text-slate-300">
         <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Input Data</p>
-        <p className="mt-3 break-all font-mono text-xs">{tx.data ?? '0x'}</p>
+        <div className="mt-3 flex items-start gap-2">
+          <p className="break-all font-mono text-xs">{tx.data ?? '0x'}</p>
+          {tx.data ? <CopyButton value={tx.data} label="Copy" /> : null}
+        </div>
       </div>
 
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 text-sm text-slate-300">

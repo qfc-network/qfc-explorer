@@ -16,6 +16,26 @@ export function formatNumber(value: string | number): string {
   return new Intl.NumberFormat('en-US').format(num);
 }
 
+export function formatWeiToQfc(value: string): string {
+  if (!value) {
+    return '0';
+  }
+  try {
+    const wei = BigInt(value);
+    const base = 10n ** 18n;
+    const whole = wei / base;
+    const fraction = wei % base;
+    const wholeStr = whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    if (fraction === 0n) {
+      return wholeStr;
+    }
+    const fractionStr = fraction.toString().padStart(18, '0').slice(0, 4);
+    return `${wholeStr}.${fractionStr}`;
+  } catch {
+    return value;
+  }
+}
+
 export function formatTimestampMs(value: string): string {
   const num = Number(value);
   if (!Number.isFinite(num)) {

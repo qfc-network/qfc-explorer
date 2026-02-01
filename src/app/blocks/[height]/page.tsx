@@ -3,6 +3,8 @@ import { fetchJsonSafe } from '@/lib/api-client';
 import { formatNumber, formatTimestampMs, shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
+import CopyButton from '@/components/CopyButton';
+import StatusBadge from '@/components/StatusBadge';
 
 const PAGE_SIZE = 25;
 
@@ -60,12 +62,15 @@ export default async function BlockDetailPage({
         title={`Block ${formatNumber(block.height)}`}
         description={`Hash ${shortenHash(block.hash)}`}
         action={
-          <Link
-            href="/blocks"
-            className="rounded-full border border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-200"
-          >
-            Back
-          </Link>
+          <div className="flex items-center gap-3">
+            <CopyButton value={block.hash} label="Copy hash" />
+            <Link
+              href="/blocks"
+              className="rounded-full border border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-200"
+            >
+              Back
+            </Link>
+          </div>
         }
       />
 
@@ -90,15 +95,24 @@ export default async function BlockDetailPage({
         </div>
         <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
           <p className="text-xs uppercase tracking-[0.2em] text-slate-500">State Root</p>
-          <p className="mt-2 break-all text-xs text-slate-200">{block.state_root ?? '—'}</p>
+          <div className="mt-2 flex items-center gap-2">
+            <p className="break-all text-xs text-slate-200">{block.state_root ?? '—'}</p>
+            {block.state_root ? <CopyButton value={block.state_root} label="Copy" /> : null}
+          </div>
         </div>
         <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
           <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Tx Root</p>
-          <p className="mt-2 break-all text-xs text-slate-200">{block.transactions_root ?? '—'}</p>
+          <div className="mt-2 flex items-center gap-2">
+            <p className="break-all text-xs text-slate-200">{block.transactions_root ?? '—'}</p>
+            {block.transactions_root ? <CopyButton value={block.transactions_root} label="Copy" /> : null}
+          </div>
         </div>
         <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
           <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Receipts Root</p>
-          <p className="mt-2 break-all text-xs text-slate-200">{block.receipts_root ?? '—'}</p>
+          <div className="mt-2 flex items-center gap-2">
+            <p className="break-all text-xs text-slate-200">{block.receipts_root ?? '—'}</p>
+            {block.receipts_root ? <CopyButton value={block.receipts_root} label="Copy" /> : null}
+          </div>
         </div>
       </div>
 
@@ -146,7 +160,7 @@ export default async function BlockDetailPage({
             {
               key: 'status',
               header: 'Status',
-              render: (row) => row.status,
+              render: (row) => <StatusBadge status={row.status} />,
             },
           ]}
         />

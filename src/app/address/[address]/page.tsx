@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
-import { formatNumber, shortenHash } from '@/lib/format';
+import { formatNumber, formatWeiToQfc, shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
 import CopyButton from '@/components/CopyButton';
@@ -72,7 +72,7 @@ export default async function AddressDetailPage({
       <div className="grid gap-4 sm:grid-cols-4">
         <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
           <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Balance</p>
-          <p className="mt-2 text-lg text-white">{overview.balance}</p>
+          <p className="mt-2 text-lg text-white">{formatWeiToQfc(overview.balance)} QFC</p>
         </div>
         <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
           <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Nonce</p>
