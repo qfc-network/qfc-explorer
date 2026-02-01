@@ -143,6 +143,12 @@ export default async function Home() {
               >
                 Network
               </Link>
+              <Link
+                href="/contracts"
+                className="rounded-full border border-slate-800 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-300"
+              >
+                Contracts
+              </Link>
             </div>
           }
         />
