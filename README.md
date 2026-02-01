@@ -18,6 +18,8 @@ QFC 区块浏览器（Next.js + PostgreSQL + Indexer）。
 | `INDEXER_RETRY_FAILED` | 启动时重试失败块 | `false` |
 | `INDEXER_HEALTH_MAX_AGE_MS` | 健康检查最大滞后 | `300000` |
 
+生产环境模板：`.env.production.example`
+
 ## 快速开始（本地）
 
 ```bash
