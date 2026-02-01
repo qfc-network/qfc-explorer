@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: qfc
+      POSTGRES_PASSWORD: qfc
+      POSTGRES_DB: qfc_explorer
+    ports:
+      - "5432:5432"
+    volumes:
+      - qfc_explorer_db:/var/lib/postgresql/data
+
+  explorer:
+    build: .
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://qfc:qfc@db:5432/qfc_explorer
+      RPC_URL: ${RPC_URL}
+      NEXT_PUBLIC_BASE_URL: http://localhost:3000
+    ports:
+      - "3000:3000"
+
+  indexer:
+    build: .
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://qfc:qfc@db:5432/qfc_explorer
+      RPC_URL: ${RPC_URL}
+      INDEXER_POLL_INTERVAL_MS: 10000
+      INDEXER_USE_FINALIZED: "true"
+    command: ["node", "src/indexer/index.ts"]
+
+volumes:
+  qfc_explorer_db:
