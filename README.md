@@ -67,6 +67,7 @@ npm test                  # 测试
 - `GET /api/address/:address?page&limit&order`
 - `GET /api/tokens?page&limit&order`
 - `GET /api/tokens/:address?page&limit&order`
+- `GET /api/tokens/:address/holders?limit`
 - `GET /api/search?q=`
 - `GET /api/search/suggest?q=`
 - `GET /api/network`

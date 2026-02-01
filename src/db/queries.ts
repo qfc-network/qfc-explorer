@@ -552,3 +552,42 @@ export async function getTokenTransfers(
   );
   return result.rows;
 }
+
+export async function getTokenHolders(
+  tokenAddress: string,
+  limit: number
+): Promise<Array<{ address: string; balance: string }> | null> {
+  const pool = getPool();
+  const token = await pool.query(
+    `SELECT address FROM tokens WHERE address = $1 LIMIT 1`,
+    [tokenAddress]
+  );
+  if (token.rowCount === 0) {
+    return null;
+  }
+
+  const result = await pool.query(
+    `
+    SELECT address, SUM(balance)::numeric AS balance
+    FROM (
+      SELECT to_address AS address, value::numeric AS balance
+      FROM token_transfers
+      WHERE token_address = $1
+      UNION ALL
+      SELECT from_address AS address, -value::numeric AS balance
+      FROM token_transfers
+      WHERE token_address = $1
+    ) balances
+    GROUP BY address
+    HAVING SUM(balance) > 0
+    ORDER BY SUM(balance) DESC
+    LIMIT $2
+    `,
+    [tokenAddress, limit]
+  );
+
+  return result.rows.map((row) => ({
+    address: row.address,
+    balance: row.balance.toString(),
+  }));
+}

@@ -179,3 +179,11 @@ export type ApiTokenDetail = ApiOk<{
     value: string;
   }>;
 }>;
+
+export type ApiTokenHolders = ApiOk<{
+  token: string;
+  holders: Array<{
+    address: string;
+    balance: string;
+  }>;
+}>;

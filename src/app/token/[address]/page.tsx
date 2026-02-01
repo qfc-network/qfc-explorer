@@ -2,7 +2,7 @@ import Link from 'next/link';
 import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
 import { fetchJsonSafe } from '@/lib/api-client';
-import type { ApiTokenDetail } from '@/lib/api-types';
+import type { ApiTokenDetail, ApiTokenHolders } from '@/lib/api-types';
 import { formatWeiToQfc, shortenHash } from '@/lib/format';
 
 const PAGE_SIZE = 25;
@@ -17,13 +17,20 @@ export default async function TokenDetailPage({
   const page = Math.max(1, Number(searchParams.page ?? '1'));
   const address = params.address.toLowerCase();
 
-  const response = await fetchJsonSafe<ApiTokenDetail>(
+  const [response, holdersResponse] = await Promise.all([
+    fetchJsonSafe<ApiTokenDetail>(
     `/api/tokens/${address}?page=${page}&limit=${PAGE_SIZE}`,
     { next: { revalidate: 20 } }
-  );
+    ),
+    fetchJsonSafe<ApiTokenHolders>(
+      `/api/tokens/${address}/holders?limit=10`,
+      { next: { revalidate: 30 } }
+    ),
+  ]);
 
   const token = response?.data.token ?? null;
   const transfers = response?.data.transfers ?? [];
+  const holders = holdersResponse?.data.holders ?? [];
 
   if (!token) {
     return (
@@ -101,6 +108,26 @@ export default async function TokenDetailPage({
             Next
           </Link>
         </div>
+      </section>
+
+      <section className="space-y-4">
+        <SectionHeader title="Top Holders" description="Based on indexed transfers" />
+        <Table
+          rows={holders}
+          emptyMessage="No holders indexed yet."
+          columns={[
+            {
+              key: 'address',
+              header: 'Address',
+              render: (row) => shortenHash(row.address),
+            },
+            {
+              key: 'balance',
+              header: 'Balance',
+              render: (row) => formatWeiToQfc(row.balance),
+            },
+          ]}
+        />
       </section>
     </main>
   );

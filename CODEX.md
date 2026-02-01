@@ -28,6 +28,7 @@ This file tracks implementation progress for `qfc-explorer` beyond TODO checkbox
 - Tokenomics page (QFC native token)
 - ERC-20 indexing (Transfer logs) + token list/detail pages
 - Address analysis (totals sent/received)
+- ERC-20 holders (computed from transfers)
 
 ## In Progress / Not Done
 - Database index optimization (beyond initial indexes)
