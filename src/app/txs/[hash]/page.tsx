@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
 import { formatNumber, shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
+import CopyButton from '@/components/CopyButton';
+import StatusBadge from '@/components/StatusBadge';
 
 export default async function TransactionDetailPage({
   params,
@@ -20,9 +22,19 @@ export default async function TransactionDetailPage({
     gas_price: string;
     nonce: string;
     data: string | null;
-  } }>(`/api/txs/${hash}`, { next: { revalidate: 10 } });
+  };
+  logs: Array<{
+    contract_address: string;
+    topic0: string | null;
+    topic1: string | null;
+    topic2: string | null;
+    topic3: string | null;
+    data: string | null;
+  }>;
+  }>(`/api/txs/${hash}`, { next: { revalidate: 10 } });
 
   const tx = response?.transaction ?? null;
+  const logs = response?.logs ?? [];
 
   if (!tx) {
     return (
@@ -44,12 +56,15 @@ export default async function TransactionDetailPage({
         title="Transaction"
         description={shortenHash(tx.hash)}
         action={
-          <Link
-            href="/txs"
-            className="rounded-full border border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-200"
-          >
-            Back
-          </Link>
+          <div className="flex items-center gap-3">
+            <CopyButton value={tx.hash} label="Copy hash" />
+            <Link
+              href="/txs"
+              className="rounded-full border border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-200"
+            >
+              Back
+            </Link>
+          </div>
         }
       />
 
@@ -66,7 +81,9 @@ export default async function TransactionDetailPage({
         </div>
         <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
           <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Status</p>
-          <p className="mt-2 text-lg text-white">{tx.status}</p>
+          <div className="mt-2">
+            <StatusBadge status={tx.status} />
+          </div>
         </div>
         <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
           <p className="text-xs uppercase tracking-[0.2em] text-slate-500">From</p>
@@ -101,6 +118,25 @@ export default async function TransactionDetailPage({
       <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 text-sm text-slate-300">
         <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Input Data</p>
         <p className="mt-3 break-all font-mono text-xs">{tx.data ?? '0x'}</p>
+      </div>
+
+      <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 text-sm text-slate-300">
+        <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Logs</p>
+        {logs.length === 0 ? (
+          <p className="mt-3 text-slate-400">No logs.</p>
+        ) : (
+          <div className="mt-3 space-y-4">
+            {logs.map((log, index) => (
+              <div key={`${log.contract_address}-${index}`} className="rounded-xl border border-slate-800 p-3">
+                <p className="text-xs text-slate-400">Contract: {log.contract_address}</p>
+                <p className="mt-2 text-xs text-slate-400">
+                  Topics: {[log.topic0, log.topic1, log.topic2, log.topic3].filter(Boolean).join(', ') || '—'}
+                </p>
+                <p className="mt-2 break-all font-mono text-xs">{log.data ?? '0x'}</p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </main>
   );

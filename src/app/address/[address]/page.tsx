@@ -3,6 +3,7 @@ import { fetchJsonSafe } from '@/lib/api-client';
 import { formatNumber, shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
+import CopyButton from '@/components/CopyButton';
 
 const PAGE_SIZE = 25;
 
@@ -22,6 +23,7 @@ export default async function AddressDetailPage({
       nonce: string;
       last_seen_block: string;
     };
+    stats: { sent: string; received: string } | null;
     transactions: Array<{
       hash: string;
       from_address: string;
@@ -32,6 +34,7 @@ export default async function AddressDetailPage({
   }>(`/api/address/${address}?page=${page}&limit=${PAGE_SIZE}`, { next: { revalidate: 20 } });
 
   const overview = response?.address ?? null;
+  const stats = response?.stats ?? null;
   const transactions = response?.transactions ?? [];
 
   if (!overview) {
@@ -54,16 +57,19 @@ export default async function AddressDetailPage({
         title="Address"
         description={shortenHash(address)}
         action={
-          <Link
-            href="/"
-            className="rounded-full border border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-200"
-          >
-            Back
-          </Link>
+          <div className="flex items-center gap-3">
+            <CopyButton value={address} label="Copy address" />
+            <Link
+              href="/"
+              className="rounded-full border border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-200"
+            >
+              Back
+            </Link>
+          </div>
         }
       />
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-4">
         <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
           <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Balance</p>
           <p className="mt-2 text-lg text-white">{overview.balance}</p>
@@ -75,6 +81,12 @@ export default async function AddressDetailPage({
         <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
           <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Last Seen</p>
           <p className="mt-2 text-lg text-white">{formatNumber(overview.last_seen_block)}</p>
+        </div>
+        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+          <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Txs</p>
+          <p className="mt-2 text-lg text-white">
+            {stats ? `${stats.sent} sent / ${stats.received} received` : '—'}
+          </p>
         </div>
       </div>
 

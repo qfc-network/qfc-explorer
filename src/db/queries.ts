@@ -169,6 +169,46 @@ export async function getTransactionByHash(hash: string): Promise<{
   };
 }
 
+export async function getReceiptLogsByTxHash(hash: string): Promise<Array<{
+  contract_address: string;
+  topic0: string | null;
+  topic1: string | null;
+  topic2: string | null;
+  topic3: string | null;
+  data: string | null;
+}>> {
+  const pool = getPool();
+  const result = await pool.query(
+    `
+    SELECT contract_address, topic0, topic1, topic2, topic3, data
+    FROM events
+    WHERE tx_hash = $1
+    ORDER BY log_index ASC
+    `,
+    [hash]
+  );
+  return result.rows.map((row) => ({
+    ...row,
+    data: row.data ? `0x${row.data.toString('hex')}` : null,
+  }));
+}
+
+export async function getAddressStats(address: string): Promise<{
+  sent: string;
+  received: string;
+} | null> {
+  const pool = getPool();
+  const result = await pool.query(
+    `
+    SELECT
+      (SELECT COUNT(*) FROM transactions WHERE from_address = $1) AS sent,
+      (SELECT COUNT(*) FROM transactions WHERE to_address = $1) AS received
+    `,
+    [address]
+  );
+  return result.rows[0] ?? null;
+}
+
 export async function getAddressOverview(address: string): Promise<{
   address: string;
   balance: string;

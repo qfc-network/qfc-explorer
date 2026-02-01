@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getAddressOverview, getAddressTransactions } from '@/db/queries';
+import { getAddressOverview, getAddressStats, getAddressTransactions } from '@/db/queries';
 
 function parseNumber(value: string | null, fallback: number) {
   if (!value) {
@@ -30,10 +30,14 @@ export async function GET(
     return NextResponse.json({ error: 'Address not found' }, { status: 404 });
   }
 
-  const transactions = await getAddressTransactions(params.address, limit, offset);
+  const [transactions, stats] = await Promise.all([
+    getAddressTransactions(params.address, limit, offset),
+    getAddressStats(params.address),
+  ]);
 
   return NextResponse.json({
     address: overview,
+    stats,
     page,
     limit,
     transactions,
