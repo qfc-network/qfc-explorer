@@ -147,6 +147,12 @@ export default async function Home() {
                 View all
               </Link>
               <Link
+                href="/analytics"
+                className="rounded-full border border-green-500/30 bg-green-500/10 px-4 py-2 text-xs uppercase tracking-[0.2em] text-green-400"
+              >
+                Analytics
+              </Link>
+              <Link
                 href="/network"
                 className="rounded-full border border-slate-800 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-300"
               >

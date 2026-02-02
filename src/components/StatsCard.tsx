@@ -2,13 +2,24 @@ type StatsCardProps = {
   label: string;
   value: string;
   sub?: string;
+  suffix?: string;
+  highlight?: boolean;
 };
 
-export default function StatsCard({ label, value, sub }: StatsCardProps) {
+export default function StatsCard({ label, value, sub, suffix, highlight }: StatsCardProps) {
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+    <div
+      className={`rounded-2xl border p-5 ${
+        highlight
+          ? 'border-green-500/30 bg-green-500/10'
+          : 'border-slate-800 bg-slate-900/60'
+      }`}
+    >
       <p className="text-xs uppercase tracking-[0.2em] text-slate-500">{label}</p>
-      <p className="mt-2 text-2xl font-semibold text-white">{value}</p>
+      <p className={`mt-2 text-2xl font-semibold ${highlight ? 'text-green-400' : 'text-white'}`}>
+        {value}
+        {suffix && <span className="text-lg text-slate-400">{suffix}</span>}
+      </p>
       {sub ? <p className="mt-1 text-xs text-slate-400">{sub}</p> : null}
     </div>
   );
