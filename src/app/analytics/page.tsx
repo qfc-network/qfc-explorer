@@ -94,7 +94,7 @@ export default async function AnalyticsPage() {
         <StatsCard label="Unique Addresses" value={formatNumber(overview.total_addresses)} />
         <StatsCard
           label="Total Gas Used"
-          value={formatNumber(BigInt(overview.total_gas_used || '0') / BigInt(1e9))}
+          value={formatNumber(String(BigInt(overview.total_gas_used || '0') / BigInt(1e9)))}
           suffix=" Gwei"
         />
       </section>
