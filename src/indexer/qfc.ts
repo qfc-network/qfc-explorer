@@ -6,6 +6,8 @@ export type RpcValidator = {
   contributionScore: string;
   uptime: string;
   isActive: boolean;
+  providesCompute: boolean;
+  hashrate: string;
 };
 
 export type RpcEpoch = {

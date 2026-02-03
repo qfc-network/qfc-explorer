@@ -20,5 +20,11 @@ export async function GET() {
     fetchValidators(client),
   ]);
 
-  return ok({ epoch, nodeInfo, validators });
+  // Calculate total network hashrate
+  const totalHashrate = validators
+    .filter(v => v.providesCompute)
+    .reduce((sum, v) => sum + BigInt(v.hashrate || '0'), BigInt(0))
+    .toString();
+
+  return ok({ epoch, nodeInfo, validators, totalHashrate });
 }

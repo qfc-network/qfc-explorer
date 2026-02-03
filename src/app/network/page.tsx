@@ -6,7 +6,7 @@ import Table from '@/components/Table';
 import { fetchJsonSafe } from '@/lib/api-client';
 import type { ApiNetwork } from '@/lib/api-types';
 import { formatNumber, shortenHash } from '@/lib/format';
-import { formatPercentage, formatQfcAmount } from '@/lib/qfc-format';
+import { formatHashrate, formatPercentage, formatQfcAmount } from '@/lib/qfc-format';
 
 export default async function NetworkPage() {
   const response = await fetchJsonSafe<ApiNetwork>(
@@ -22,8 +22,9 @@ export default async function NetworkPage() {
     );
   }
 
-  const { epoch, nodeInfo } = response.data;
+  const { epoch, nodeInfo, totalHashrate } = response.data;
   const validatorsRaw = response.data.validators ?? [];
+  const miningValidators = validatorsRaw.filter(v => v.providesCompute).length;
   const validators = validatorsRaw.sort((a, b) => {
     const aScore = Number(a.contributionScore);
     const bScore = Number(b.contributionScore);
@@ -49,6 +50,24 @@ export default async function NetworkPage() {
         <StatsCard label="Syncing" value={nodeInfo.syncing ? 'Yes' : 'No'} />
       </section>
 
+      <section className="grid gap-4 sm:grid-cols-3">
+        <StatsCard
+          label="Total Hashrate"
+          value={formatHashrate(totalHashrate || '0')}
+          sub="Network compute power"
+        />
+        <StatsCard
+          label="Mining Validators"
+          value={miningValidators.toString()}
+          sub={`of ${validators.length} total`}
+        />
+        <StatsCard
+          label="Compute Weight"
+          value="20%"
+          sub="PoC contribution"
+        />
+      </section>
+
       <section className="space-y-4">
         <SectionHeader title="Validators" description={`${validators.length} active validators`} />
         <Table
@@ -69,6 +88,11 @@ export default async function NetworkPage() {
               key: 'score',
               header: 'Contribution',
               render: (row) => row.contributionScore,
+            },
+            {
+              key: 'hashrate',
+              header: 'Hashrate',
+              render: (row) => row.providesCompute ? formatHashrate(row.hashrate) : '—',
             },
             {
               key: 'uptime',

@@ -127,7 +127,16 @@ export type ApiSearchSuggest = ApiOk<{
 export type ApiNetwork = ApiOk<{
   epoch: { number: string; startTime: string; durationMs: string };
   nodeInfo: { version: string; chainId: string; peerCount: number; isValidator: boolean; syncing: boolean };
-  validators: Array<{ address: string; stake: string; contributionScore: string; uptime: string; isActive: boolean }>;
+  validators: Array<{
+    address: string;
+    stake: string;
+    contributionScore: string;
+    uptime: string;
+    isActive: boolean;
+    providesCompute: boolean;
+    hashrate: string;
+  }>;
+  totalHashrate?: string;
 }>;
 
 export type ApiStats = ApiOk<{
