@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
-import type { ApiNetworkInfo, ApiStats } from '@/lib/api-types';
+import type { ApiNetwork, ApiStats } from '@/lib/api-types';
 import { formatNumber } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import StatsCard from '@/components/StatsCard';
@@ -41,7 +41,7 @@ export default async function AnalyticsPage() {
       '/api/analytics',
       { next: { revalidate: 30 } }
     ),
-    fetchJsonSafe<ApiNetworkInfo>(
+    fetchJsonSafe<ApiNetwork>(
       '/api/network',
       { next: { revalidate: 30 } }
     ),

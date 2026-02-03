@@ -17,3 +17,6 @@ export function ok<T>(data: T, init?: ResponseInit) {
 export function fail(message: string, status = 400) {
   return NextResponse.json({ ok: false, error: message } satisfies ApiError, { status });
 }
+
+// Alias for backward compatibility
+export const err = fail;
