@@ -60,7 +60,7 @@ export default async function Home() {
         />
         <StatsCard
           label="TPS (100 blocks)"
-          value={tps == null ? '—' : Number(tps).toFixed(2)}
+          value={tps == null ? '—' : Number(tps) < 0.01 ? Number(tps).toFixed(4) : Number(tps).toFixed(2)}
         />
         <StatsCard
           label="Active Addresses"
