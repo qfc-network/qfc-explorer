@@ -380,6 +380,7 @@ export async function getStatsOverview(): Promise<{
     WITH recent_blocks AS (
       SELECT height, timestamp_ms
       FROM blocks
+      WHERE height > 0  -- Exclude genesis block (timestamp=0 skews average)
       ORDER BY height DESC
       LIMIT 100
     ),
@@ -436,6 +437,7 @@ export async function getStatsSeries(): Promise<{
     WITH recent_blocks AS (
       SELECT height, timestamp_ms
       FROM blocks
+      WHERE height > 0  -- Exclude genesis block
       ORDER BY height DESC
       LIMIT 20
     ),
