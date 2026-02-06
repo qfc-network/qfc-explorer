@@ -149,10 +149,10 @@ async function upsertTransaction(
       'unknown',
       tx.from,
       tx.to ?? null,
-      stripHexPrefix(tx.value) ?? '0',
+      hexToBigIntString(tx.value) ?? '0',
       parseHeight(tx.nonce).toString(10),
       parseHeight(tx.gas).toString(10),
-      stripHexPrefix(tx.gasPrice) ?? '0',
+      hexToBigIntString(tx.gasPrice) ?? '0',
       status ?? 'unknown',
       hexToBuffer(tx.input),
     ]
@@ -186,10 +186,10 @@ async function bulkUpsertTransactions(
       'unknown',
       tx.from,
       tx.to ?? null,
-      stripHexPrefix(tx.value) ?? '0',
+      hexToBigIntString(tx.value) ?? '0',
       parseHeight(tx.nonce).toString(10),
       parseHeight(tx.gas).toString(10),
-      stripHexPrefix(tx.gasPrice) ?? '0',
+      hexToBigIntString(tx.gasPrice) ?? '0',
       'unknown',
       hexToBuffer(tx.input)
     );
