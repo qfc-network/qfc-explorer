@@ -21,7 +21,18 @@ export function formatWeiToQfc(value: string): string {
     return '0';
   }
   try {
-    const wei = BigInt(value);
+    // Handle hex strings (with or without 0x prefix)
+    let wei: bigint;
+    if (value.startsWith('0x') || value.startsWith('0X')) {
+      wei = BigInt(value);
+    } else if (/^[0-9a-fA-F]+$/.test(value) && /[a-fA-F]/.test(value)) {
+      // Looks like hex (contains letters a-f), add 0x prefix
+      wei = BigInt('0x' + value);
+    } else {
+      // Decimal string
+      wei = BigInt(value);
+    }
+
     const base = 10n ** 18n;
     const whole = wei / base;
     const fraction = wei % base;
