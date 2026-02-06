@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
 import type { ApiBlocksList, ApiStats, ApiTransactionsList } from '@/lib/api-types';
-import { formatNumber, formatTimestampMs, shortenHash } from '@/lib/format';
+import { formatNumber, formatTimestampMs, formatWeiToQfc, shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import StatsCard from '@/components/StatsCard';
 import StatChart from '@/components/StatChart';
@@ -219,7 +219,7 @@ export default async function Home() {
             {
               key: 'value',
               header: 'Value',
-              render: (row) => row.value,
+              render: (row) => `${formatWeiToQfc(row.value)} QFC`,
             },
             {
               key: 'status',

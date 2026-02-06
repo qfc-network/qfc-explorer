@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
 import type { ApiTransactionsList } from '@/lib/api-types';
-import { shortenHash } from '@/lib/format';
+import { formatWeiToQfc, shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
 import StatusBadge from '@/components/StatusBadge';
@@ -76,7 +76,7 @@ export default async function TransactionsPage({
           {
             key: 'value',
             header: 'Value',
-            render: (row) => row.value,
+            render: (row) => `${formatWeiToQfc(row.value)} QFC`,
           },
           {
             key: 'status',

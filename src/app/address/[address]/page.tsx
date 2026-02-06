@@ -138,7 +138,7 @@ export default async function AddressDetailPage({
             {
               key: 'value',
               header: 'Value',
-              render: (row) => row.value,
+              render: (row) => `${formatWeiToQfc(row.value)} QFC`,
             },
             {
               key: 'status',
