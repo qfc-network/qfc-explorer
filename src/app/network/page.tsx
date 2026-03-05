@@ -90,6 +90,26 @@ export default async function NetworkPage() {
               render: (row) => row.contributionScore,
             },
             {
+              key: 'computeMode',
+              header: 'Mode',
+              render: (row) => (
+                <span className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${
+                  row.computeMode === 'inference'
+                    ? 'bg-blue-500/20 text-blue-300'
+                    : row.computeMode === 'pow'
+                      ? 'bg-amber-500/20 text-amber-300'
+                      : 'bg-slate-500/20 text-slate-400'
+                }`}>
+                  {row.computeMode ?? 'pow'}
+                </span>
+              ),
+            },
+            {
+              key: 'inferenceScore',
+              header: 'Inference',
+              render: (row) => (row as any).inferenceScore !== '0' ? (row as any).inferenceScore : '—',
+            },
+            {
               key: 'hashrate',
               header: 'Hashrate',
               render: (row) => row.providesCompute ? formatHashrate(row.hashrate) : '—',

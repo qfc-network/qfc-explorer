@@ -87,3 +87,58 @@ export function formatHashrate(value: string): string {
     return value;
   }
 }
+
+/**
+ * Format FLOPS with appropriate unit (FLOPS, KFLOPS, MFLOPS, GFLOPS, TFLOPS)
+ */
+export function formatFlops(value: string): string {
+  if (!value || value === '0') {
+    return '0 FLOPS';
+  }
+
+  try {
+    const flops = Number(value);
+    if (!Number.isFinite(flops) || flops === 0) {
+      return '0 FLOPS';
+    }
+
+    const units = ['FLOPS', 'KFLOPS', 'MFLOPS', 'GFLOPS', 'TFLOPS'];
+    let unitIndex = 0;
+    let displayValue = flops;
+
+    while (displayValue >= 1000 && unitIndex < units.length - 1) {
+      displayValue /= 1000;
+      unitIndex++;
+    }
+
+    const formatted = displayValue < 10
+      ? displayValue.toFixed(2)
+      : displayValue < 100
+        ? displayValue.toFixed(1)
+        : displayValue.toFixed(0);
+
+    return `${formatted} ${units[unitIndex]}`;
+  } catch {
+    return value;
+  }
+}
+
+/**
+ * Format duration from milliseconds to human-readable
+ */
+export function formatDuration(ms: string): string {
+  if (!ms || ms === '0') {
+    return '0 ms';
+  }
+
+  const value = Number(ms);
+  if (!Number.isFinite(value)) {
+    return ms;
+  }
+
+  if (value < 1000) {
+    return `${value.toFixed(0)} ms`;
+  }
+
+  return `${(value / 1000).toFixed(2)} s`;
+}

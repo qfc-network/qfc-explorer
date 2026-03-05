@@ -135,6 +135,9 @@ export type ApiNetwork = ApiOk<{
     isActive: boolean;
     providesCompute: boolean;
     hashrate: string;
+    inferenceScore: string;
+    computeMode: string;
+    tasksCompleted: string;
   }>;
   totalHashrate?: string;
 }>;
@@ -194,5 +197,34 @@ export type ApiTokenHolders = ApiOk<{
   holders: Array<{
     address: string;
     balance: string;
+  }>;
+}>;
+
+export type ApiInference = ApiOk<{
+  stats: {
+    tasksCompleted: string;
+    avgTimeMs: string;
+    flopsTotal: string;
+    passRate: string;
+  };
+  computeInfo: {
+    backend: string;
+    supportedModels: string[];
+    gpuMemoryMb: number;
+    inferenceScore: string;
+    gpuTier: string;
+    providesCompute: boolean;
+  };
+  validators: Array<{
+    address: string;
+    stake: string;
+    contributionScore: string;
+    uptime: string;
+    isActive: boolean;
+    providesCompute: boolean;
+    hashrate: string;
+    inferenceScore: string;
+    computeMode: string;
+    tasksCompleted: string;
   }>;
 }>;
