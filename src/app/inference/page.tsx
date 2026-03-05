@@ -22,7 +22,7 @@ export default async function InferencePage() {
     );
   }
 
-  const { stats, computeInfo, validators: validatorsRaw } = response.data;
+  const { stats, computeInfo, validators: validatorsRaw, models } = response.data;
   const validators = validatorsRaw
     .filter(v => v.isActive)
     .sort((a, b) => Number(b.inferenceScore) - Number(a.inferenceScore));
@@ -79,6 +79,50 @@ export default async function InferencePage() {
           label="Inference Score"
           value={computeInfo.inferenceScore}
           sub="This node"
+        />
+      </section>
+
+      {/* Model Registry */}
+      <section className="space-y-4">
+        <SectionHeader
+          title="Model Registry"
+          description={`${models.length} approved models`}
+        />
+        <Table
+          rows={models}
+          emptyMessage="No models registered yet."
+          columns={[
+            {
+              key: 'name',
+              header: 'Model Name',
+              render: (row) => row.name,
+            },
+            {
+              key: 'version',
+              header: 'Version',
+              render: (row) => row.version,
+            },
+            {
+              key: 'minTier',
+              header: 'Min Tier',
+              render: (row) => (
+                <span className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${
+                  row.minTier === 'Hot'
+                    ? 'bg-red-500/20 text-red-300'
+                    : row.minTier === 'Warm'
+                      ? 'bg-amber-500/20 text-amber-300'
+                      : 'bg-cyan-500/20 text-cyan-300'
+                }`}>
+                  {row.minTier}
+                </span>
+              ),
+            },
+            {
+              key: 'minMemoryMb',
+              header: 'Min Memory',
+              render: (row) => `${row.minMemoryMb} MB`,
+            },
+          ]}
         />
       </section>
 

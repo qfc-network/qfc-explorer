@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { RpcClient } from '@/indexer/rpc';
-import { fetchInferenceStats, fetchComputeInfo, fetchValidators, fetchSupportedModels } from '@/indexer/qfc';
+import { fetchSupportedModels, fetchModelProposals } from '@/indexer/qfc';
 import { fail, ok } from '@/lib/api-response';
 
 export const revalidate = 15;
@@ -14,12 +14,10 @@ export async function GET() {
 
   const client = new RpcClient(rpcUrl);
 
-  const [stats, computeInfo, validators, models] = await Promise.all([
-    fetchInferenceStats(client),
-    fetchComputeInfo(client),
-    fetchValidators(client),
+  const [models, proposals] = await Promise.all([
     fetchSupportedModels(client),
+    fetchModelProposals(client),
   ]);
 
-  return ok({ stats, computeInfo, validators, models });
+  return ok({ models, proposals });
 }

@@ -64,3 +64,37 @@ export async function fetchInferenceStats(client: RpcClient): Promise<RpcInferen
 export async function fetchComputeInfo(client: RpcClient): Promise<RpcComputeInfo> {
   return client.callWithRetry<RpcComputeInfo>('qfc_getComputeInfo');
 }
+
+// v2.0: Model governance types
+
+export type RpcModel = {
+  name: string;
+  version: string;
+  minMemoryMb: number;
+  minTier: string;
+  approved: boolean;
+};
+
+export type RpcModelProposal = {
+  proposalId: string;
+  proposer: string;
+  modelName: string;
+  modelVersion: string;
+  description: string;
+  minMemoryMb: number;
+  minTier: string;
+  sizeMb: number;
+  votesFor: number;
+  votesAgainst: number;
+  status: string;
+  createdAt: number;
+  votingDeadline: number;
+};
+
+export async function fetchSupportedModels(client: RpcClient): Promise<RpcModel[]> {
+  return client.callWithRetry<RpcModel[]>('qfc_getSupportedModels');
+}
+
+export async function fetchModelProposals(client: RpcClient): Promise<RpcModelProposal[]> {
+  return client.callWithRetry<RpcModelProposal[]>('qfc_getModelProposals');
+}

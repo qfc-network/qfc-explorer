@@ -200,6 +200,31 @@ export type ApiTokenHolders = ApiOk<{
   }>;
 }>;
 
+export type ApiGovernanceModels = ApiOk<{
+  proposals: Array<{
+    proposalId: string;
+    proposer: string;
+    modelName: string;
+    modelVersion: string;
+    description: string;
+    minMemoryMb: number;
+    minTier: string;
+    sizeMb: number;
+    votesFor: number;
+    votesAgainst: number;
+    status: string;
+    createdAt: number;
+    votingDeadline: number;
+  }>;
+  models: Array<{
+    name: string;
+    version: string;
+    minMemoryMb: number;
+    minTier: string;
+    approved: boolean;
+  }>;
+}>;
+
 export type ApiInference = ApiOk<{
   stats: {
     tasksCompleted: string;
@@ -226,5 +251,12 @@ export type ApiInference = ApiOk<{
     inferenceScore: string;
     computeMode: string;
     tasksCompleted: string;
+  }>;
+  models: Array<{
+    name: string;
+    version: string;
+    minMemoryMb: number;
+    minTier: string;
+    approved: boolean;
   }>;
 }>;
