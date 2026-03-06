@@ -1,7 +1,7 @@
 FROM node:20-alpine AS deps
 WORKDIR /app
 COPY package.json package-lock.json* ./
-RUN npm install --production=false
+RUN npm install --production=false --network-timeout=600000
 
 FROM node:20-alpine AS builder
 WORKDIR /app
