@@ -1,5 +1,6 @@
 import './globals.css';
 import type { ReactNode } from 'react';
+import Link from 'next/link';
 import SearchBar from '@/components/SearchBar';
 
 export const metadata = {
@@ -15,10 +16,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <header className="border-b border-slate-900/80 bg-slate-950/70 px-6 py-6">
             <div className="mx-auto flex w-full max-w-6xl flex-col gap-4">
               <div className="flex items-center justify-between gap-6">
-                <div>
-                  <p className="text-xs uppercase tracking-[0.4em] text-slate-500">QFC Explorer</p>
+                <Link href="/" className="group">
+                  <p className="text-xs uppercase tracking-[0.4em] text-slate-500 group-hover:text-slate-300 transition-colors">QFC Explorer</p>
                   <p className="mt-1 text-sm text-slate-400">Search blocks, transactions, and accounts.</p>
-                </div>
+                </Link>
               </div>
               <SearchBar />
             </div>
