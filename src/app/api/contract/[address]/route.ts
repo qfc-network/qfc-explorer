@@ -102,6 +102,27 @@ export async function GET(request: NextRequest, { params }: Params) {
       }
     }
 
+    // Find similar contracts (same code_hash)
+    let similarContracts: Array<{ address: string; is_verified: boolean }> = [];
+    if (isContract) {
+      const pool = getPool();
+      const codeHashResult = await pool.query(
+        `SELECT code_hash FROM contracts WHERE address = $1 AND code_hash IS NOT NULL LIMIT 1`,
+        [address.toLowerCase()]
+      );
+      if (codeHashResult.rows.length > 0 && codeHashResult.rows[0].code_hash) {
+        const similarResult = await pool.query(
+          `SELECT address, COALESCE(is_verified, false) AS is_verified
+           FROM contracts
+           WHERE code_hash = $1 AND address != $2
+           ORDER BY created_at_block DESC NULLS LAST
+           LIMIT 10`,
+          [codeHashResult.rows[0].code_hash, address.toLowerCase()]
+        );
+        similarContracts = similarResult.rows;
+      }
+    }
+
     return ok({
       address,
       code: isContract ? code : '0x',
@@ -117,6 +138,7 @@ export async function GET(request: NextRequest, { params }: Params) {
       evm_version: evmVersion,
       optimization_runs: optimizationRuns,
       verified_at: verifiedAt,
+      similar_contracts: similarContracts,
     });
   } catch (error) {
     console.error('Contract info error:', error);

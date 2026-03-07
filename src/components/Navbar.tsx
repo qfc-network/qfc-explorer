@@ -28,6 +28,7 @@ const NAV_ITEMS: NavItem[] = [
     label: 'Contracts',
     children: [
       { label: 'Verified Contracts', href: '/contracts' },
+      { label: 'ABI Tools', href: '/tools' },
     ],
   },
   { label: 'AI Inference', href: '/inference' },

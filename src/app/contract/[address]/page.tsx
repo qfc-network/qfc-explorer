@@ -24,6 +24,7 @@ type ContractInfo = {
     evm_version?: string;
     optimization_runs?: number;
     verified_at?: string;
+    similar_contracts?: Array<{ address: string; is_verified: boolean }>;
   };
 };
 
@@ -127,6 +128,32 @@ export default async function ContractPage(props: Props) {
       {/* Contract Interaction */}
       {isContract && (
         <ContractInteraction address={address} />
+      )}
+
+      {/* Similar Contracts */}
+      {isContract && contractInfo?.data?.similar_contracts && contractInfo.data.similar_contracts.length > 0 && (
+        <section className="space-y-4">
+          <SectionHeader
+            title="Similar Contracts"
+            description="Contracts with the same bytecode hash"
+          />
+          <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
+            <div className="flex flex-wrap gap-2">
+              {contractInfo.data.similar_contracts.map((c) => (
+                <Link
+                  key={c.address}
+                  href={`/contract/${c.address}`}
+                  className="inline-flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800/50 px-3 py-2 text-xs font-mono hover:border-cyan-500/40 hover:bg-slate-800 transition-colors"
+                >
+                  <span className="text-cyan-400">{shortenHash(c.address, 8, 6)}</span>
+                  {c.is_verified && (
+                    <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] text-emerald-400">Verified</span>
+                  )}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
       )}
 
       {/* Contract Bytecode */}
