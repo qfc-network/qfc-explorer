@@ -36,6 +36,7 @@ const NAV_ITEMS: NavItem[] = [
     children: [
       { label: 'Validators', href: '/network' },
       { label: 'Analytics', href: '/analytics' },
+      { label: 'Leaderboard', href: '/leaderboard' },
       { label: 'Governance', href: '/governance/models' },
     ],
   },
