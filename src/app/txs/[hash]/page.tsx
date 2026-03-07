@@ -56,6 +56,30 @@ export default async function TransactionDetailPage({
         </div>
       )}
 
+      {/* Transaction Status Timeline */}
+      <div className="mt-4 rounded-xl border border-slate-800 bg-slate-900/40 px-5 py-4">
+        <div className="flex items-center gap-0">
+          <TimelineStep
+            label="Created"
+            active={true}
+            completed={true}
+          />
+          <TimelineConnector completed={!fromRpc} />
+          <TimelineStep
+            label="Confirmed"
+            active={!fromRpc}
+            completed={!fromRpc && tx.status === '0x1'}
+            failed={!fromRpc && tx.status !== '0x1'}
+          />
+          <TimelineConnector completed={!fromRpc && tx.status === '0x1'} />
+          <TimelineStep
+            label="Finalized"
+            active={!fromRpc && tx.status === '0x1'}
+            completed={!fromRpc && tx.status === '0x1'}
+          />
+        </div>
+      </div>
+
       {/* Overview table */}
       <div className="mt-6 rounded-xl border border-slate-800 bg-slate-900/40 divide-y divide-slate-800/40">
         <Row label="Transaction Hash">
@@ -273,5 +297,35 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
       <span className="shrink-0 text-xs uppercase tracking-wider text-slate-500 sm:w-36">{label}</span>
       <div className="flex flex-wrap items-center gap-2 min-w-0">{children}</div>
     </div>
+  );
+}
+
+function TimelineStep({ label, active, completed, failed }: { label: string; active: boolean; completed: boolean; failed?: boolean }) {
+  const dotColor = failed
+    ? 'bg-red-400 border-red-400/30'
+    : completed
+    ? 'bg-emerald-400 border-emerald-400/30'
+    : active
+    ? 'bg-cyan-400 border-cyan-400/30'
+    : 'bg-slate-700 border-slate-700';
+  const textColor = failed
+    ? 'text-red-400'
+    : completed
+    ? 'text-emerald-400'
+    : active
+    ? 'text-cyan-400'
+    : 'text-slate-600';
+
+  return (
+    <div className="flex flex-col items-center gap-1.5">
+      <div className={`h-3 w-3 rounded-full border-2 ${dotColor}`} />
+      <span className={`text-[10px] font-medium uppercase tracking-wider ${textColor}`}>{label}</span>
+    </div>
+  );
+}
+
+function TimelineConnector({ completed }: { completed: boolean }) {
+  return (
+    <div className={`mx-1 h-0.5 flex-1 rounded-full ${completed ? 'bg-emerald-400/40' : 'bg-slate-700'}`} />
   );
 }
