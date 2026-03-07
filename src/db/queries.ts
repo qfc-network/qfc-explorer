@@ -389,13 +389,8 @@ export async function getStatsOverview(): Promise<{
       FROM transactions
       WHERE block_height >= (SELECT MIN(height) FROM recent_blocks)
     ),
-    address_activity AS (
-      SELECT COUNT(DISTINCT addr) AS active
-      FROM (
-        SELECT from_address AS addr FROM transactions WHERE block_height >= (SELECT MIN(height) FROM recent_blocks)
-        UNION
-        SELECT to_address AS addr FROM transactions WHERE block_height >= (SELECT MIN(height) FROM recent_blocks)
-      ) AS all_addrs
+    total_accounts AS (
+      SELECT COUNT(*) AS total FROM accounts
     )
     SELECT
       (SELECT MAX(height) FROM recent_blocks) AS latest_block,
@@ -412,7 +407,7 @@ export async function getStatsOverview(): Promise<{
           / (((SELECT MAX(timestamp_ms) FROM recent_blocks) - (SELECT MIN(timestamp_ms) FROM recent_blocks)) / 1000.0)
         ELSE NULL
       END AS tps,
-      (SELECT active FROM address_activity) AS active_addresses
+      (SELECT total FROM total_accounts) AS active_addresses
     `,
     []
   );

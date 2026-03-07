@@ -44,7 +44,7 @@ export default function LiveStats() {
         value={latestTimestamp !== '0' ? formatTimestampMs(latestTimestamp) : '—'}
       />
       <StatsCard
-        label="Active Addresses"
+        label="Total Addresses"
         value={stats.active_addresses == null ? '—' : formatNumber(stats.active_addresses)}
       />
     </section>
