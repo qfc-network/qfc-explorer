@@ -21,8 +21,8 @@ export default function Table<T>({ columns, rows, emptyMessage }: TableProps<T>)
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60">
-      <table className="w-full text-left text-sm">
+    <div className="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-900/60">
+      <table className="w-full min-w-[600px] text-left text-sm">
         <thead className="border-b border-slate-800 text-xs uppercase text-slate-400">
           <tr>
             {columns.map((column) => (

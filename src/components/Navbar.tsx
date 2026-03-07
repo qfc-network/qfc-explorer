@@ -161,7 +161,7 @@ export default function Navbar() {
                     key={child.href}
                     href={child.href}
                     onClick={() => setMobileOpen(false)}
-                    className="block px-6 py-2 text-sm text-slate-300 hover:text-white"
+                    className="block px-6 py-3 text-sm text-slate-300 hover:text-white active:bg-slate-800/40"
                   >
                     {child.label}
                   </Link>
@@ -172,7 +172,7 @@ export default function Navbar() {
                 key={item.label}
                 href={item.href!}
                 onClick={() => setMobileOpen(false)}
-                className="block px-3 py-2 text-sm text-slate-300 hover:text-white"
+                className="block px-3 py-3 text-sm text-slate-300 hover:text-white active:bg-slate-800/40"
               >
                 {item.label}
               </Link>

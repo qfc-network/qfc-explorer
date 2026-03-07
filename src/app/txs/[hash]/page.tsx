@@ -149,6 +149,7 @@ export default async function TransactionDetailPage({
                 <span className="font-mono text-xs text-slate-500">0x{decoded.selector}</span>
               </div>
               {decoded.params.length > 0 && (
+                <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="text-left text-xs uppercase tracking-wider text-slate-500">
@@ -180,6 +181,7 @@ export default async function TransactionDetailPage({
                     })}
                   </tbody>
                 </table>
+                </div>
               )}
               <details className="mt-2">
                 <summary className="cursor-pointer text-xs text-slate-500 hover:text-slate-400">
