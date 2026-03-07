@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useState, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { shortenHash, formatWeiToQfc } from '@/lib/format';
 
@@ -237,12 +238,43 @@ function TransactionsTab({ address, transactions, page }: { address: string; tra
 }
 
 function TokenTransfersTab({ address, transfers, page }: { address: string; transfers: TokenTransfer[]; page: number }) {
+  const [filter, setFilter] = useState<'all' | 'in' | 'out'>('all');
+
+  const filtered = useMemo(() => {
+    if (filter === 'all') return transfers;
+    if (filter === 'in') return transfers.filter((t) => t.to_address.toLowerCase() === address.toLowerCase());
+    return transfers.filter((t) => t.from_address.toLowerCase() === address.toLowerCase());
+  }, [transfers, filter, address]);
+
   if (transfers.length === 0) {
     return <p className="py-8 text-center text-sm text-slate-500">No token transfers found.</p>;
   }
 
   return (
     <>
+      <div className="mb-3 flex gap-2">
+        {(['all', 'in', 'out'] as const).map((f) => (
+          <button
+            key={f}
+            onClick={() => setFilter(f)}
+            className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+              filter === f
+                ? 'bg-cyan-500/20 text-cyan-400'
+                : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'
+            }`}
+          >
+            {f === 'all' ? 'All' : f === 'in' ? 'Incoming' : 'Outgoing'}
+            {f !== 'all' && (
+              <span className="ml-1 text-slate-500">
+                ({f === 'in'
+                  ? transfers.filter((t) => t.to_address.toLowerCase() === address.toLowerCase()).length
+                  : transfers.filter((t) => t.from_address.toLowerCase() === address.toLowerCase()).length
+                })
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
@@ -256,7 +288,7 @@ function TokenTransfersTab({ address, transfers, page }: { address: string; tran
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800/40">
-            {transfers.map((t, i) => (
+            {filtered.map((t, i) => (
               <tr key={`${t.tx_hash}-${i}`} className="hover:bg-slate-900/40">
                 <td className="px-3 py-2.5">
                   <Link href={`/txs/${t.tx_hash}`} className="text-cyan-400 hover:text-cyan-300">
