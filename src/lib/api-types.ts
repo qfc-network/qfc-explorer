@@ -96,6 +96,13 @@ export type ApiAddressDetail = ApiOk<{
     sent_value: string;
     received_value: string;
   } | null;
+  contract?: {
+    creator_tx_hash: string | null;
+    created_at_block: string | null;
+    code_hash: string | null;
+    is_verified: boolean;
+  } | null;
+  tab: string;
   page: number;
   limit: number;
   order: string;
@@ -106,6 +113,17 @@ export type ApiAddressDetail = ApiOk<{
     to_address: string | null;
     value: string;
     status: string;
+  }>;
+  tokenTransfers: Array<{
+    tx_hash: string;
+    block_height: string;
+    token_address: string;
+    from_address: string;
+    to_address: string;
+    value: string;
+    token_name: string | null;
+    token_symbol: string | null;
+    token_decimals: number | null;
   }>;
 }>;
 

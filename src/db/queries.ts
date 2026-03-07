@@ -594,3 +594,52 @@ export async function getTokenHolders(
     balance: row.balance.toString(),
   }));
 }
+
+export async function getTokenTransfersByAddress(
+  address: string,
+  limit: number,
+  offset: number,
+  order: 'asc' | 'desc' = 'desc'
+): Promise<Array<{
+  tx_hash: string;
+  block_height: string;
+  token_address: string;
+  from_address: string;
+  to_address: string;
+  value: string;
+  token_name: string | null;
+  token_symbol: string | null;
+  token_decimals: number | null;
+}>> {
+  const pool = getPool();
+  const direction = order === 'asc' ? 'ASC' : 'DESC';
+  const result = await pool.query(
+    `
+    SELECT tt.tx_hash, tt.block_height, tt.token_address, tt.from_address, tt.to_address, tt.value,
+           t.name AS token_name, t.symbol AS token_symbol, t.decimals AS token_decimals
+    FROM token_transfers tt
+    LEFT JOIN tokens t ON t.address = tt.token_address
+    WHERE tt.from_address = $1 OR tt.to_address = $1
+    ORDER BY tt.block_height ${direction}, tt.log_index ${direction}
+    LIMIT $2 OFFSET $3
+    `,
+    [address, limit, offset]
+  );
+  return result.rows;
+}
+
+export async function getContractByAddress(
+  address: string
+): Promise<{
+  creator_tx_hash: string | null;
+  created_at_block: string | null;
+  code_hash: string | null;
+  is_verified: boolean;
+} | null> {
+  const pool = getPool();
+  const result = await pool.query(
+    `SELECT creator_tx_hash, created_at_block, code_hash, is_verified FROM contracts WHERE address = $1 LIMIT 1`,
+    [address]
+  );
+  return result.rows[0] ?? null;
+}
