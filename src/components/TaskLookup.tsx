@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { apiUrl } from '@/lib/client-api';
 import type { ApiTaskStatus } from '@/lib/api-types';
 import { formatQfcAmount } from '@/lib/qfc-format';
 import { shortenHash } from '@/lib/format';
@@ -31,7 +32,7 @@ export default function TaskLookup() {
     setTask(null);
 
     try {
-      const res = await fetch(`/api/inference/task?id=${encodeURIComponent(id)}`);
+      const res = await fetch(apiUrl(`/api/inference/task?id=${encodeURIComponent(id)}`));
       const json = await res.json();
       if (!json.ok) {
         setError(json.error || 'Task not found');

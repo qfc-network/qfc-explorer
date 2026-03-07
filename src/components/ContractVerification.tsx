@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { apiUrl } from '@/lib/client-api';
 
 type Props = {
   address: string;
@@ -50,7 +51,7 @@ export default function ContractVerification({
     setResult(null);
 
     try {
-      const response = await fetch('/api/contracts/verify', {
+      const response = await fetch(apiUrl('/api/contracts/verify'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

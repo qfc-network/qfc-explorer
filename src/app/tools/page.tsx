@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import Link from 'next/link';
+import { apiUrl } from '@/lib/client-api';
 
 // Known function selectors (from decode-input.ts + extras)
 const KNOWN_SELECTORS: Record<string, string> = {
@@ -67,7 +68,7 @@ const KNOWN_TOPICS: Record<string, string> = {
 // For a client-side tool, we'll compute it server-side via an API call
 async function computeKeccak256(input: string): Promise<string | null> {
   try {
-    const res = await fetch(`/api/tools/keccak256?input=${encodeURIComponent(input)}`);
+    const res = await fetch(apiUrl(`/api/tools/keccak256?input=${encodeURIComponent(input)}`));
     const json = await res.json();
     return json.ok ? json.data.hash : null;
   } catch {

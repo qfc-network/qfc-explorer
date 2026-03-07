@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import { apiUrl } from '@/lib/client-api';
 
 type DailyStat = {
   date: string;
@@ -70,7 +71,7 @@ export default function DailyCharts() {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`/api/analytics/daily?days=${days}`)
+    fetch(apiUrl(`/api/analytics/daily?days=${days}`))
       .then((r) => r.json())
       .then((res) => {
         if (res.ok) setData(res.data.stats);

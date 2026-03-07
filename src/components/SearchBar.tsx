@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { apiUrl } from '@/lib/client-api';
 
 function isHex(value: string) {
   return /^0x[0-9a-fA-F]+$/.test(value);
@@ -63,7 +64,7 @@ export default function SearchBar({ prominent = false }: { prominent?: boolean }
 
     const handle = setTimeout(async () => {
       try {
-        const res = await fetch(`/api/search/suggest?q=${encodeURIComponent(trimmed)}`);
+        const res = await fetch(apiUrl(`/api/search/suggest?q=${encodeURIComponent(trimmed)}`));
         if (!res.ok) return;
         const payload = (await res.json()) as SuggestionResponse;
         if (latestRequest.current === requestId && payload.ok) {

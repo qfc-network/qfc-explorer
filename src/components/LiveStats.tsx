@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { apiUrl } from '@/lib/client-api';
 import StatsCard from '@/components/StatsCard';
 import { formatNumber, formatTimestampMs } from '@/lib/format';
 
@@ -14,7 +15,7 @@ export default function LiveStats() {
   } | null>(null);
 
   useEffect(() => {
-    const source = new EventSource('/api/stream');
+    const source = new EventSource(apiUrl('/api/stream'));
     source.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
