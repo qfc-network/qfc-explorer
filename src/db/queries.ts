@@ -186,13 +186,18 @@ export async function getTransactionByHash(hash: string): Promise<{
   gas_price: string;
   nonce: string;
   data: string | null;
+  type: string | null;
+  timestamp_ms: string | null;
 } | null> {
   const pool = getPool();
   const result = await pool.query(
     `
-    SELECT hash, block_height, from_address, to_address, value, status, gas_limit, gas_price, nonce, data
-    FROM transactions
-    WHERE hash = $1
+    SELECT t.hash, t.block_height, t.from_address, t.to_address, t.value, t.status,
+           t.gas_limit, t.gas_price, t.nonce, t.data, t.type,
+           b.timestamp_ms
+    FROM transactions t
+    LEFT JOIN blocks b ON b.height = t.block_height
+    WHERE t.hash = $1
     LIMIT 1
     `,
     [hash]
@@ -204,6 +209,7 @@ export async function getTransactionByHash(hash: string): Promise<{
   return {
     ...row,
     data: row.data ? `0x${row.data.toString('hex')}` : null,
+    timestamp_ms: row.timestamp_ms?.toString() ?? null,
   };
 }
 

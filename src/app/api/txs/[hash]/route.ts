@@ -6,6 +6,21 @@ import type { RpcReceipt, RpcTransaction } from '@/indexer/types';
 import { hexToBigIntString } from '@/indexer/utils';
 import { fail, ok } from '@/lib/api-response';
 
+async function fetchGasUsed(hash: string): Promise<string | null> {
+  const rpcUrl = process.env.RPC_URL;
+  if (!rpcUrl) return null;
+  try {
+    const rpc = new RpcClient(rpcUrl);
+    const receipt = await rpc.call<RpcReceipt | null>('eth_getTransactionReceipt', [hash]);
+    if (receipt?.gasUsed) {
+      return hexToBigIntString(receipt.gasUsed) ?? null;
+    }
+  } catch {
+    // ignore
+  }
+  return null;
+}
+
 async function fetchFromRpc(hash: string) {
   const rpcUrl = process.env.RPC_URL;
   if (!rpcUrl) return null;
@@ -45,10 +60,13 @@ async function fetchFromRpc(hash: string) {
       status,
       gas_limit: hexToBigIntString(tx.gas) ?? '0',
       gas_price: hexToBigIntString(tx.gasPrice) ?? '0',
+      gas_used: receipt?.gasUsed ? hexToBigIntString(receipt.gasUsed) ?? null : null,
       nonce: hexToBigIntString(tx.nonce) ?? '0',
       data: tx.input && tx.input !== '0x' ? tx.input : null,
+      type: (tx as Record<string, unknown>).type as string | null ?? null,
+      timestamp_ms: null as string | null,
     },
-    logs: (receipt?.logs ?? []).map((log, i) => ({
+    logs: (receipt?.logs ?? []).map((log) => ({
       contract_address: log.address,
       topic0: log.topics[0] ?? null,
       topic1: log.topics[1] ?? null,
@@ -67,8 +85,11 @@ export async function GET(
   // Try DB first (indexed data)
   const tx = await getTransactionByHash(params.hash);
   if (tx) {
-    const logs = await getReceiptLogsByTxHash(params.hash);
-    return ok({ transaction: tx, logs });
+    const [logs, gasUsed] = await Promise.all([
+      getReceiptLogsByTxHash(params.hash),
+      fetchGasUsed(params.hash),
+    ]);
+    return ok({ transaction: { ...tx, gas_used: gasUsed }, logs });
   }
 
   // Fallback: query RPC directly

@@ -68,8 +68,11 @@ export type ApiTransactionDetail = ApiOk<{
     status: string;
     gas_limit: string;
     gas_price: string;
+    gas_used: string | null;
     nonce: string;
     data: string | null;
+    type: string | null;
+    timestamp_ms: string | null;
   };
   logs: Array<{
     contract_address: string;
