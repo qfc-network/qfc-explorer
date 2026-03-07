@@ -146,12 +146,15 @@ export type ApiAddressDetail = ApiOk<{
   }>;
 }>;
 
+export type TokenSearchResult = { address: string; name: string | null; symbol: string | null; token_type: string };
+
 export type ApiSearch = ApiOk<{
   query: string;
   blockByHeight: { height: string } | null;
   blockByHash: { hash: string; height: string } | null;
   transaction: { hash: string } | null;
   address: { address: string } | null;
+  tokens: TokenSearchResult[];
 }>;
 
 export type ApiSearchSuggest = ApiOk<{
@@ -160,6 +163,7 @@ export type ApiSearchSuggest = ApiOk<{
   blockHashes: Array<{ hash: string; height: string }>;
   txHashes: Array<{ hash: string; block_height: string }>;
   addresses: string[];
+  tokens?: TokenSearchResult[];
 }>;
 
 export type ApiNetwork = ApiOk<{

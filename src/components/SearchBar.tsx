@@ -7,6 +7,8 @@ function isHex(value: string) {
   return /^0x[0-9a-fA-F]+$/.test(value);
 }
 
+type TokenSuggestion = { address: string; name: string | null; symbol: string | null; token_type: string };
+
 type SuggestionResponse = {
   ok: true;
   data: {
@@ -14,6 +16,7 @@ type SuggestionResponse = {
     blockHashes: Array<{ hash: string; height: string }>;
     txHashes: Array<{ hash: string; block_height: string }>;
     addresses: string[];
+    tokens?: TokenSuggestion[];
   };
 };
 
@@ -144,6 +147,15 @@ export default function SearchBar({ prominent = false }: { prominent?: boolean }
           {suggestions.data.addresses?.map((addr) => (
             <SuggestItem key={`addr-${addr}`} icon="addr" label="Address" sub={addr} onSelect={() => navigate(`/address/${addr}`, addr)} />
           ))}
+          {suggestions.data.tokens?.map((token) => (
+            <SuggestItem
+              key={`token-${token.address}`}
+              icon="token"
+              label={token.name || token.symbol || 'Token'}
+              sub={`${token.symbol || ''} (${token.token_type})`}
+              onSelect={() => navigate(`/token/${token.address}`, token.name || token.address)}
+            />
+          ))}
         </div>
       ) : null}
     </div>
@@ -158,7 +170,7 @@ function SuggestItem({ icon, label, sub, onSelect }: { icon: string; label: stri
       className="flex w-full items-center gap-3 px-4 py-2.5 text-left hover:bg-slate-900/80 transition-colors"
     >
       <span className="text-xs text-slate-500">
-        {icon === 'block' ? '□' : icon === 'tx' ? '⇄' : '◎'}
+        {icon === 'block' ? '□' : icon === 'tx' ? '⇄' : icon === 'token' ? '●' : '◎'}
       </span>
       <span className="text-slate-200">{label}</span>
       {sub && <span className="text-xs text-slate-500 truncate">{sub}</span>}

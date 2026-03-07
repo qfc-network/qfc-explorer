@@ -761,6 +761,46 @@ export async function upsertDailyStats(date: string, stats: {
   );
 }
 
+export async function searchTokensByName(
+  query: string,
+  limit: number
+): Promise<Array<{ address: string; name: string | null; symbol: string | null; token_type: string }>> {
+  const pool = getPool();
+  const result = await pool.query(
+    `
+    SELECT address, name, symbol, token_type
+    FROM tokens
+    WHERE name ILIKE $1 OR symbol ILIKE $1
+    ORDER BY last_seen_block DESC NULLS LAST
+    LIMIT $2
+    `,
+    [`%${query}%`, limit]
+  );
+  return result.rows;
+}
+
+export async function searchContractsByName(
+  query: string,
+  limit: number
+): Promise<Array<{ address: string; name: string | null; is_verified: boolean }>> {
+  const pool = getPool();
+  // Search verified contracts by matching source code contract name
+  // Contract names appear in the source code; we search the ABI for contract-like names
+  const result = await pool.query(
+    `
+    SELECT c.address, t.name, COALESCE(c.is_verified, false) AS is_verified
+    FROM contracts c
+    LEFT JOIN tokens t ON t.address = c.address
+    WHERE c.is_verified = true
+      AND (t.name ILIKE $1 OR t.symbol ILIKE $1)
+    ORDER BY c.created_at_block DESC NULLS LAST
+    LIMIT $2
+    `,
+    [`%${query}%`, limit]
+  );
+  return result.rows;
+}
+
 export async function getContractByAddress(
   address: string
 ): Promise<{

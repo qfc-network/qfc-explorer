@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 
-import { getAddressOverview, getBlockByHash, getBlockByHeight, getTransactionByHash } from '@/db/queries';
+import { getAddressOverview, getBlockByHash, getBlockByHeight, getTransactionByHash, searchTokensByName } from '@/db/queries';
 import { fail, ok } from '@/lib/api-response';
 
 export async function GET(request: Request) {
@@ -12,12 +12,14 @@ export async function GET(request: Request) {
 
   const isNumeric = /^\d+$/.test(query);
   const isHex = /^0x[0-9a-fA-F]+$/.test(query);
+  const isText = !isNumeric && !isHex && query.length >= 2;
 
-  const [blockByHeight, blockByHash, txByHash, address] = await Promise.all([
+  const [blockByHeight, blockByHash, txByHash, address, tokens] = await Promise.all([
     isNumeric ? getBlockByHeight(query) : Promise.resolve(null),
     isHex ? getBlockByHash(query) : Promise.resolve(null),
     isHex ? getTransactionByHash(query) : Promise.resolve(null),
     isHex && query.length === 42 ? getAddressOverview(query) : Promise.resolve(null),
+    isText ? searchTokensByName(query, 10) : Promise.resolve([]),
   ]);
 
   return ok({
@@ -26,5 +28,6 @@ export async function GET(request: Request) {
     blockByHash,
     transaction: txByHash,
     address,
+    tokens,
   });
 }
