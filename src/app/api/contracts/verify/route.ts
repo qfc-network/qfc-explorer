@@ -1,6 +1,5 @@
 export const dynamic = "force-dynamic";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest } from 'next/server';
 import { ok, err } from '@/lib/api-response';
 import { getPool } from '@/db/pool';
@@ -45,9 +44,10 @@ async function compileSolidity(
   optimizationRuns?: number,
 ): Promise<{ bytecode: string; abi: unknown[]; contractName: string; error?: string }> {
   // Dynamic import of solc (no type declarations available)
-  let solc: any;
+  let solc: { compile: (input: string) => string };
   try {
-    solc = (await (Function('return import("solc")')() as Promise<any>)).default;
+    const mod = await (Function('return import("solc")')() as Promise<{ default: { compile: (input: string) => string } }>);
+    solc = mod.default;
   } catch {
     throw new Error('Solidity compiler (solc) not available on server');
   }
