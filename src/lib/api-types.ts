@@ -261,3 +261,18 @@ export type ApiInference = ApiOk<{
     approved: boolean;
   }>;
 }>;
+
+export type ApiTaskStatus = ApiOk<{
+  taskId: string;
+  status: string;
+  submitter: string;
+  taskType: string;
+  modelId: string;
+  createdAt: number;
+  deadline: number;
+  maxFee: string;
+  result?: string;
+  resultSize?: number;
+  minerAddress?: string;
+  executionTimeMs?: number;
+}>;

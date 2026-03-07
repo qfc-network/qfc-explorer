@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import SectionHeader from '@/components/SectionHeader';
 import StatsCard from '@/components/StatsCard';
 import Table from '@/components/Table';
+import TaskLookup from '@/components/TaskLookup';
 import { fetchJsonSafe } from '@/lib/api-client';
 import type { ApiInference } from '@/lib/api-types';
 import { shortenHash } from '@/lib/format';
@@ -47,6 +48,15 @@ export default async function InferencePage() {
           value={`${stats.passRate}%`}
           sub="Verification success rate"
         />
+      </section>
+
+      {/* Task Lookup */}
+      <section className="space-y-4">
+        <SectionHeader
+          title="Task Lookup"
+          description="Look up an inference task by its ID."
+        />
+        <TaskLookup />
       </section>
 
       {/* Node Compute Info */}

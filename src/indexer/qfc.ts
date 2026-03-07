@@ -95,6 +95,30 @@ export async function fetchSupportedModels(client: RpcClient): Promise<RpcModel[
   return client.callWithRetry<RpcModel[]>('qfc_getSupportedModels');
 }
 
+// v2.0: Public inference task lookup
+
+export type RpcPublicTaskStatus = {
+  taskId: string;
+  status: string;
+  submitter: string;
+  taskType: string;
+  modelId: string;
+  createdAt: number;
+  deadline: number;
+  maxFee: string;
+  result?: string;
+  resultSize?: number;
+  minerAddress?: string;
+  executionTimeMs?: number;
+};
+
+export async function fetchPublicTaskStatus(
+  client: RpcClient,
+  taskId: string,
+): Promise<RpcPublicTaskStatus> {
+  return client.callWithRetry<RpcPublicTaskStatus>('qfc_getPublicTaskStatus', [taskId]);
+}
+
 export async function fetchModelProposals(client: RpcClient): Promise<RpcModelProposal[]> {
   return client.callWithRetry<RpcModelProposal[]>('qfc_getModelProposals');
 }
