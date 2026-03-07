@@ -427,25 +427,40 @@ export async function getStatsSeries(): Promise<{
   active_addresses: Array<{ label: string; value: number }>;
 }> {
   const pool = getPool();
-  const result = await pool.query(
-    `
+
+  // Block time series: last 20 blocks
+  const btResult = await pool.query(`
     WITH recent_blocks AS (
       SELECT height, timestamp_ms
       FROM blocks
-      WHERE height > 0  -- Exclude genesis block
+      WHERE height > 0
       ORDER BY height DESC
       LIMIT 20
-    ),
-    intervals AS (
-      SELECT height,
-        timestamp_ms,
-        LAG(timestamp_ms) OVER (ORDER BY height) AS prev_ts
-      FROM recent_blocks
+    )
+    SELECT height,
+      timestamp_ms,
+      COALESCE(timestamp_ms - LAG(timestamp_ms) OVER (ORDER BY height), 0) AS block_time_ms
+    FROM recent_blocks
+    ORDER BY height ASC
+  `);
+
+  const block_time_ms = btResult.rows.map((row) => ({
+    label: String(row.height),
+    value: Number(row.block_time_ms ?? 0),
+  }));
+
+  // Tx & address series: last 20 blocks that have transactions
+  const txResult = await pool.query(`
+    WITH active_blocks AS (
+      SELECT DISTINCT block_height
+      FROM transactions
+      ORDER BY block_height DESC
+      LIMIT 20
     ),
     tx_counts AS (
       SELECT block_height, COUNT(*)::int AS tx_count
       FROM transactions
-      WHERE block_height IN (SELECT height FROM recent_blocks)
+      WHERE block_height IN (SELECT block_height FROM active_blocks)
       GROUP BY block_height
     ),
     address_counts AS (
@@ -455,33 +470,24 @@ export async function getStatsSeries(): Promise<{
         UNION ALL
         SELECT block_height, to_address AS addr FROM transactions
       ) a
-      WHERE block_height IN (SELECT height FROM recent_blocks)
+      WHERE block_height IN (SELECT block_height FROM active_blocks)
       GROUP BY block_height
     )
     SELECT
-      i.height,
-      i.timestamp_ms,
-      COALESCE(i.timestamp_ms - i.prev_ts, 0) AS block_time_ms,
-      COALESCE(t.tx_count, 0) AS tx_count,
+      t.block_height AS height,
+      t.tx_count,
       COALESCE(a.active, 0) AS active_addresses
-    FROM intervals i
-    LEFT JOIN tx_counts t ON t.block_height = i.height
-    LEFT JOIN address_counts a ON a.block_height = i.height
-    ORDER BY i.height ASC
-    `
-  );
+    FROM tx_counts t
+    LEFT JOIN address_counts a ON a.block_height = t.block_height
+    ORDER BY t.block_height ASC
+  `);
 
-  const block_time_ms = result.rows.map((row) => ({
-    label: String(row.height),
-    value: Number(row.block_time_ms ?? 0),
-  }));
-
-  const tps = result.rows.map((row) => ({
+  const tps = txResult.rows.map((row) => ({
     label: String(row.height),
     value: Number(row.tx_count ?? 0),
   }));
 
-  const active_addresses = result.rows.map((row) => ({
+  const active_addresses = txResult.rows.map((row) => ({
     label: String(row.height),
     value: Number(row.active_addresses ?? 0),
   }));

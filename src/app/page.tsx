@@ -73,7 +73,7 @@ export default async function Home() {
         <section className="grid gap-4 lg:grid-cols-3">
           <StatChart title="Block Time (ms)" points={series.block_time_ms} suffix=" ms" />
           <StatChart title="Txs per Block" points={series.tps} />
-          <StatChart title="Active Addresses" points={series.active_addresses} />
+          <StatChart title="Addresses per Block" points={series.active_addresses} />
         </section>
       ) : null}
 
