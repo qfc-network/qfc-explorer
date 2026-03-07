@@ -5,11 +5,13 @@ import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
 import AdminControls from '@/components/AdminControls';
 import RateLimitDashboard from '@/components/RateLimitDashboard';
+import ArchiveDashboard from '@/components/ArchiveDashboard';
+import AddressLabelsManager from '@/components/AddressLabelsManager';
 import { fetchJsonSafe } from '@/lib/api-client';
 import type { ApiOk } from '@/lib/api-types';
 
 export default async function AdminPage() {
-  const [response, dbResponse, rateLimitResponse] = await Promise.all([
+  const [response, dbResponse, rateLimitResponse, archiveResponse, labelsResponse, wsResponse, redisResponse] = await Promise.all([
     fetchJsonSafe<ApiOk<{ items: Array<{ key: string; value: string; updated_at: string }>; lastBatch: any; failed: any }>>(
       '/api/admin/indexer',
       { next: { revalidate: 5 } }
@@ -27,6 +29,28 @@ export default async function AdminPage() {
       '/api/admin/rate-limit',
       { next: { revalidate: 5 } }
     ),
+    fetchJsonSafe<ApiOk<{
+      threshold: string;
+      tables: Array<{ table: string; rows: number }>;
+      recentOperations: Array<{ table_name: string; partition_key: string; rows_archived: number; archived_at: string }>;
+    }>>(
+      '/api/admin/archive',
+      { next: { revalidate: 10 } }
+    ),
+    fetchJsonSafe<ApiOk<{
+      labels: Array<{ address: string; label: string; category: string | null; description: string | null; website: string | null; created_at: string }>;
+    }>>(
+      '/api/admin/labels',
+      { next: { revalidate: 10 } }
+    ),
+    fetchJsonSafe<ApiOk<{ connections: number; channels: number; addresses: number; polling: boolean }>>(
+      '/api/admin/ws',
+      { next: { revalidate: 5 } }
+    ),
+    fetchJsonSafe<ApiOk<{ mode: string; nodes: number; connected: boolean }>>(
+      '/api/admin/redis',
+      { next: { revalidate: 10 } }
+    ),
   ]);
 
   const items = response?.data.items ?? [];
@@ -34,6 +58,10 @@ export default async function AdminPage() {
   const failed = response?.data.failed ?? null;
   const poolStats = dbResponse?.data.pool ?? null;
   const rateLimit = rateLimitResponse?.data ?? null;
+  const archive = archiveResponse?.data ?? null;
+  const labels = labelsResponse?.data?.labels ?? [];
+  const wsStats = wsResponse?.data ?? null;
+  const redisConfig = redisResponse?.data ?? null;
 
   return (
     <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 px-6 py-12">
@@ -75,6 +103,34 @@ export default async function AdminPage() {
         />
       </section>
 
+      {/* WebSocket & Redis Stats */}
+      <section className="grid gap-4 sm:grid-cols-4">
+        <StatCard
+          label="WS Connections"
+          value={wsStats?.connections?.toString() ?? '—'}
+          sub={wsStats?.polling ? 'polling active' : 'idle'}
+          color="blue"
+        />
+        <StatCard
+          label="WS Channels"
+          value={wsStats?.channels?.toString() ?? '—'}
+          sub="subscribed"
+          color="green"
+        />
+        <StatCard
+          label="Redis Mode"
+          value={redisConfig?.mode ?? '—'}
+          sub={`${redisConfig?.nodes ?? 0} node(s)`}
+          color={redisConfig?.connected ? 'green' : 'yellow'}
+        />
+        <StatCard
+          label="Address Labels"
+          value={labels.length.toString()}
+          sub="registered"
+          color="blue"
+        />
+      </section>
+
       {/* Indexer Status */}
       <section className="space-y-4">
         <SectionHeader title="Indexer Status" description="Block indexer state and batch info" />
@@ -98,6 +154,22 @@ export default async function AdminPage() {
       <section className="space-y-4">
         <SectionHeader title="Controls" description="Indexer management actions" />
         <AdminControls />
+      </section>
+
+      {/* Data Archive */}
+      <section className="space-y-4">
+        <SectionHeader title="Data Archive" description="Move old block data to archive schema for better query performance" />
+        <ArchiveDashboard
+          threshold={archive?.threshold ?? '—'}
+          tables={archive?.tables ?? []}
+          recentOperations={archive?.recentOperations ?? []}
+        />
+      </section>
+
+      {/* Address Labels */}
+      <section className="space-y-4">
+        <SectionHeader title="Address Labels" description="Human-readable names for known addresses (exchanges, projects, system contracts)" />
+        <AddressLabelsManager labels={labels} />
       </section>
 
       {/* Rate Limit Dashboard */}
