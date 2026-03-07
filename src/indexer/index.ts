@@ -913,6 +913,68 @@ async function resolveFinalizedHeight(client: RpcClient, latest: bigint): Promis
   }
 }
 
+async function refreshDailyStats(): Promise<void> {
+  const pool = getPool();
+  // Refresh today's daily_stats row from blocks/transactions
+  await pool.query(`
+    INSERT INTO daily_stats (date, tx_count, block_count, total_gas_used, avg_block_time_ms, active_addresses, avg_gas_price, new_contracts)
+    SELECT
+      (TO_TIMESTAMP(timestamp_ms / 1000.0) AT TIME ZONE 'UTC')::date AS date,
+      COALESCE(SUM(tx_count), 0),
+      COUNT(*)::int,
+      COALESCE(SUM(gas_used::numeric), 0),
+      CASE WHEN COUNT(*) > 1 THEN (MAX(timestamp_ms) - MIN(timestamp_ms))::numeric / NULLIF(COUNT(*) - 1, 0) ELSE 0 END,
+      0, 0, 0
+    FROM blocks
+    WHERE height > 0
+      AND (TO_TIMESTAMP(timestamp_ms / 1000.0) AT TIME ZONE 'UTC')::date = CURRENT_DATE
+    GROUP BY (TO_TIMESTAMP(timestamp_ms / 1000.0) AT TIME ZONE 'UTC')::date
+    ON CONFLICT (date) DO UPDATE SET
+      tx_count = EXCLUDED.tx_count,
+      block_count = EXCLUDED.block_count,
+      total_gas_used = EXCLUDED.total_gas_used,
+      avg_block_time_ms = EXCLUDED.avg_block_time_ms
+  `);
+
+  // Update active addresses for today
+  await pool.query(`
+    UPDATE daily_stats SET active_addresses = sub.cnt
+    FROM (
+      SELECT COUNT(DISTINCT addr)::int AS cnt
+      FROM transactions t
+      JOIN blocks b ON b.height = t.block_height
+      CROSS JOIN LATERAL (VALUES (t.from_address), (t.to_address)) v(addr)
+      WHERE addr IS NOT NULL
+        AND (TO_TIMESTAMP(b.timestamp_ms / 1000.0) AT TIME ZONE 'UTC')::date = CURRENT_DATE
+    ) sub
+    WHERE date = CURRENT_DATE
+  `);
+
+  // Update avg gas price for today
+  await pool.query(`
+    UPDATE daily_stats SET avg_gas_price = sub.avg_gp
+    FROM (
+      SELECT AVG(t.gas_price::numeric) AS avg_gp
+      FROM transactions t
+      JOIN blocks b ON b.height = t.block_height
+      WHERE (TO_TIMESTAMP(b.timestamp_ms / 1000.0) AT TIME ZONE 'UTC')::date = CURRENT_DATE
+    ) sub
+    WHERE date = CURRENT_DATE AND sub.avg_gp IS NOT NULL
+  `);
+
+  // Update new contracts for today
+  await pool.query(`
+    UPDATE daily_stats SET new_contracts = sub.cnt
+    FROM (
+      SELECT COUNT(*)::int AS cnt
+      FROM contracts c
+      JOIN blocks b ON b.height = c.created_at_block
+      WHERE (TO_TIMESTAMP(b.timestamp_ms / 1000.0) AT TIME ZONE 'UTC')::date = CURRENT_DATE
+    ) sub
+    WHERE date = CURRENT_DATE
+  `);
+}
+
 async function runOnce(
   client: RpcClient,
   startHeight: bigint,
@@ -963,6 +1025,12 @@ async function runOnce(
     receipts: totalReceipts,
     durationMs,
   });
+
+  // Update daily_stats for today
+  await refreshDailyStats().catch((e) =>
+    console.warn('Failed to refresh daily stats:', e)
+  );
+
   return effectiveTarget;
 }
 

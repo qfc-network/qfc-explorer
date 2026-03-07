@@ -10,6 +10,7 @@ import AnalyticsChart from '@/components/AnalyticsChart';
 import ValidatorTable from '@/components/ValidatorTable';
 import ExportButton from '@/components/ExportButton';
 import AutoRefresh from '@/components/AutoRefresh';
+import DailyCharts from '@/components/DailyCharts';
 
 type AnalyticsData = {
   ok: boolean;
@@ -211,6 +212,15 @@ export default async function AnalyticsPage() {
             yAxisLabel="Txs"
           />
         </div>
+      </section>
+
+      {/* Daily Trend Charts */}
+      <section className="space-y-4">
+        <SectionHeader
+          title="Historical Daily Charts"
+          description="Aggregated daily metrics over 30, 90, or 365 days"
+        />
+        <DailyCharts />
       </section>
     </main>
   );

@@ -701,6 +701,66 @@ export async function getNftHoldersByToken(
   return result.rows;
 }
 
+export async function getDailyStats(
+  days: number = 30
+): Promise<Array<{
+  date: string;
+  tx_count: string;
+  active_addresses: number;
+  new_contracts: number;
+  total_gas_used: string;
+  avg_gas_price: string;
+  block_count: number;
+  avg_block_time_ms: string;
+}>> {
+  const pool = getPool();
+  const result = await pool.query(
+    `
+    SELECT
+      date::text,
+      tx_count::text,
+      active_addresses,
+      new_contracts,
+      total_gas_used::text,
+      avg_gas_price::text,
+      block_count,
+      avg_block_time_ms::text
+    FROM daily_stats
+    WHERE date >= CURRENT_DATE - $1::int
+    ORDER BY date ASC
+    `,
+    [days]
+  );
+  return result.rows;
+}
+
+export async function upsertDailyStats(date: string, stats: {
+  tx_count: number;
+  active_addresses: number;
+  new_contracts: number;
+  total_gas_used: string;
+  avg_gas_price: string;
+  block_count: number;
+  avg_block_time_ms: string;
+}): Promise<void> {
+  const pool = getPool();
+  await pool.query(
+    `
+    INSERT INTO daily_stats (date, tx_count, active_addresses, new_contracts, total_gas_used, avg_gas_price, block_count, avg_block_time_ms)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    ON CONFLICT (date) DO UPDATE SET
+      tx_count = EXCLUDED.tx_count,
+      active_addresses = EXCLUDED.active_addresses,
+      new_contracts = EXCLUDED.new_contracts,
+      total_gas_used = EXCLUDED.total_gas_used,
+      avg_gas_price = EXCLUDED.avg_gas_price,
+      block_count = EXCLUDED.block_count,
+      avg_block_time_ms = EXCLUDED.avg_block_time_ms
+    `,
+    [date, stats.tx_count, stats.active_addresses, stats.new_contracts, stats.total_gas_used, stats.avg_gas_price, stats.block_count, stats.avg_block_time_ms]
+  );
+}
+
 export async function getContractByAddress(
   address: string
 ): Promise<{
