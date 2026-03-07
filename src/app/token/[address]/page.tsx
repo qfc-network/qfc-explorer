@@ -41,6 +41,12 @@ function formatSupplyShort(supply: string | null, decimals: number | null): stri
   }
 }
 
+const TYPE_CONFIG: Record<string, { label: string; className: string }> = {
+  erc20: { label: 'ERC-20', className: 'bg-cyan-500/10 text-cyan-400' },
+  erc721: { label: 'ERC-721', className: 'bg-purple-500/10 text-purple-400' },
+  erc1155: { label: 'ERC-1155', className: 'bg-orange-500/10 text-orange-400' },
+};
+
 export default async function TokenDetailPage({
   params,
   searchParams,
@@ -58,7 +64,7 @@ export default async function TokenDetailPage({
       { next: { revalidate: 20 } }
     ),
     fetchJsonSafe<ApiTokenHolders>(
-      `/api/tokens/${address}/holders?limit=25`,
+      `/api/tokens/${address}/holders?limit=50`,
       { next: { revalidate: 30 } }
     ),
   ]);
@@ -66,6 +72,7 @@ export default async function TokenDetailPage({
   const token = response?.data.token ?? null;
   const transfers = response?.data.transfers ?? [];
   const holders = holdersResponse?.data.holders ?? [];
+  const nftHolders = holdersResponse?.data.nftHolders ?? [];
 
   if (!token) {
     return (
@@ -81,7 +88,10 @@ export default async function TokenDetailPage({
     );
   }
 
-  // Calculate total for percentage
+  const isNft = token.token_type === 'erc721' || token.token_type === 'erc1155';
+  const typeConf = TYPE_CONFIG[token.token_type] ?? TYPE_CONFIG.erc20;
+
+  // Calculate total for percentage (ERC-20 only)
   const totalHolderBalance = holders.reduce((sum, h) => {
     try { return sum + BigInt(h.balance); } catch { return sum; }
   }, 0n);
@@ -105,8 +115,8 @@ export default async function TokenDetailPage({
           {token.name ?? 'Token'}
           {token.symbol && <span className="ml-2 text-slate-400">({token.symbol})</span>}
         </h1>
-        <span className="rounded bg-cyan-500/10 px-2 py-0.5 text-xs font-medium text-cyan-400">
-          ERC-20
+        <span className={`rounded px-2 py-0.5 text-xs font-medium ${typeConf.className}`}>
+          {typeConf.label}
         </span>
       </div>
       <div className="mt-2 flex items-center gap-2">
@@ -116,18 +126,35 @@ export default async function TokenDetailPage({
 
       {/* Overview */}
       <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <OverviewCard label="Total Supply" value={formatSupplyShort(token.total_supply, token.decimals)} sub={token.symbol ?? undefined} />
-        <OverviewCard label="Decimals" value={String(token.decimals ?? '—')} />
-        <OverviewCard label="Holders" value={String(holders.length)} sub="indexed" />
+        {!isNft && (
+          <OverviewCard label="Total Supply" value={formatSupplyShort(token.total_supply, token.decimals)} sub={token.symbol ?? undefined} />
+        )}
+        {!isNft && (
+          <OverviewCard label="Decimals" value={String(token.decimals ?? '—')} />
+        )}
+        <OverviewCard
+          label="Holders"
+          value={String(isNft ? nftHolders.length : holders.length)}
+          sub="indexed"
+        />
+        {isNft && (
+          <OverviewCard label="Items" value={String(nftHolders.length)} sub="unique tokens" />
+        )}
         <OverviewCard label="Transfers" value={transfers.length >= PAGE_SIZE ? `${PAGE_SIZE}+` : String(transfers.length)} sub="this page" />
       </div>
 
       {/* Tabs */}
       <div className="mt-8 flex gap-0 border-b border-slate-800">
         <TabLink href={`/token/${address}?tab=transfers&page=1`} active={tab === 'transfers'} label="Transfers" />
-        <TabLink href={`/token/${address}?tab=holders&page=1`} active={tab === 'holders'} label="Holders" count={holders.length} />
+        {!isNft && (
+          <TabLink href={`/token/${address}?tab=holders&page=1`} active={tab === 'holders'} label="Holders" count={holders.length} />
+        )}
+        {isNft && (
+          <TabLink href={`/token/${address}?tab=inventory&page=1`} active={tab === 'inventory'} label="Inventory" count={nftHolders.length} />
+        )}
       </div>
 
+      {/* Transfers Tab */}
       {tab === 'transfers' && (
         <div className="mt-4">
           <div className="rounded-xl border border-slate-800 bg-slate-900/40 overflow-x-auto">
@@ -138,12 +165,13 @@ export default async function TokenDetailPage({
                   <th className="px-4 py-3">Block</th>
                   <th className="px-4 py-3">From</th>
                   <th className="px-4 py-3">To</th>
-                  <th className="px-4 py-3 text-right">Value</th>
+                  {isNft && <th className="px-4 py-3">Token ID</th>}
+                  <th className="px-4 py-3 text-right">{isNft ? 'Qty' : 'Value'}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/40">
                 {transfers.length === 0 ? (
-                  <tr><td colSpan={5} className="px-4 py-8 text-center text-slate-500">No transfers indexed.</td></tr>
+                  <tr><td colSpan={isNft ? 6 : 5} className="px-4 py-8 text-center text-slate-500">No transfers indexed.</td></tr>
                 ) : (
                   transfers.map((t, i) => (
                     <tr key={`${t.tx_hash}-${i}`} className="hover:bg-slate-900/40">
@@ -159,8 +187,13 @@ export default async function TokenDetailPage({
                       <td className="px-4 py-2.5">
                         <Link href={`/address/${t.to_address}`} className="font-mono text-xs text-slate-300 hover:text-white">{shortenHash(t.to_address)}</Link>
                       </td>
+                      {isNft && (
+                        <td className="px-4 py-2.5">
+                          {t.token_id ? <span className="font-mono text-xs text-purple-400">#{t.token_id}</span> : '—'}
+                        </td>
+                      )}
                       <td className="px-4 py-2.5 text-right text-slate-300">
-                        {formatTokenValue(t.value, token.decimals)} {token.symbol ?? ''}
+                        {isNft ? t.value : `${formatTokenValue(t.value, token.decimals)} ${token.symbol ?? ''}`}
                       </td>
                     </tr>
                   ))
@@ -172,7 +205,8 @@ export default async function TokenDetailPage({
         </div>
       )}
 
-      {tab === 'holders' && (
+      {/* ERC-20 Holders Tab */}
+      {tab === 'holders' && !isNft && (
         <div className="mt-4">
           <div className="rounded-xl border border-slate-800 bg-slate-900/40 overflow-x-auto">
             <table className="w-full text-sm">
@@ -212,6 +246,44 @@ export default async function TokenDetailPage({
                       </tr>
                     );
                   })
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* NFT Inventory Tab */}
+      {tab === 'inventory' && isNft && (
+        <div className="mt-4">
+          <div className="rounded-xl border border-slate-800 bg-slate-900/40 overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-slate-800/60 text-left text-xs uppercase tracking-wider text-slate-500">
+                  <th className="px-4 py-3">Token ID</th>
+                  <th className="px-4 py-3">Owner</th>
+                  {token.token_type === 'erc1155' && <th className="px-4 py-3 text-right">Balance</th>}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-800/40">
+                {nftHolders.length === 0 ? (
+                  <tr><td colSpan={token.token_type === 'erc1155' ? 3 : 2} className="px-4 py-8 text-center text-slate-500">No items indexed.</td></tr>
+                ) : (
+                  nftHolders.map((h) => (
+                    <tr key={`${h.address}-${h.token_id}`} className="hover:bg-slate-900/40">
+                      <td className="px-4 py-2.5">
+                        <span className="font-mono text-sm text-purple-400">#{h.token_id}</span>
+                      </td>
+                      <td className="px-4 py-2.5">
+                        <Link href={`/address/${h.address}`} className="font-mono text-xs text-cyan-400 hover:text-cyan-300">
+                          {shortenHash(h.address, 8, 6)}
+                        </Link>
+                      </td>
+                      {token.token_type === 'erc1155' && (
+                        <td className="px-4 py-2.5 text-right text-slate-300">{h.balance}</td>
+                      )}
+                    </tr>
+                  ))
                 )}
               </tbody>
             </table>

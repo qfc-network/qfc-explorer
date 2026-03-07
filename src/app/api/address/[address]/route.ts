@@ -7,6 +7,7 @@ import {
   getAddressTransactions,
   getTokenTransfersByAddress,
   getTokenHoldingsByAddress,
+  getNftHoldingsByAddress,
   getContractByAddress,
 } from '@/db/queries';
 import { fail, ok } from '@/lib/api-response';
@@ -28,11 +29,12 @@ export async function GET(
     return fail('Address not found', 404);
   }
 
-  const [stats, analysis, contract, tokenHoldings] = await Promise.all([
+  const [stats, analysis, contract, tokenHoldings, nftHoldings] = await Promise.all([
     getAddressStats(params.address),
     getAddressAnalysis(params.address),
     getContractByAddress(params.address),
     getTokenHoldingsByAddress(params.address),
+    getNftHoldingsByAddress(params.address),
   ]);
 
   let transactions: Awaited<ReturnType<typeof getAddressTransactions>> = [];
@@ -50,6 +52,7 @@ export async function GET(
     analysis,
     contract,
     tokenHoldings,
+    nftHoldings,
     tab,
     page,
     limit,

@@ -110,6 +110,15 @@ export type ApiAddressDetail = ApiOk<{
     token_name: string | null;
     token_symbol: string | null;
     token_decimals: number | null;
+    token_type: string;
+    balance: string;
+  }>;
+  nftHoldings: Array<{
+    token_address: string;
+    token_name: string | null;
+    token_symbol: string | null;
+    token_type: string;
+    token_id: string;
     balance: string;
   }>;
   tab: string;
@@ -197,6 +206,7 @@ export type ApiTokensList = ApiOk<{
     decimals: number | null;
     total_supply: string | null;
     last_seen_block: string | null;
+    token_type: string;
   }>;
 }>;
 
@@ -208,6 +218,7 @@ export type ApiTokenDetail = ApiOk<{
     decimals: number | null;
     total_supply: string | null;
     last_seen_block: string | null;
+    token_type: string;
   };
   page: number;
   limit: number;
@@ -218,6 +229,7 @@ export type ApiTokenDetail = ApiOk<{
     from_address: string;
     to_address: string;
     value: string;
+    token_id: string | null;
   }>;
 }>;
 
@@ -225,6 +237,11 @@ export type ApiTokenHolders = ApiOk<{
   token: string;
   holders: Array<{
     address: string;
+    balance: string;
+  }>;
+  nftHolders: Array<{
+    address: string;
+    token_id: string;
     balance: string;
   }>;
 }>;

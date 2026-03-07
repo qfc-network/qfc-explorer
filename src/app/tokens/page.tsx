@@ -38,8 +38,8 @@ export default async function TokensPage({
     <main className="mx-auto max-w-7xl px-4 py-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-semibold text-white">ERC-20 Token Tracker</h1>
-          <p className="mt-1 text-sm text-slate-400">All ERC-20 tokens indexed on QFC network</p>
+          <h1 className="text-lg font-semibold text-white">Token Tracker</h1>
+          <p className="mt-1 text-sm text-slate-400">All tokens indexed on QFC network (ERC-20, ERC-721, ERC-1155)</p>
         </div>
       </div>
 
@@ -49,6 +49,7 @@ export default async function TokensPage({
             <tr className="border-b border-slate-800/60 text-left text-xs uppercase tracking-wider text-slate-500">
               <th className="px-4 py-3">#</th>
               <th className="px-4 py-3">Token</th>
+              <th className="px-4 py-3">Type</th>
               <th className="px-4 py-3">Contract</th>
               <th className="px-4 py-3">Decimals</th>
               <th className="px-4 py-3 text-right">Total Supply</th>
@@ -57,7 +58,7 @@ export default async function TokensPage({
           <tbody className="divide-y divide-slate-800/40">
             {tokens.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-slate-500">
+                <td colSpan={6} className="px-4 py-8 text-center text-slate-500">
                   No tokens indexed yet.
                 </td>
               </tr>
@@ -72,6 +73,9 @@ export default async function TokensPage({
                         <span className="ml-2 text-xs text-slate-400">({token.symbol})</span>
                       )}
                     </Link>
+                  </td>
+                  <td className="px-4 py-3">
+                    <TokenTypeBadge type={token.token_type} />
                   </td>
                   <td className="px-4 py-3">
                     <Link href={`/address/${token.address}`} className="font-mono text-xs text-cyan-400 hover:text-cyan-300">
@@ -108,4 +112,14 @@ export default async function TokensPage({
       </div>
     </main>
   );
+}
+
+function TokenTypeBadge({ type }: { type: string }) {
+  const config: Record<string, { label: string; className: string }> = {
+    erc20: { label: 'ERC-20', className: 'bg-cyan-500/10 text-cyan-400' },
+    erc721: { label: 'ERC-721', className: 'bg-purple-500/10 text-purple-400' },
+    erc1155: { label: 'ERC-1155', className: 'bg-orange-500/10 text-orange-400' },
+  };
+  const c = config[type] ?? config.erc20;
+  return <span className={`rounded px-2 py-0.5 text-xs font-medium ${c.className}`}>{c.label}</span>;
 }

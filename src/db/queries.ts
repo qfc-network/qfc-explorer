@@ -505,12 +505,12 @@ export async function getTokensPage(
   limit: number,
   offset: number,
   order: 'asc' | 'desc' = 'desc'
-): Promise<Array<{ address: string; name: string | null; symbol: string | null; decimals: number | null; total_supply: string | null; last_seen_block: string | null }>> {
+): Promise<Array<{ address: string; name: string | null; symbol: string | null; decimals: number | null; total_supply: string | null; last_seen_block: string | null; token_type: string }>> {
   const pool = getPool();
   const direction = order === 'asc' ? 'ASC' : 'DESC';
   const result = await pool.query(
     `
-    SELECT address, name, symbol, decimals, total_supply, last_seen_block
+    SELECT address, name, symbol, decimals, total_supply, last_seen_block, token_type
     FROM tokens
     ORDER BY last_seen_block ${direction} NULLS LAST
     LIMIT $1 OFFSET $2
@@ -527,11 +527,12 @@ export async function getTokenByAddress(address: string): Promise<{
   decimals: number | null;
   total_supply: string | null;
   last_seen_block: string | null;
+  token_type: string;
 } | null> {
   const pool = getPool();
   const result = await pool.query(
     `
-    SELECT address, name, symbol, decimals, total_supply, last_seen_block
+    SELECT address, name, symbol, decimals, total_supply, last_seen_block, token_type
     FROM tokens
     WHERE address = $1
     LIMIT 1
@@ -546,12 +547,12 @@ export async function getTokenTransfers(
   limit: number,
   offset: number,
   order: 'asc' | 'desc' = 'desc'
-): Promise<Array<{ tx_hash: string; block_height: string; from_address: string; to_address: string; value: string }>> {
+): Promise<Array<{ tx_hash: string; block_height: string; from_address: string; to_address: string; value: string; token_id: string | null }>> {
   const pool = getPool();
   const direction = order === 'asc' ? 'ASC' : 'DESC';
   const result = await pool.query(
     `
-    SELECT tx_hash, block_height, from_address, to_address, value
+    SELECT tx_hash, block_height, from_address, to_address, value, token_id
     FROM token_transfers
     WHERE token_address = $1
     ORDER BY block_height ${direction}, log_index ${direction}
@@ -577,28 +578,16 @@ export async function getTokenHolders(
 
   const result = await pool.query(
     `
-    SELECT address, SUM(balance)::numeric AS balance
-    FROM (
-      SELECT to_address AS address, value::numeric AS balance
-      FROM token_transfers
-      WHERE token_address = $1
-      UNION ALL
-      SELECT from_address AS address, -value::numeric AS balance
-      FROM token_transfers
-      WHERE token_address = $1
-    ) balances
-    GROUP BY address
-    HAVING SUM(balance) > 0
-    ORDER BY SUM(balance) DESC
+    SELECT holder_address AS address, balance
+    FROM token_balances
+    WHERE token_address = $1 AND token_id IS NULL AND balance::numeric > 0
+    ORDER BY balance::numeric DESC
     LIMIT $2
     `,
     [tokenAddress, limit]
   );
 
-  return result.rows.map((row) => ({
-    address: row.address,
-    balance: row.balance.toString(),
-  }));
+  return result.rows;
 }
 
 export async function getTokenTransfersByAddress(
@@ -641,32 +630,75 @@ export async function getTokenHoldingsByAddress(
   token_name: string | null;
   token_symbol: string | null;
   token_decimals: number | null;
+  token_type: string;
   balance: string;
 }>> {
   const pool = getPool();
   const result = await pool.query(
     `
     SELECT
-      tt.token_address,
+      tb.token_address,
       t.name AS token_name,
       t.symbol AS token_symbol,
       t.decimals AS token_decimals,
-      SUM(CASE WHEN tt.to_address = $1 THEN tt.value::numeric ELSE 0 END)
-        - SUM(CASE WHEN tt.from_address = $1 THEN tt.value::numeric ELSE 0 END) AS balance
-    FROM token_transfers tt
-    LEFT JOIN tokens t ON t.address = tt.token_address
-    WHERE tt.from_address = $1 OR tt.to_address = $1
-    GROUP BY tt.token_address, t.name, t.symbol, t.decimals
-    HAVING SUM(CASE WHEN tt.to_address = $1 THEN tt.value::numeric ELSE 0 END)
-         - SUM(CASE WHEN tt.from_address = $1 THEN tt.value::numeric ELSE 0 END) > 0
-    ORDER BY balance DESC
+      t.token_type,
+      tb.balance
+    FROM token_balances tb
+    LEFT JOIN tokens t ON t.address = tb.token_address
+    WHERE tb.holder_address = $1 AND tb.token_id IS NULL AND tb.balance::numeric > 0
+    ORDER BY tb.balance::numeric DESC
     `,
     [address]
   );
-  return result.rows.map((row) => ({
-    ...row,
-    balance: row.balance.toString(),
-  }));
+  return result.rows;
+}
+
+export async function getNftHoldingsByAddress(
+  address: string
+): Promise<Array<{
+  token_address: string;
+  token_name: string | null;
+  token_symbol: string | null;
+  token_type: string;
+  token_id: string;
+  balance: string;
+}>> {
+  const pool = getPool();
+  const result = await pool.query(
+    `
+    SELECT
+      tb.token_address,
+      t.name AS token_name,
+      t.symbol AS token_symbol,
+      t.token_type,
+      tb.token_id,
+      tb.balance
+    FROM token_balances tb
+    LEFT JOIN tokens t ON t.address = tb.token_address
+    WHERE tb.holder_address = $1 AND tb.token_id IS NOT NULL AND tb.balance::numeric > 0
+    ORDER BY tb.token_address, tb.token_id
+    `,
+    [address]
+  );
+  return result.rows;
+}
+
+export async function getNftHoldersByToken(
+  tokenAddress: string,
+  limit: number
+): Promise<Array<{ address: string; token_id: string; balance: string }>> {
+  const pool = getPool();
+  const result = await pool.query(
+    `
+    SELECT holder_address AS address, token_id, balance
+    FROM token_balances
+    WHERE token_address = $1 AND token_id IS NOT NULL AND balance::numeric > 0
+    ORDER BY token_id::numeric ASC
+    LIMIT $2
+    `,
+    [tokenAddress, limit]
+  );
+  return result.rows;
 }
 
 export async function getContractByAddress(

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { shortenHash, formatWeiToQfc } from '@/lib/format';
 
-type Tab = 'transactions' | 'token_transfers' | 'token_holdings' | 'contract';
+type Tab = 'transactions' | 'token_transfers' | 'token_holdings' | 'nft_holdings' | 'contract';
 
 type Transaction = {
   hash: string;
@@ -32,6 +32,16 @@ type TokenHolding = {
   token_name: string | null;
   token_symbol: string | null;
   token_decimals: number | null;
+  token_type: string;
+  balance: string;
+};
+
+type NftHolding = {
+  token_address: string;
+  token_name: string | null;
+  token_symbol: string | null;
+  token_type: string;
+  token_id: string;
   balance: string;
 };
 
@@ -47,6 +57,7 @@ type Props = {
   transactions: Transaction[];
   tokenTransfers: TokenTransfer[];
   tokenHoldings: TokenHolding[];
+  nftHoldings: NftHolding[];
   contract: ContractInfo | null;
   currentTab: string;
   page: number;
@@ -58,6 +69,7 @@ const TABS: { key: Tab; label: string; countKey: keyof Pick<Props, 'txCount' | '
   { key: 'transactions', label: 'Transactions', countKey: 'txCount' },
   { key: 'token_transfers', label: 'Token Transfers', countKey: 'tokenTransferCount' },
   { key: 'token_holdings', label: 'Token Holdings', countKey: null },
+  { key: 'nft_holdings', label: 'NFT Holdings', countKey: null },
   { key: 'contract', label: 'Contract', countKey: null },
 ];
 
@@ -77,7 +89,7 @@ function formatTokenValue(value: string, decimals: number | null): string {
 }
 
 export default function AddressTabs(props: Props) {
-  const { address, transactions, tokenTransfers, tokenHoldings, contract, currentTab, page } = props;
+  const { address, transactions, tokenTransfers, tokenHoldings, nftHoldings, contract, currentTab, page } = props;
   const activeTab = (currentTab as Tab) || 'transactions';
 
   return (
@@ -87,6 +99,7 @@ export default function AddressTabs(props: Props) {
         {TABS.map((tab) => {
           if (tab.key === 'contract' && !contract) return null;
           if (tab.key === 'token_holdings' && tokenHoldings.length === 0) return null;
+          if (tab.key === 'nft_holdings' && nftHoldings.length === 0) return null;
           const isActive = activeTab === tab.key;
           const count = tab.countKey ? props[tab.countKey] : null;
           return (
@@ -108,6 +121,10 @@ export default function AddressTabs(props: Props) {
                 <span className="ml-1.5 rounded-full bg-slate-800 px-2 py-0.5 text-xs text-slate-400">
                   {tokenHoldings.length}
                 </span>
+              ) : tab.key === 'nft_holdings' && nftHoldings.length > 0 ? (
+                <span className="ml-1.5 rounded-full bg-slate-800 px-2 py-0.5 text-xs text-slate-400">
+                  {nftHoldings.length}
+                </span>
               ) : null}
             </Link>
           );
@@ -124,6 +141,9 @@ export default function AddressTabs(props: Props) {
         )}
         {activeTab === 'token_holdings' && (
           <TokenHoldingsTab holdings={tokenHoldings} />
+        )}
+        {activeTab === 'nft_holdings' && (
+          <NftHoldingsTab holdings={nftHoldings} />
         )}
         {activeTab === 'contract' && contract && (
           <ContractTab address={address} contract={contract} />
@@ -314,6 +334,58 @@ function TokenHoldingsTab({ holdings }: { holdings: TokenHolding[] }) {
               <td className="px-3 py-2.5 text-right text-slate-300">
                 {formatTokenValue(h.balance, h.token_decimals)}
                 {h.token_symbol && <span className="ml-1 text-xs text-slate-400">{h.token_symbol}</span>}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function NftHoldingsTab({ holdings }: { holdings: NftHolding[] }) {
+  if (holdings.length === 0) {
+    return <p className="py-8 text-center text-sm text-slate-500">No NFT holdings found.</p>;
+  }
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="text-left text-xs uppercase tracking-wider text-slate-500">
+            <th className="px-3 py-2">#</th>
+            <th className="px-3 py-2">Collection</th>
+            <th className="px-3 py-2">Token ID</th>
+            <th className="px-3 py-2">Type</th>
+            <th className="px-3 py-2 text-right">Balance</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-slate-800/40">
+          {holdings.map((h, i) => (
+            <tr key={`${h.token_address}-${h.token_id}`} className="hover:bg-slate-900/40">
+              <td className="px-3 py-2.5 text-slate-500">{i + 1}</td>
+              <td className="px-3 py-2.5">
+                <Link href={`/token/${h.token_address}`} className="group">
+                  <span className="font-medium text-white group-hover:text-cyan-300">
+                    {h.token_name ?? shortenHash(h.token_address)}
+                  </span>
+                  {h.token_symbol && (
+                    <span className="ml-2 text-xs text-slate-400">({h.token_symbol})</span>
+                  )}
+                </Link>
+              </td>
+              <td className="px-3 py-2.5">
+                <span className="font-mono text-xs text-cyan-400">#{h.token_id}</span>
+              </td>
+              <td className="px-3 py-2.5">
+                <span className={`rounded px-2 py-0.5 text-xs font-medium ${
+                  h.token_type === 'erc721' ? 'bg-purple-500/10 text-purple-400' : 'bg-orange-500/10 text-orange-400'
+                }`}>
+                  {h.token_type === 'erc721' ? 'ERC-721' : 'ERC-1155'}
+                </span>
+              </td>
+              <td className="px-3 py-2.5 text-right text-slate-300">
+                {h.token_type === 'erc721' ? '1' : h.balance}
               </td>
             </tr>
           ))}

@@ -30,6 +30,7 @@ export default async function AddressDetailPage({
   const analysis = response?.data.analysis ?? null;
   const contract = response?.data.contract ?? null;
   const tokenHoldings = response?.data.tokenHoldings ?? [];
+  const nftHoldings = response?.data.nftHoldings ?? [];
   const transactions = response?.data.transactions ?? [];
   const tokenTransfers = response?.data.tokenTransfers ?? [];
 
@@ -96,6 +97,7 @@ export default async function AddressDetailPage({
           transactions={transactions}
           tokenTransfers={tokenTransfers}
           tokenHoldings={tokenHoldings}
+          nftHoldings={nftHoldings}
           contract={contract}
           currentTab={tab}
           page={page}
