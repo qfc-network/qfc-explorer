@@ -21,6 +21,7 @@ export default async function TransactionDetailPage({
 
   const tx = response?.data.transaction ?? null;
   const logs = response?.data.logs ?? [];
+  const fromRpc = response?.data.source === 'rpc';
 
   if (!tx) {
     return (
@@ -53,6 +54,12 @@ export default async function TransactionDetailPage({
           </div>
         }
       />
+
+      {fromRpc && (
+        <div className="rounded-xl border border-amber-700/40 bg-amber-900/20 px-4 py-3 text-sm text-amber-200">
+          This transaction was fetched live from the node and has not been indexed yet. Some details may update once indexing completes.
+        </div>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">

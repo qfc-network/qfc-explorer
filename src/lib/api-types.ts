@@ -79,6 +79,7 @@ export type ApiTransactionDetail = ApiOk<{
     topic3: string | null;
     data: string | null;
   }>;
+  source?: 'rpc';
 }>;
 
 export type ApiAddressDetail = ApiOk<{
