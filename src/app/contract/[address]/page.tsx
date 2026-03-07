@@ -155,6 +155,33 @@ export default async function ContractPage(props: Props) {
         <ContractInteraction address={address} />
       )}
 
+      {/* Read/Write as Proxy */}
+      {proxyType && implAddress && (
+        <section className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-5">
+          <h2 className="text-sm font-semibold text-amber-400">Proxy Contract Detected</h2>
+          <p className="mt-1 text-xs text-slate-400">
+            This is a {proxyType} proxy. The implementation contract is at{' '}
+            <Link href={`/contract/${implAddress}`} className="text-cyan-400 hover:text-cyan-300 font-mono">
+              {shortenHash(implAddress)}
+            </Link>.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Link
+              href={`/contract/${implAddress}`}
+              className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-2 text-xs font-medium text-amber-300 hover:bg-amber-500/20 transition-colors"
+            >
+              View Implementation Contract
+            </Link>
+            <Link
+              href={`/address/${address}`}
+              className="rounded-lg border border-slate-700 px-4 py-2 text-xs font-medium text-slate-300 hover:bg-slate-800 transition-colors"
+            >
+              View Proxy Address
+            </Link>
+          </div>
+        </section>
+      )}
+
       {/* Similar Contracts */}
       {isContract && contractInfo?.data?.similar_contracts && contractInfo.data.similar_contracts.length > 0 && (
         <section className="space-y-4">
