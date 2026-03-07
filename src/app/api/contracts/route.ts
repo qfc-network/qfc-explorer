@@ -17,7 +17,8 @@ export async function GET(request: NextRequest) {
       SELECT
         address,
         creator_tx_hash,
-        created_at_block::text
+        created_at_block::text,
+        is_verified
       FROM contracts
       ORDER BY created_at_block DESC NULLS LAST
       LIMIT $1 OFFSET $2

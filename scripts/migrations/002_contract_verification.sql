@@ -1,0 +1,16 @@
+BEGIN;
+
+ALTER TABLE contracts
+  ADD COLUMN IF NOT EXISTS source_code TEXT,
+  ADD COLUMN IF NOT EXISTS abi JSONB,
+  ADD COLUMN IF NOT EXISTS compiler_version TEXT,
+  ADD COLUMN IF NOT EXISTS evm_version TEXT DEFAULT 'paris',
+  ADD COLUMN IF NOT EXISTS optimization_runs INTEGER,
+  ADD COLUMN IF NOT EXISTS constructor_args TEXT,
+  ADD COLUMN IF NOT EXISTS is_verified BOOLEAN NOT NULL DEFAULT FALSE,
+  ADD COLUMN IF NOT EXISTS verified_at TIMESTAMPTZ;
+
+INSERT INTO migrations (name) VALUES ('002_contract_verification')
+  ON CONFLICT (name) DO NOTHING;
+
+COMMIT;

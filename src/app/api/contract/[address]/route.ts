@@ -68,17 +68,37 @@ export async function GET(request: NextRequest, { params }: Params) {
     // Try to get contract creation info from DB
     let creatorTx: string | undefined;
     let createdAtBlock: string | undefined;
+    let isVerified = false;
+    let sourceCode: string | undefined;
+    let abi: unknown[] | undefined;
+    let compilerVersion: string | undefined;
+    let evmVersion: string | undefined;
+    let optimizationRuns: number | undefined;
+    let verifiedAt: string | undefined;
 
     if (isContract) {
       const pool = getPool();
       const contractResult = await pool.query(
-        'SELECT creator_tx_hash, created_at_block FROM contracts WHERE address = $1 LIMIT 1',
+        `SELECT creator_tx_hash, created_at_block,
+                is_verified, source_code, abi, compiler_version,
+                evm_version, optimization_runs, verified_at
+         FROM contracts WHERE address = $1 LIMIT 1`,
         [address.toLowerCase()]
       );
 
       if (contractResult.rows.length > 0) {
-        creatorTx = contractResult.rows[0].creator_tx_hash;
-        createdAtBlock = contractResult.rows[0].created_at_block?.toString();
+        const row = contractResult.rows[0];
+        creatorTx = row.creator_tx_hash;
+        createdAtBlock = row.created_at_block?.toString();
+        isVerified = row.is_verified ?? false;
+        if (isVerified) {
+          sourceCode = row.source_code;
+          abi = row.abi;
+          compilerVersion = row.compiler_version;
+          evmVersion = row.evm_version;
+          optimizationRuns = row.optimization_runs;
+          verifiedAt = row.verified_at?.toISOString();
+        }
       }
     }
 
@@ -90,6 +110,13 @@ export async function GET(request: NextRequest, { params }: Params) {
       is_contract: isContract,
       creator_tx: creatorTx,
       created_at_block: createdAtBlock,
+      is_verified: isVerified,
+      source_code: sourceCode,
+      abi,
+      compiler_version: compilerVersion,
+      evm_version: evmVersion,
+      optimization_runs: optimizationRuns,
+      verified_at: verifiedAt,
     });
   } catch (error) {
     console.error('Contract info error:', error);
