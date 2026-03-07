@@ -634,6 +634,41 @@ export async function getTokenTransfersByAddress(
   return result.rows;
 }
 
+export async function getTokenHoldingsByAddress(
+  address: string
+): Promise<Array<{
+  token_address: string;
+  token_name: string | null;
+  token_symbol: string | null;
+  token_decimals: number | null;
+  balance: string;
+}>> {
+  const pool = getPool();
+  const result = await pool.query(
+    `
+    SELECT
+      tt.token_address,
+      t.name AS token_name,
+      t.symbol AS token_symbol,
+      t.decimals AS token_decimals,
+      SUM(CASE WHEN tt.to_address = $1 THEN tt.value::numeric ELSE 0 END)
+        - SUM(CASE WHEN tt.from_address = $1 THEN tt.value::numeric ELSE 0 END) AS balance
+    FROM token_transfers tt
+    LEFT JOIN tokens t ON t.address = tt.token_address
+    WHERE tt.from_address = $1 OR tt.to_address = $1
+    GROUP BY tt.token_address, t.name, t.symbol, t.decimals
+    HAVING SUM(CASE WHEN tt.to_address = $1 THEN tt.value::numeric ELSE 0 END)
+         - SUM(CASE WHEN tt.from_address = $1 THEN tt.value::numeric ELSE 0 END) > 0
+    ORDER BY balance DESC
+    `,
+    [address]
+  );
+  return result.rows.map((row) => ({
+    ...row,
+    balance: row.balance.toString(),
+  }));
+}
+
 export async function getContractByAddress(
   address: string
 ): Promise<{

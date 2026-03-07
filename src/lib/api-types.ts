@@ -105,6 +105,13 @@ export type ApiAddressDetail = ApiOk<{
     code_hash: string | null;
     is_verified: boolean;
   } | null;
+  tokenHoldings: Array<{
+    token_address: string;
+    token_name: string | null;
+    token_symbol: string | null;
+    token_decimals: number | null;
+    balance: string;
+  }>;
   tab: string;
   page: number;
   limit: number;

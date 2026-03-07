@@ -29,6 +29,7 @@ export default async function AddressDetailPage({
   const stats = response?.data.stats ?? null;
   const analysis = response?.data.analysis ?? null;
   const contract = response?.data.contract ?? null;
+  const tokenHoldings = response?.data.tokenHoldings ?? [];
   const transactions = response?.data.transactions ?? [];
   const tokenTransfers = response?.data.tokenTransfers ?? [];
 
@@ -94,6 +95,7 @@ export default async function AddressDetailPage({
           address={address}
           transactions={transactions}
           tokenTransfers={tokenTransfers}
+          tokenHoldings={tokenHoldings}
           contract={contract}
           currentTab={tab}
           page={page}

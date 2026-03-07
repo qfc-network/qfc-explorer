@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { shortenHash, formatWeiToQfc } from '@/lib/format';
 
-type Tab = 'transactions' | 'token_transfers' | 'contract';
+type Tab = 'transactions' | 'token_transfers' | 'token_holdings' | 'contract';
 
 type Transaction = {
   hash: string;
@@ -27,6 +27,14 @@ type TokenTransfer = {
   token_decimals: number | null;
 };
 
+type TokenHolding = {
+  token_address: string;
+  token_name: string | null;
+  token_symbol: string | null;
+  token_decimals: number | null;
+  balance: string;
+};
+
 type ContractInfo = {
   creator_tx_hash: string | null;
   created_at_block: string | null;
@@ -38,6 +46,7 @@ type Props = {
   address: string;
   transactions: Transaction[];
   tokenTransfers: TokenTransfer[];
+  tokenHoldings: TokenHolding[];
   contract: ContractInfo | null;
   currentTab: string;
   page: number;
@@ -48,6 +57,7 @@ type Props = {
 const TABS: { key: Tab; label: string; countKey: keyof Pick<Props, 'txCount' | 'tokenTransferCount'> | null }[] = [
   { key: 'transactions', label: 'Transactions', countKey: 'txCount' },
   { key: 'token_transfers', label: 'Token Transfers', countKey: 'tokenTransferCount' },
+  { key: 'token_holdings', label: 'Token Holdings', countKey: null },
   { key: 'contract', label: 'Contract', countKey: null },
 ];
 
@@ -67,7 +77,7 @@ function formatTokenValue(value: string, decimals: number | null): string {
 }
 
 export default function AddressTabs(props: Props) {
-  const { address, transactions, tokenTransfers, contract, currentTab, page } = props;
+  const { address, transactions, tokenTransfers, tokenHoldings, contract, currentTab, page } = props;
   const activeTab = (currentTab as Tab) || 'transactions';
 
   return (
@@ -76,6 +86,7 @@ export default function AddressTabs(props: Props) {
       <div className="flex gap-0 border-b border-slate-800">
         {TABS.map((tab) => {
           if (tab.key === 'contract' && !contract) return null;
+          if (tab.key === 'token_holdings' && tokenHoldings.length === 0) return null;
           const isActive = activeTab === tab.key;
           const count = tab.countKey ? props[tab.countKey] : null;
           return (
@@ -93,6 +104,10 @@ export default function AddressTabs(props: Props) {
                 <span className="ml-1.5 rounded-full bg-slate-800 px-2 py-0.5 text-xs text-slate-400">
                   {count}
                 </span>
+              ) : tab.key === 'token_holdings' && tokenHoldings.length > 0 ? (
+                <span className="ml-1.5 rounded-full bg-slate-800 px-2 py-0.5 text-xs text-slate-400">
+                  {tokenHoldings.length}
+                </span>
               ) : null}
             </Link>
           );
@@ -106,6 +121,9 @@ export default function AddressTabs(props: Props) {
         )}
         {activeTab === 'token_transfers' && (
           <TokenTransfersTab address={address} transfers={tokenTransfers} page={page} />
+        )}
+        {activeTab === 'token_holdings' && (
+          <TokenHoldingsTab holdings={tokenHoldings} />
         )}
         {activeTab === 'contract' && contract && (
           <ContractTab address={address} contract={contract} />
@@ -255,6 +273,53 @@ function TokenTransfersTab({ address, transfers, page }: { address: string; tran
       </div>
       <Pagination address={address} tab="token_transfers" page={page} hasMore={transfers.length === 25} />
     </>
+  );
+}
+
+function TokenHoldingsTab({ holdings }: { holdings: TokenHolding[] }) {
+  if (holdings.length === 0) {
+    return <p className="py-8 text-center text-sm text-slate-500">No token holdings found.</p>;
+  }
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="text-left text-xs uppercase tracking-wider text-slate-500">
+            <th className="px-3 py-2">#</th>
+            <th className="px-3 py-2">Token</th>
+            <th className="px-3 py-2">Contract</th>
+            <th className="px-3 py-2 text-right">Balance</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-slate-800/40">
+          {holdings.map((h, i) => (
+            <tr key={h.token_address} className="hover:bg-slate-900/40">
+              <td className="px-3 py-2.5 text-slate-500">{i + 1}</td>
+              <td className="px-3 py-2.5">
+                <Link href={`/token/${h.token_address}`} className="group">
+                  <span className="font-medium text-white group-hover:text-cyan-300">
+                    {h.token_name ?? 'Unknown'}
+                  </span>
+                  {h.token_symbol && (
+                    <span className="ml-2 text-xs text-slate-400">({h.token_symbol})</span>
+                  )}
+                </Link>
+              </td>
+              <td className="px-3 py-2.5">
+                <Link href={`/address/${h.token_address}`} className="font-mono text-xs text-cyan-400 hover:text-cyan-300">
+                  {shortenHash(h.token_address)}
+                </Link>
+              </td>
+              <td className="px-3 py-2.5 text-right text-slate-300">
+                {formatTokenValue(h.balance, h.token_decimals)}
+                {h.token_symbol && <span className="ml-1 text-xs text-slate-400">{h.token_symbol}</span>}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
