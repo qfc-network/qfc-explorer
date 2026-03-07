@@ -709,6 +709,7 @@ async function indexBlock(client: RpcClient, height: bigint): Promise<number> {
     }
   }
 
+  const contractAddresses = new Set<string>();
   const receiptClient = await pool.connect();
   try {
     await receiptClient.query('BEGIN');
@@ -722,6 +723,12 @@ async function indexBlock(client: RpcClient, height: bigint): Promise<number> {
       );
       const filtered = receipts.filter(Boolean) as RpcReceipt[];
       await bulkUpsertReceipts(receiptClient, filtered, height);
+
+      for (const receipt of filtered) {
+        if (receipt.contractAddress) {
+          contractAddresses.add(receipt.contractAddress.toLowerCase());
+        }
+      }
 
       const tokenAddresses = new Set<string>();
       for (const receipt of filtered) {
@@ -742,6 +749,25 @@ async function indexBlock(client: RpcClient, height: bigint): Promise<number> {
     throw error;
   } finally {
     receiptClient.release();
+  }
+
+  // Upsert contract addresses into accounts table (not captured from tx.to which is null for deploys)
+  if (contractAddresses.size > 0) {
+    const caClient = await pool.connect();
+    try {
+      await caClient.query('BEGIN');
+      const addrs = Array.from(contractAddresses);
+      await upsertAccounts(caClient, addrs, height);
+      for (const addr of addrs) {
+        await refreshAccountState(caClient, client, addr, blockHex, height);
+      }
+      await caClient.query('COMMIT');
+    } catch (error) {
+      await caClient.query('ROLLBACK');
+      throw error;
+    } finally {
+      caClient.release();
+    }
   }
 
   await setLastProcessedHeight(height);
