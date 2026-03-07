@@ -1,7 +1,7 @@
 type Column<T> = {
   key: string;
   header: string;
-  render: (row: T) => React.ReactNode;
+  render: (row: T, index?: number) => React.ReactNode;
   className?: string;
 };
 
@@ -37,7 +37,7 @@ export default function Table<T>({ columns, rows, emptyMessage }: TableProps<T>)
             <tr key={index} className="border-b border-slate-800/60 last:border-b-0">
               {columns.map((column) => (
                 <td key={column.key} className={`px-4 py-3 ${column.className ?? ''}`.trim()}>
-                  {column.render(row)}
+                  {column.render(row, index)}
                 </td>
               ))}
             </tr>

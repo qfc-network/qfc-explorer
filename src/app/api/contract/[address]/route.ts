@@ -102,6 +102,62 @@ export async function GET(request: NextRequest, { params }: Params) {
       }
     }
 
+    // Detect proxy contract (EIP-1967)
+    let proxyType: string | undefined;
+    let implementationAddress: string | undefined;
+    if (isContract) {
+      // EIP-1967 implementation slot: bytes32(uint256(keccak256('eip1967.proxy.implementation')) - 1)
+      const EIP1967_IMPL_SLOT = '0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc';
+      // EIP-1967 beacon slot: bytes32(uint256(keccak256('eip1967.proxy.beacon')) - 1)
+      const EIP1967_BEACON_SLOT = '0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50';
+      // EIP-1822 (UUPS) slot: keccak256("PROXIABLE")
+      const EIP1822_SLOT = '0xc5f16f0fcc639fa48a6947836d9850f504798523bf8c9a3a87d5876cf622bcf7';
+
+      const readSlot = async (slot: string): Promise<string | null> => {
+        try {
+          const res = await fetch(RPC_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              jsonrpc: '2.0',
+              method: 'eth_getStorageAt',
+              params: [address, slot, 'latest'],
+              id: 10,
+            }),
+          });
+          const json = await res.json();
+          const val = json.result;
+          if (!val || val === '0x' || val === '0x0000000000000000000000000000000000000000000000000000000000000000') {
+            return null;
+          }
+          // Extract address from 32-byte slot (last 20 bytes)
+          const addr = '0x' + val.slice(-40);
+          if (addr === '0x0000000000000000000000000000000000000000') return null;
+          return addr;
+        } catch {
+          return null;
+        }
+      };
+
+      const eip1967Impl = await readSlot(EIP1967_IMPL_SLOT);
+      if (eip1967Impl) {
+        proxyType = 'EIP-1967';
+        implementationAddress = eip1967Impl;
+      } else {
+        const eip1822Impl = await readSlot(EIP1822_SLOT);
+        if (eip1822Impl) {
+          proxyType = 'EIP-1822 (UUPS)';
+          implementationAddress = eip1822Impl;
+        } else {
+          const beacon = await readSlot(EIP1967_BEACON_SLOT);
+          if (beacon) {
+            proxyType = 'Beacon Proxy';
+            implementationAddress = beacon;
+          }
+        }
+      }
+    }
+
     // Find similar contracts (same code_hash)
     let similarContracts: Array<{ address: string; is_verified: boolean }> = [];
     if (isContract) {
@@ -139,6 +195,8 @@ export async function GET(request: NextRequest, { params }: Params) {
       optimization_runs: optimizationRuns,
       verified_at: verifiedAt,
       similar_contracts: similarContracts,
+      proxy_type: proxyType,
+      implementation_address: implementationAddress,
     });
   } catch (error) {
     console.error('Contract info error:', error);

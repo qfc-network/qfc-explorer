@@ -25,6 +25,8 @@ type ContractInfo = {
     optimization_runs?: number;
     verified_at?: string;
     similar_contracts?: Array<{ address: string; is_verified: boolean }>;
+    proxy_type?: string;
+    implementation_address?: string;
   };
 };
 
@@ -43,6 +45,8 @@ export default async function ContractPage(props: Props) {
   const isContract = contractInfo?.data?.is_contract ?? false;
   const code = contractInfo?.data?.code ?? '0x';
   const isVerified = contractInfo?.data?.is_verified ?? false;
+  const proxyType = contractInfo?.data?.proxy_type;
+  const implAddress = contractInfo?.data?.implementation_address;
 
   return (
     <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-6 px-6 py-12">
@@ -64,6 +68,11 @@ export default async function ContractPage(props: Props) {
                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
               </svg>
               Verified
+            </span>
+          )}
+          {proxyType && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/20 px-2.5 py-1 text-xs font-medium text-amber-400 border border-amber-500/30">
+              Proxy ({proxyType})
             </span>
           )}
         </div>
@@ -107,6 +116,22 @@ export default async function ContractPage(props: Props) {
               >
                 {shortenHash(contractInfo.data.creator_tx)}
               </Link>
+            </div>
+          )}
+          {proxyType && implAddress && (
+            <div className="sm:col-span-2">
+              <p className="text-xs text-slate-500 uppercase tracking-wider">Implementation Contract</p>
+              <div className="flex items-center gap-2 mt-1">
+                <Link
+                  href={`/contract/${implAddress}`}
+                  className="font-mono text-cyan-400 hover:text-cyan-300 break-all"
+                >
+                  {implAddress}
+                </Link>
+                <span className="shrink-0 rounded bg-amber-500/10 px-2 py-0.5 text-[10px] text-amber-400">
+                  {proxyType}
+                </span>
+              </div>
             </div>
           )}
         </div>
