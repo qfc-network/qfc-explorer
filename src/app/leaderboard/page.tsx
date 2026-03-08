@@ -1,6 +1,16 @@
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: 'Leaderboard', description: 'Top accounts, validators, and contracts on QFC' };
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Leaderboard',
+  description: 'Top accounts, validators, and contracts on the QFC blockchain.',
+  openGraph: {
+    title: 'Leaderboard | QFC Explorer',
+    description: 'Top accounts, validators, and contracts on the QFC blockchain.',
+    type: 'website',
+  },
+};
 
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';

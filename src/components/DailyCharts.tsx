@@ -103,9 +103,9 @@ export default function DailyCharts() {
       </div>
 
       {loading ? (
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div aria-live="polite" aria-busy="true" className="grid gap-6 lg:grid-cols-2">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="h-64 animate-pulse rounded-xl border border-slate-800 bg-slate-900/50" />
+            <div key={i} role="status" aria-label="Loading" className="h-64 animate-pulse rounded-xl border border-slate-800 bg-slate-900/50" />
           ))}
         </div>
       ) : data.length === 0 ? (
@@ -169,6 +169,7 @@ function DailyChart({ chart, data }: { chart: ChartConfig; data: DailyStat[] }) 
       {points.length > 1 ? (
         <div className="relative h-40">
           <svg
+            aria-hidden="true"
             viewBox="0 0 100 100"
             preserveAspectRatio="none"
             className="h-full w-full"

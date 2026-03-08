@@ -232,6 +232,7 @@ function FunctionCard({
           </span>
         </div>
         <svg
+          aria-hidden="true"
           className={`w-5 h-5 text-slate-400 transition-transform ${expanded ? 'rotate-180' : ''}`}
           fill="none"
           viewBox="0 0 24 24"

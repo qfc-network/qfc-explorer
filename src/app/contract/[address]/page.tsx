@@ -9,7 +9,16 @@ import ContractInteraction from '@/components/ContractInteraction';
 import ContractVerification from '@/components/ContractVerification';
 
 export async function generateMetadata({ params }: { params: { address: string } }): Promise<Metadata> {
-  return { title: `Contract ${shortenHash(params.address)}` };
+  const short = shortenHash(params.address);
+  return {
+    title: `Contract ${short}`,
+    description: `Smart contract ${short} on the QFC blockchain — bytecode, verification, and interaction.`,
+    openGraph: {
+      title: `Contract ${short} | QFC Explorer`,
+      description: `Smart contract ${short} on the QFC blockchain.`,
+      type: 'article',
+    },
+  };
 }
 
 type ContractInfo = {

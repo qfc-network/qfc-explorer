@@ -9,7 +9,16 @@ import CopyButton from '@/components/CopyButton';
 import AddressTabs from '@/components/AddressTabs';
 
 export async function generateMetadata({ params }: { params: { address: string } }): Promise<Metadata> {
-  return { title: `Address ${shortenHash(params.address)}` };
+  const short = shortenHash(params.address);
+  return {
+    title: `Address ${short}`,
+    description: `Address ${short} on the QFC blockchain — balance, transactions, and token holdings.`,
+    openGraph: {
+      title: `Address ${short} | QFC Explorer`,
+      description: `Address ${short} on the QFC blockchain.`,
+      type: 'article',
+    },
+  };
 }
 
 const PAGE_SIZE = 25;

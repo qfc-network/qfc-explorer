@@ -8,7 +8,22 @@ import { shortenHash } from '@/lib/format';
 import CopyButton from '@/components/CopyButton';
 
 export async function generateMetadata({ params }: { params: { address: string } }): Promise<Metadata> {
-  return { title: `Token ${shortenHash(params.address)}` };
+  const response = await fetchJsonSafe<ApiTokenDetail>(
+    `/api/tokens/${params.address.toLowerCase()}`,
+    { next: { revalidate: 20 } }
+  );
+  const name = response?.data.token?.name ?? shortenHash(params.address);
+  const symbol = response?.data.token?.symbol;
+  const displayName = symbol ? `${name} (${symbol})` : name;
+  return {
+    title: `Token ${displayName}`,
+    description: `Token ${displayName} on the QFC blockchain — supply, holders, and transfers.`,
+    openGraph: {
+      title: `Token ${displayName} | QFC Explorer`,
+      description: `Token ${displayName} on the QFC blockchain.`,
+      type: 'article',
+    },
+  };
 }
 
 const PAGE_SIZE = 25;

@@ -68,21 +68,24 @@ function Dropdown({ item, active, t }: { item: NavItem; active: boolean; t: (key
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        aria-haspopup="true"
         className={`flex items-center gap-1 px-3 py-2 text-sm transition-colors ${
           active ? 'text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
         }`}
       >
         {t(item.labelKey)}
-        <svg className={`h-3 w-3 transition-transform ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg aria-hidden="true" className={`h-3 w-3 transition-transform ${open ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </button>
       {open && item.children && (
-        <div className="absolute left-0 top-full z-50 mt-1 min-w-[200px] rounded-lg border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950 py-1 shadow-xl">
+        <div role="menu" className="absolute left-0 top-full z-50 mt-1 min-w-[200px] rounded-lg border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950 py-1 shadow-xl">
           {item.children.map((child) => (
             <Link
               key={child.href}
               href={child.href}
+              role="menuitem"
               onClick={() => setOpen(false)}
               className="block px-4 py-2.5 text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white transition-colors"
             >
@@ -106,7 +109,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="border-b border-slate-200 bg-white/80 dark:border-slate-800/60 dark:bg-slate-950/80 backdrop-blur-sm sticky top-0 z-40">
+    <nav aria-label="Main navigation" className="border-b border-slate-200 bg-white/80 dark:border-slate-800/60 dark:bg-slate-950/80 backdrop-blur-sm sticky top-0 z-40">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-0">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 py-3">
@@ -149,8 +152,10 @@ export default function Navbar() {
           <button
             className="p-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             onClick={() => setMobileOpen(!mobileOpen)}
+            aria-expanded={mobileOpen}
+            aria-label="Toggle menu"
           >
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg aria-hidden="true" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               {mobileOpen ? (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               ) : (

@@ -113,14 +113,15 @@ export default function SearchBar({ prominent = false }: { prominent?: boolean }
 
   return (
     <div className="relative w-full">
-      <form onSubmit={handleSubmit} className="relative flex w-full items-center">
-        <svg className={`absolute ${prominent ? 'left-4' : 'left-3'} h-4 w-4 text-slate-500`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <form onSubmit={handleSubmit} role="search" className="relative flex w-full items-center">
+        <svg aria-hidden="true" className={`absolute ${prominent ? 'left-4' : 'left-3'} h-4 w-4 text-slate-500`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
         <input
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder={t('search.placeholder')}
+          aria-label="Search blocks, transactions, addresses"
           className={`${inputCls} ${prominent ? 'pl-11' : 'pl-9'}`}
           onFocus={() => {
             if (suggestions) setOpen(true);

@@ -347,3 +347,96 @@ export type ApiTxPoolStatus = ApiOk<{
   pending: number;
   queued: number;
 }>;
+
+export type ApiGasTracker = ApiOk<{
+  prices: {
+    low: string;
+    median: string;
+    average: string;
+    high: string;
+    sampleSize: number;
+  };
+  blocks: Array<{
+    height: string;
+    gasUsed: string;
+    gasLimit: string;
+    txCount: number;
+    timestampMs: string;
+  }>;
+  topContracts: Array<{
+    address: string;
+    totalGas: string;
+    txCount: number;
+  }>;
+}>;
+
+export type ApiAdminIndexer = ApiOk<{
+  items: Array<{ key: string; value: string; updated_at: string }>;
+  lastBatch: {
+    fromBlock: string;
+    toBlock: string;
+    blocks: number;
+    transactions: number;
+    durationMs: number;
+    timestamp: string;
+  } | null;
+  failed: {
+    block: string;
+    error: string;
+    timestamp: string;
+  } | null;
+}>;
+
+export type ApiAdminDb = ApiOk<{
+  pool: { total: number; idle: number; waiting: number };
+}>;
+
+export type ApiAdminRateLimit = ApiOk<{
+  config: { windowMs: number; maxRequests: number; windowSeconds: number };
+  stats: { activeIps: number; totalRequests: number; limitedRequests: number; limitedPercentage: string };
+  topIps: Array<{ ip: string; requests: number; limited: boolean; resetAt: number }>;
+  recentRequests: Array<{ ip: string; path: string; timestamp: number; limited: boolean }>;
+}>;
+
+export type ApiAdminArchive = ApiOk<{
+  threshold: string;
+  tables: Array<{ table: string; rows: number }>;
+  recentOperations: Array<{ table_name: string; partition_key: string; rows_archived: number; archived_at: string }>;
+}>;
+
+export type ApiAdminLabels = ApiOk<{
+  labels: Array<{ address: string; label: string; category: string | null; description: string | null; website: string | null; created_at: string }>;
+}>;
+
+export type ApiAdminWs = ApiOk<{
+  connections: number;
+  channels: number;
+  addresses: number;
+  polling: boolean;
+}>;
+
+export type ApiAdminRedis = ApiOk<{
+  mode: string;
+  nodes: number;
+  connected: boolean;
+}>;
+
+export type ApiTokenTransfersList = ApiOk<{
+  page: number;
+  limit: number;
+  order: string;
+  type: string | null;
+  items: Array<{
+    tx_hash: string;
+    block_height: string;
+    token_address: string;
+    from_address: string;
+    to_address: string;
+    value: string;
+    token_id: string | null;
+    token_name: string | null;
+    token_symbol: string | null;
+    token_decimals: number | null;
+    token_type: string | null;
+  }>;
+}>;

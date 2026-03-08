@@ -9,7 +9,12 @@ import { shortenHash } from '@/lib/format';
 
 export const metadata: Metadata = {
   title: 'Inference Analytics',
-  description: 'QFC AI inference analytics and charts',
+  description: 'QFC AI inference analytics and charts.',
+  openGraph: {
+    title: 'Inference Analytics | QFC Explorer',
+    description: 'QFC AI inference analytics and charts.',
+    type: 'website',
+  },
 };
 
 export default async function InferenceAnalyticsPage() {

@@ -1,6 +1,16 @@
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: 'Gas Tracker', description: 'Real-time gas prices and block gas usage on QFC' };
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Gas Tracker',
+  description: 'Real-time gas prices and block gas usage on the QFC blockchain.',
+  openGraph: {
+    title: 'Gas Tracker | QFC Explorer',
+    description: 'Real-time gas prices and block gas usage on the QFC blockchain.',
+    type: 'website',
+  },
+};
 
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
@@ -9,29 +19,7 @@ import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
 import AddressTag from '@/components/AddressTag';
 import { resolveAddressLabels } from '@/lib/labels';
-import type { ApiOk } from '@/lib/api-types';
-
-type GasData = ApiOk<{
-  prices: {
-    low: string;
-    median: string;
-    average: string;
-    high: string;
-    sampleSize: number;
-  };
-  blocks: Array<{
-    height: string;
-    gasUsed: string;
-    gasLimit: string;
-    txCount: number;
-    timestampMs: string;
-  }>;
-  topContracts: Array<{
-    address: string;
-    totalGas: string;
-    txCount: number;
-  }>;
-}>;
+import type { ApiGasTracker } from '@/lib/api-types';
 
 function formatGwei(wei: string): string {
   const n = Number(wei);
@@ -62,7 +50,7 @@ function gasUtilization(used: string, limit: string): number {
 }
 
 export default async function GasTrackerPage() {
-  const response = await fetchJsonSafe<GasData>(
+  const response = await fetchJsonSafe<ApiGasTracker>(
     '/api/analytics/gas',
     { next: { revalidate: 15 } }
   );
@@ -181,6 +169,7 @@ export default async function GasTrackerPage() {
           <SectionHeader title="Top Gas Consumers" description="Contracts using the most gas in recent transactions" />
           <Table
             rows={topContracts}
+            keyField="address"
             emptyMessage="No data"
             columns={[
               {

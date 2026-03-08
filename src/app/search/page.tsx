@@ -1,6 +1,16 @@
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: 'Search', description: 'Search QFC blockchain' };
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Search',
+  description: 'Search the QFC blockchain by block height, transaction hash, or address.',
+  openGraph: {
+    title: 'Search | QFC Explorer',
+    description: 'Search the QFC blockchain by block height, transaction hash, or address.',
+    type: 'website',
+  },
+};
 
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';

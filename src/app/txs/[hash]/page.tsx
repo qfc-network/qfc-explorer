@@ -11,7 +11,16 @@ import { decodeInput, formatParam, decodeEventTopic } from '@/lib/decode-input';
 import { resolveAddressLabels } from '@/lib/labels';
 
 export async function generateMetadata({ params }: { params: { hash: string } }): Promise<Metadata> {
-  return { title: `Transaction ${shortenHash(params.hash)}` };
+  const short = shortenHash(params.hash);
+  return {
+    title: `Transaction ${short}`,
+    description: `Transaction ${short} on the QFC blockchain — status, value, gas, and event logs.`,
+    openGraph: {
+      title: `Transaction ${short} | QFC Explorer`,
+      description: `Transaction ${short} on the QFC blockchain.`,
+      type: 'article',
+    },
+  };
 }
 
 export default async function TransactionDetailPage({

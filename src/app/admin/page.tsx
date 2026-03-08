@@ -1,6 +1,16 @@
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: 'Admin', description: 'QFC Explorer admin dashboard' };
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Admin',
+  description: 'QFC Explorer admin dashboard.',
+  openGraph: {
+    title: 'Admin | QFC Explorer',
+    description: 'QFC Explorer admin dashboard.',
+    type: 'website',
+  },
+};
 
 import Link from 'next/link';
 import SectionHeader from '@/components/SectionHeader';
@@ -10,46 +20,35 @@ import RateLimitDashboard from '@/components/RateLimitDashboard';
 import ArchiveDashboard from '@/components/ArchiveDashboard';
 import AddressLabelsManager from '@/components/AddressLabelsManager';
 import { fetchJsonSafe } from '@/lib/api-client';
-import type { ApiOk } from '@/lib/api-types';
+import type { ApiAdminIndexer, ApiAdminDb, ApiAdminRateLimit, ApiAdminArchive, ApiAdminLabels, ApiAdminWs, ApiAdminRedis } from '@/lib/api-types';
 
 export default async function AdminPage() {
   const [response, dbResponse, rateLimitResponse, archiveResponse, labelsResponse, wsResponse, redisResponse] = await Promise.all([
-    fetchJsonSafe<ApiOk<{ items: Array<{ key: string; value: string; updated_at: string }>; lastBatch: any; failed: any }>>(
+    fetchJsonSafe<ApiAdminIndexer>(
       '/api/admin/indexer',
       { next: { revalidate: 5 } }
     ),
-    fetchJsonSafe<ApiOk<{ pool: { total: number; idle: number; waiting: number } }>>(
+    fetchJsonSafe<ApiAdminDb>(
       '/api/admin/db',
       { next: { revalidate: 5 } }
     ),
-    fetchJsonSafe<ApiOk<{
-      config: { windowMs: number; maxRequests: number; windowSeconds: number };
-      stats: { activeIps: number; totalRequests: number; limitedRequests: number; limitedPercentage: string };
-      topIps: Array<{ ip: string; requests: number; limited: boolean; resetAt: number }>;
-      recentRequests: Array<{ ip: string; path: string; timestamp: number; limited: boolean }>;
-    }>>(
+    fetchJsonSafe<ApiAdminRateLimit>(
       '/api/admin/rate-limit',
       { next: { revalidate: 5 } }
     ),
-    fetchJsonSafe<ApiOk<{
-      threshold: string;
-      tables: Array<{ table: string; rows: number }>;
-      recentOperations: Array<{ table_name: string; partition_key: string; rows_archived: number; archived_at: string }>;
-    }>>(
+    fetchJsonSafe<ApiAdminArchive>(
       '/api/admin/archive',
       { next: { revalidate: 10 } }
     ),
-    fetchJsonSafe<ApiOk<{
-      labels: Array<{ address: string; label: string; category: string | null; description: string | null; website: string | null; created_at: string }>;
-    }>>(
+    fetchJsonSafe<ApiAdminLabels>(
       '/api/admin/labels',
       { next: { revalidate: 10 } }
     ),
-    fetchJsonSafe<ApiOk<{ connections: number; channels: number; addresses: number; polling: boolean }>>(
+    fetchJsonSafe<ApiAdminWs>(
       '/api/admin/ws',
       { next: { revalidate: 5 } }
     ),
-    fetchJsonSafe<ApiOk<{ mode: string; nodes: number; connected: boolean }>>(
+    fetchJsonSafe<ApiAdminRedis>(
       '/api/admin/redis',
       { next: { revalidate: 10 } }
     ),
@@ -191,6 +190,7 @@ export default async function AdminPage() {
         <SectionHeader title="Indexer State" description="Key-value state storage" />
         <Table
           rows={items}
+          keyField="key"
           emptyMessage="No indexer state found."
           columns={[
             { key: 'key', header: 'Key', render: (row) => <span className="font-mono">{row.key}</span> },

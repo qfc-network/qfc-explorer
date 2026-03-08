@@ -13,7 +13,16 @@ import AddressTag from '@/components/AddressTag';
 import { resolveAddressLabels } from '@/lib/labels';
 
 export async function generateMetadata({ params }: { params: { height: string } }): Promise<Metadata> {
-  return { title: `Block ${params.height}` };
+  const h = params.height;
+  return {
+    title: `Block #${h}`,
+    description: `Details for block #${h} on the QFC blockchain — transactions, gas usage, and more.`,
+    openGraph: {
+      title: `Block #${h} | QFC Explorer`,
+      description: `Details for block #${h} on the QFC blockchain.`,
+      type: 'article',
+    },
+  };
 }
 
 const PAGE_SIZE = 25;
@@ -117,6 +126,7 @@ export default async function BlockDetailPage({
         <SectionHeader title="Transactions" description={`Showing page ${page}`} />
         <Table
           rows={transactions}
+          keyField="hash"
           emptyMessage="No transactions in this block."
           columns={[
             {

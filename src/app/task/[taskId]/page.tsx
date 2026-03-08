@@ -8,7 +8,16 @@ import { formatWeiToQfc } from '@/lib/format';
 import CopyButton from '@/components/CopyButton';
 
 export async function generateMetadata({ params }: { params: { taskId: string } }): Promise<Metadata> {
-  return { title: `Inference Task ${params.taskId}` };
+  const id = params.taskId;
+  return {
+    title: `Task #${id}`,
+    description: `Inference task #${id} on the QFC blockchain — status, model, result, and execution details.`,
+    openGraph: {
+      title: `Task #${id} | QFC Explorer`,
+      description: `Inference task #${id} on the QFC blockchain.`,
+      type: 'article',
+    },
+  };
 }
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; dotColor: string }> = {

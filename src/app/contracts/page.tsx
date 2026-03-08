@@ -1,6 +1,16 @@
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: 'Verified Contracts', description: 'Verified smart contracts on QFC blockchain' };
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Verified Contracts',
+  description: 'Verified smart contracts on the QFC blockchain.',
+  openGraph: {
+    title: 'Verified Contracts | QFC Explorer',
+    description: 'Verified smart contracts on the QFC blockchain.',
+    type: 'website',
+  },
+};
 
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
@@ -110,6 +120,7 @@ export default async function ContractsPage() {
           />
           <Table
             rows={verifiedContracts}
+            keyField="address"
             emptyMessage="No verified contracts"
             columns={[
               {
@@ -166,6 +177,7 @@ export default async function ContractsPage() {
           />
           <Table
             rows={contracts}
+            keyField="address"
             emptyMessage="No contracts found"
             columns={[
               {

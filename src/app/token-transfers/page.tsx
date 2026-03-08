@@ -1,6 +1,16 @@
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: 'Token Transfers', description: 'Recent token transfer activity on QFC' };
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Token Transfers',
+  description: 'Recent token transfer activity on the QFC blockchain.',
+  openGraph: {
+    title: 'Token Transfers | QFC Explorer',
+    description: 'Recent token transfer activity on the QFC blockchain.',
+    type: 'website',
+  },
+};
 
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
@@ -9,29 +19,7 @@ import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
 import AddressTag from '@/components/AddressTag';
 import { resolveAddressLabels } from '@/lib/labels';
-import type { ApiOk } from '@/lib/api-types';
-
-type TokenTransfer = {
-  tx_hash: string;
-  block_height: string;
-  token_address: string;
-  from_address: string;
-  to_address: string;
-  value: string;
-  token_id: string | null;
-  token_name: string | null;
-  token_symbol: string | null;
-  token_decimals: number | null;
-  token_type: string | null;
-};
-
-type Response = ApiOk<{
-  page: number;
-  limit: number;
-  order: string;
-  type: string | null;
-  items: TokenTransfer[];
-}>;
+import type { ApiTokenTransfersList } from '@/lib/api-types';
 
 const PAGE_SIZE = 25;
 
@@ -63,7 +51,7 @@ export default async function TokenTransfersPage({
   const type = searchParams.type || '';
   const typeParam = type ? `&type=${encodeURIComponent(type)}` : '';
 
-  const response = await fetchJsonSafe<Response>(
+  const response = await fetchJsonSafe<ApiTokenTransfersList>(
     `/api/tokens/transfers?page=${page}&limit=${PAGE_SIZE}${typeParam}`,
     { next: { revalidate: 10 } }
   );

@@ -1,6 +1,16 @@
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: 'Blocks', description: 'Browse all blocks on QFC blockchain' };
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Blocks',
+  description: 'Browse all blocks on the QFC blockchain.',
+  openGraph: {
+    title: 'Blocks | QFC Explorer',
+    description: 'Browse all blocks on the QFC blockchain.',
+    type: 'website',
+  },
+};
 
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
@@ -42,6 +52,7 @@ export default async function BlocksPage({
 
       <Table
         rows={blocks}
+        keyField="hash"
         emptyMessage="No blocks indexed yet."
         columns={[
           {

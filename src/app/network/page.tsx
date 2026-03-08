@@ -1,6 +1,16 @@
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: 'Network', description: 'QFC network validators and epoch info' };
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Network',
+  description: 'QFC network validators, epoch info, and hashrate.',
+  openGraph: {
+    title: 'Network | QFC Explorer',
+    description: 'QFC network validators, epoch info, and hashrate.',
+    type: 'website',
+  },
+};
 
 import SectionHeader from '@/components/SectionHeader';
 import StatsCard from '@/components/StatsCard';
@@ -24,7 +34,8 @@ export default async function NetworkPage() {
     );
   }
 
-  const { epoch, nodeInfo, totalHashrate } = response.data;
+  const { epoch, totalHashrate } = response.data;
+  const nodeInfo = response.data.nodeInfo ?? { chainId: '9000', peerCount: 0, version: '—', isValidator: false, syncing: false };
   const validatorsRaw = response.data.validators ?? [];
   const miningValidators = validatorsRaw.filter(v => v.providesCompute).length;
   const validators = validatorsRaw.sort((a, b) => {
@@ -74,6 +85,7 @@ export default async function NetworkPage() {
         <SectionHeader title="Validators" description={`${validators.length} active validators`} />
         <Table
           rows={validators}
+          keyField="address"
           emptyMessage="No validators reported yet."
           columns={[
             {
@@ -109,7 +121,7 @@ export default async function NetworkPage() {
             {
               key: 'inferenceScore',
               header: 'Inference',
-              render: (row) => (row as any).inferenceScore !== '0' ? (row as any).inferenceScore : '—',
+              render: (row) => row.inferenceScore !== '0' ? row.inferenceScore : '—',
             },
             {
               key: 'hashrate',

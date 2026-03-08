@@ -1,6 +1,16 @@
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: 'AI Inference', description: 'QFC AI inference tasks and statistics' };
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Inference',
+  description: 'QFC AI inference tasks and statistics.',
+  openGraph: {
+    title: 'Inference | QFC Explorer',
+    description: 'QFC AI inference tasks and statistics.',
+    type: 'website',
+  },
+};
 
 import Link from 'next/link';
 import SectionHeader from '@/components/SectionHeader';
@@ -111,6 +121,7 @@ export default async function InferencePage() {
         />
         <Table
           rows={models}
+          keyField="name"
           emptyMessage="No models registered yet."
           columns={[
             {
@@ -155,6 +166,7 @@ export default async function InferencePage() {
         />
         <Table
           rows={validators}
+          keyField="address"
           emptyMessage="No validators reported yet."
           columns={[
             {

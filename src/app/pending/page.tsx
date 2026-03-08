@@ -1,6 +1,16 @@
 export const dynamic = "force-dynamic";
 
-export const metadata = { title: 'Pending Transactions', description: 'View pending transactions in the QFC mempool' };
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Pending Transactions',
+  description: 'View pending transactions in the QFC mempool.',
+  openGraph: {
+    title: 'Pending Transactions | QFC Explorer',
+    description: 'View pending transactions in the QFC mempool.',
+    type: 'website',
+  },
+};
 
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
@@ -90,6 +100,7 @@ export default async function PendingPage({
 
       <Table
         rows={pending}
+        keyField="hash"
         emptyMessage="No pending transactions in the mempool."
         columns={[
           {
