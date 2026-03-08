@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -41,13 +42,14 @@ export default function NftCard({
       className="group rounded-xl border border-slate-800 bg-slate-900/40 overflow-hidden hover:border-slate-600 transition-colors"
     >
       {/* Image or placeholder */}
-      <div className="aspect-square bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center overflow-hidden">
+      <div className="relative aspect-square bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center overflow-hidden">
         {imageUrl && !imgError ? (
-          <img
+          <Image
             src={imageUrl}
             alt={nftName ?? `#${tokenId}`}
-            className="h-full w-full object-cover"
-            loading="lazy"
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className="object-cover"
             onError={() => setImgError(true)}
           />
         ) : (

@@ -2,11 +2,30 @@ export const dynamic = "force-dynamic";
 
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import dynamic_import from 'next/dynamic';
 import { fetchJsonSafe } from '@/lib/api-client';
 import { shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
-import ContractInteraction from '@/components/ContractInteraction';
-import ContractVerification from '@/components/ContractVerification';
+
+const ContractInteraction = dynamic_import(
+  () => import('@/components/ContractInteraction'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-64 animate-pulse rounded-xl border border-slate-800 bg-slate-900/50" />
+    ),
+  }
+);
+
+const ContractVerification = dynamic_import(
+  () => import('@/components/ContractVerification'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-48 animate-pulse rounded-xl border border-slate-800 bg-slate-900/50" />
+    ),
+  }
+);
 
 export async function generateMetadata({ params }: { params: { address: string } }): Promise<Metadata> {
   const short = shortenHash(params.address);

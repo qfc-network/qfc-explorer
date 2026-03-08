@@ -13,17 +13,40 @@ export const metadata: Metadata = {
 };
 
 import Link from 'next/link';
+import dynamic_import from 'next/dynamic';
 import { fetchJsonSafe } from '@/lib/api-client';
 import type { ApiNetwork, ApiStats } from '@/lib/api-types';
 import { formatNumber } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import StatsCard from '@/components/StatsCard';
-import AnalyticsChart from '@/components/AnalyticsChart';
 import ValidatorTable from '@/components/ValidatorTable';
 import ExportButton from '@/components/ExportButton';
 import AutoRefresh from '@/components/AutoRefresh';
-import DailyCharts from '@/components/DailyCharts';
 import TranslatedText from '@/components/TranslatedText';
+
+const AnalyticsChart = dynamic_import(
+  () => import('@/components/AnalyticsChart'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-[300px] animate-pulse rounded-lg bg-slate-800/50" />
+    ),
+  }
+);
+
+const DailyCharts = dynamic_import(
+  () => import('@/components/DailyCharts'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="grid gap-6 lg:grid-cols-2">
+        {[0, 1, 2, 3].map((i) => (
+          <div key={i} className="h-64 animate-pulse rounded-xl border border-slate-800 bg-slate-900/50" />
+        ))}
+      </div>
+    ),
+  }
+);
 
 type AnalyticsData = {
   ok: boolean;
