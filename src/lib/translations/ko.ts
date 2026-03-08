@@ -641,6 +641,30 @@ const ko: Record<string, string> = {
   'live.newBlocks': '{count}개의 새 블록',
   'live.newTxs': '새 트랜잭션이 있습니다',
 
+  // Validators page
+  'validators.title': '검증자',
+  'validators.description': 'QFC 블록체인의 블록 생성자 및 검증자 통계.',
+  'validators.totalValidators': '검증자 총수',
+  'validators.totalBlocks': '총 블록 수',
+  'validators.mostActive': '가장 활발한 검증자',
+  'validators.blocksProduced': '생성 블록 수',
+  'validators.lastActive': '마지막 활동',
+  'validators.sortBy': '정렬:',
+  'validators.firstBlock': '첫 번째 블록',
+  'validators.lastBlock': '최신 블록',
+  'validators.totalGasUsed': '총 Gas 사용량',
+  'validators.avgGasUsed': '평균 Gas 사용량',
+  'validators.blockTimeline': '블록 생성 통계 (30일)',
+  'validators.recentBlocks': '최근 블록',
+  'validators.validatorProfile': '검증자 프로필',
+  'validators.notFound': '검증자를 찾을 수 없습니다',
+  'validators.backToList': '검증자 목록으로 돌아가기',
+  'validators.viewAddress': '주소 페이지 보기',
+  'validators.viewAllBlocks': '모든 블록 보기',
+
+  // Navigation
+  'nav.networkStatus': '네트워크 상태',
+
   // Keyboard shortcuts
   'shortcuts.title': '키보드 단축키',
   'shortcuts.general': '일반',
@@ -655,6 +679,25 @@ const ko: Record<string, string> = {
   'shortcuts.goAnalytics': '분석으로 이동',
   'shortcuts.goNetwork': '네트워크로 이동',
   'shortcuts.hint': '?를 누르면 이 대화상자를 전환합니다',
+
+  // Export modal
+  'export.title': '트랜잭션 내보내기',
+  'export.dateRange': '날짜 범위',
+  'export.from': '시작일',
+  'export.to': '종료일',
+  'export.presets': '빠른 선택',
+  'export.last7days': '최근 7일',
+  'export.last30days': '최근 30일',
+  'export.last90days': '최근 90일',
+  'export.allTime': '전체',
+  'export.maxRows': '최대 행 수',
+  'export.format': '형식',
+  'export.download': '다운로드',
+  'export.downloading': '다운로드 중...',
+  'export.cancel': '취소',
+  'export.estimatedRows': '예상 행 수: {count}',
+  'export.csvFormat': 'CSV',
+  'export.exportBtn': '내보내기',
 };
 
 export default ko;

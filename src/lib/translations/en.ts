@@ -679,6 +679,25 @@ const en = {
   'shortcuts.goAnalytics': 'Go to Analytics',
   'shortcuts.goNetwork': 'Go to Network',
   'shortcuts.hint': 'Press ? anywhere to toggle this dialog',
+
+  // Export modal
+  'export.title': 'Export Transactions',
+  'export.dateRange': 'Date Range',
+  'export.from': 'From',
+  'export.to': 'To',
+  'export.presets': 'Quick Presets',
+  'export.last7days': 'Last 7 days',
+  'export.last30days': 'Last 30 days',
+  'export.last90days': 'Last 90 days',
+  'export.allTime': 'All time',
+  'export.maxRows': 'Max Rows',
+  'export.format': 'Format',
+  'export.download': 'Download',
+  'export.downloading': 'Downloading...',
+  'export.cancel': 'Cancel',
+  'export.estimatedRows': 'Estimated rows: {count}',
+  'export.csvFormat': 'CSV',
+  'export.exportBtn': 'Export',
 } as const;
 
 export type TranslationKey = keyof typeof en;

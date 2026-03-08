@@ -7,6 +7,7 @@ import { shortenHash, formatWeiToQfc } from '@/lib/format';
 import { getApiBaseUrl } from '@/lib/api-client';
 import ExportButton from '@/components/ExportButton';
 import CsvExport from '@/components/CsvExport';
+import AddressExportModal from '@/components/AddressExportModal';
 import { useTranslation } from '@/components/LocaleProvider';
 import type { TranslationKey } from '@/lib/translations/en';
 
@@ -139,9 +140,9 @@ export default function AddressTabs(props: Props) {
         })}
       </div>
 
-      {/* Export with date range */}
+      {/* Export with date range modal */}
       {(activeTab === 'transactions' || activeTab === 'token_transfers') && (
-        <ExportWithDateRange address={address} type={activeTab === 'token_transfers' ? 'token_transfers' : 'transactions'} />
+        <ExportModalTrigger address={address} type={activeTab === 'token_transfers' ? 'token_transfers' : 'transactions'} />
       )}
 
       {/* Tab content */}
@@ -631,40 +632,28 @@ function ContractTab({ address, contract }: { address: string; contract: Contrac
   );
 }
 
-function ExportWithDateRange({ address, type }: { address: string; type: string }) {
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+function ExportModalTrigger({ address, type }: { address: string; type: 'transactions' | 'token_transfers' }) {
+  const [open, setOpen] = useState(false);
   const { t } = useTranslation();
 
-  const endpoint = useMemo(() => {
-    let url = `/api/analytics/export?type=${type}&address=${address}`;
-    if (startDate) url += `&start_date=${startDate}`;
-    if (endDate) url += `&end_date=${endDate}`;
-    return url;
-  }, [address, type, startDate, endDate]);
-
   return (
-    <div className="mt-3 flex flex-wrap items-center justify-end gap-2">
-      <div className="flex items-center gap-1.5 text-xs text-slate-500">
-        <span>{t('address.exportFrom')}</span>
-        <input
-          type="date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          className="rounded border border-slate-700 bg-slate-900 px-2 py-1 text-xs text-slate-300 focus:border-cyan-500 focus:outline-none"
+    <div className="mt-3 flex justify-end">
+      <button
+        onClick={() => setOpen(true)}
+        className="flex items-center gap-2 rounded-full border border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-200 hover:bg-slate-800 transition-colors"
+      >
+        <svg aria-hidden="true" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        {t('export.exportBtn')}
+      </button>
+      {open && (
+        <AddressExportModal
+          address={address}
+          type={type}
+          onClose={() => setOpen(false)}
         />
-        <span>{t('address.exportTo')}</span>
-        <input
-          type="date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          className="rounded border border-slate-700 bg-slate-900 px-2 py-1 text-xs text-slate-300 focus:border-cyan-500 focus:outline-none"
-        />
-      </div>
-      <ExportButton
-        endpoint={endpoint}
-        filename={`qfc_${address.slice(0, 10)}_${type}`}
-      />
+      )}
     </div>
   );
 }

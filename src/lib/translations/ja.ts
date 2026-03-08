@@ -641,6 +641,30 @@ const ja: Record<string, string> = {
   'live.newBlocks': '{count} 件の新しいブロック',
   'live.newTxs': '新しいトランザクションがあります',
 
+  // Validators page
+  'validators.title': 'バリデーター',
+  'validators.description': 'QFCブロックチェーン上のブロック生成者とバリデーター統計。',
+  'validators.totalValidators': 'バリデーター総数',
+  'validators.totalBlocks': '総ブロック数',
+  'validators.mostActive': '最もアクティブなバリデーター',
+  'validators.blocksProduced': '生成ブロック数',
+  'validators.lastActive': '最終アクティブ',
+  'validators.sortBy': 'ソート：',
+  'validators.firstBlock': '最初のブロック',
+  'validators.lastBlock': '最新ブロック',
+  'validators.totalGasUsed': '合計Gas使用量',
+  'validators.avgGasUsed': '平均Gas使用量',
+  'validators.blockTimeline': 'ブロック生成統計（30日）',
+  'validators.recentBlocks': '最近のブロック',
+  'validators.validatorProfile': 'バリデータープロフィール',
+  'validators.notFound': 'バリデーターが見つかりません',
+  'validators.backToList': 'バリデーター一覧に戻る',
+  'validators.viewAddress': 'アドレスページを表示',
+  'validators.viewAllBlocks': 'すべてのブロックを表示',
+
+  // Navigation
+  'nav.networkStatus': 'ネットワーク状況',
+
   // Keyboard shortcuts
   'shortcuts.title': 'キーボードショートカット',
   'shortcuts.general': '一般',
@@ -655,6 +679,25 @@ const ja: Record<string, string> = {
   'shortcuts.goAnalytics': 'アナリティクスへ移動',
   'shortcuts.goNetwork': 'ネットワークへ移動',
   'shortcuts.hint': '? を押すとこのダイアログを切り替えます',
+
+  // Export modal
+  'export.title': 'トランザクションのエクスポート',
+  'export.dateRange': '日付範囲',
+  'export.from': '開始日',
+  'export.to': '終了日',
+  'export.presets': 'クイック選択',
+  'export.last7days': '過去7日間',
+  'export.last30days': '過去30日間',
+  'export.last90days': '過去90日間',
+  'export.allTime': '全期間',
+  'export.maxRows': '最大行数',
+  'export.format': 'フォーマット',
+  'export.download': 'ダウンロード',
+  'export.downloading': 'ダウンロード中...',
+  'export.cancel': 'キャンセル',
+  'export.estimatedRows': '推定行数：{count}',
+  'export.csvFormat': 'CSV',
+  'export.exportBtn': 'エクスポート',
 };
 
 export default ja;

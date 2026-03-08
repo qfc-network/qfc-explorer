@@ -679,6 +679,25 @@ const zh: Record<string, string> = {
   'shortcuts.goAnalytics': '前往分析',
   'shortcuts.goNetwork': '前往网络',
   'shortcuts.hint': '在任何页面按 ? 可切换此对话框',
+
+  // Export modal
+  'export.title': '导出交易',
+  'export.dateRange': '日期范围',
+  'export.from': '从',
+  'export.to': '到',
+  'export.presets': '快速选择',
+  'export.last7days': '最近 7 天',
+  'export.last30days': '最近 30 天',
+  'export.last90days': '最近 90 天',
+  'export.allTime': '全部',
+  'export.maxRows': '最大行数',
+  'export.format': '格式',
+  'export.download': '下载',
+  'export.downloading': '下载中...',
+  'export.cancel': '取消',
+  'export.estimatedRows': '预估行数：{count}',
+  'export.csvFormat': 'CSV',
+  'export.exportBtn': '导出',
 };
 
 export default zh;
