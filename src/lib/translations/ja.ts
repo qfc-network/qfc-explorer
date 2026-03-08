@@ -604,6 +604,12 @@ const ja: Record<string, string> = {
   'nft.loadMore': 'もっと見る',
   'nft.loading': '読み込み中...',
 
+  // Token Holder Distribution
+  'token.distribution.title': '保有者分布',
+  'token.distribution.totalSupply': '総供給量',
+  'token.distribution.others': 'その他',
+  'token.distribution.singleHolder': 'このトークンの保有者は1名です。',
+
   'live.connected': 'ライブ',
   'live.disconnected': 'オフライン',
   'live.newBlocks': '{count} 件の新しいブロック',

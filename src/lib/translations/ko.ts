@@ -604,6 +604,12 @@ const ko: Record<string, string> = {
   'nft.loadMore': '더 보기',
   'nft.loading': '로딩 중...',
 
+  // Token Holder Distribution
+  'token.distribution.title': '보유자 분포',
+  'token.distribution.totalSupply': '총 공급량',
+  'token.distribution.others': '기타',
+  'token.distribution.singleHolder': '이 토큰의 보유자는 한 명입니다.',
+
   'live.connected': '실시간',
   'live.disconnected': '오프라인',
   'live.newBlocks': '{count}개의 새 블록',

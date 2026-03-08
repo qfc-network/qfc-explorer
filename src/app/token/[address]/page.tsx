@@ -10,6 +10,7 @@ import { fetchNftMetadataBatch, type NftMetadata } from '@/lib/nft-metadata';
 import NftCard from '@/components/NftCard';
 import TokenHoldersCsvExport from '@/components/TokenHoldersCsvExport';
 import NftGallery from '@/components/NftGallery';
+import HolderDistribution from '@/components/HolderDistribution';
 import type { ApiNftGallery } from '@/lib/api-types';
 
 export async function generateMetadata({ params }: { params: { address: string } }): Promise<Metadata> {
@@ -310,6 +311,16 @@ export default async function TokenDetailPage({
               </tbody>
             </table>
           </div>
+
+          {/* Holder Distribution Pie Chart */}
+          {holders.length > 0 && (
+            <HolderDistribution
+              holders={holders}
+              tokenDecimals={token.decimals}
+              tokenSymbol={token.symbol}
+              totalSupply={token.total_supply}
+            />
+          )}
         </div>
       )}
 

@@ -604,6 +604,12 @@ const en = {
   'nft.loading': 'Loading...',
 
   // Live SSE updates
+  // Token Holder Distribution
+  'token.distribution.title': 'Holder Distribution',
+  'token.distribution.totalSupply': 'Total Supply',
+  'token.distribution.others': 'Others',
+  'token.distribution.singleHolder': 'This token has a single holder.',
+
   'live.connected': 'Live',
   'live.disconnected': 'Offline',
   'live.newBlocks': '{count} new blocks',

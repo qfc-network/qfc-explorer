@@ -604,6 +604,12 @@ const zh: Record<string, string> = {
   'nft.loadMore': '加载更多',
   'nft.loading': '加载中...',
 
+  // Token Holder Distribution
+  'token.distribution.title': '持有者分布',
+  'token.distribution.totalSupply': '总供应量',
+  'token.distribution.others': '其他',
+  'token.distribution.singleHolder': '该代币只有一个持有者。',
+
   'live.connected': '实时',
   'live.disconnected': '离线',
   'live.newBlocks': '{count} 个新区块',
