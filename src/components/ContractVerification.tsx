@@ -28,7 +28,9 @@ const COMPILER_VERSIONS = [
 
 const EVM_VERSIONS = ['paris', 'london', 'berlin', 'istanbul', 'constantinople', 'byzantium'];
 
-type VerifyTab = 'single' | 'multi';
+const VYPER_COMPILER_VERSIONS = ['0.4.0', '0.3.10', '0.3.9', '0.3.7'];
+
+type VerifyTab = 'single' | 'multi' | 'vyper';
 
 type SourceFile = {
   id: string;
@@ -73,6 +75,15 @@ export default function ContractVerification({
   const [multiResult, setMultiResult] = useState<{ ok: boolean; message: string } | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Vyper state
+  const [vyperSource, setVyperSource] = useState('');
+  const [vyperCompilerVersion, setVyperCompilerVersion] = useState('0.3.10');
+  const [vyperEvmVersion, setVyperEvmVersion] = useState('paris');
+  const [vyperConstructorArgs, setVyperConstructorArgs] = useState('');
+  const [vyperContractName, setVyperContractName] = useState('');
+  const [vyperLoading, setVyperLoading] = useState(false);
+  const [vyperResult, setVyperResult] = useState<{ ok: boolean; message: string } | null>(null);
 
   const handleVerify = async () => {
     setLoading(true);
@@ -204,6 +215,38 @@ export default function ContractVerification({
     }
   };
 
+  const handleVyperVerify = async () => {
+    setVyperLoading(true);
+    setVyperResult(null);
+
+    try {
+      const response = await fetch(apiUrl('/api/contracts/verify-vyper'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          address,
+          source_code: vyperSource,
+          compiler_version: vyperCompilerVersion,
+          evm_version: vyperEvmVersion,
+          constructor_args: vyperConstructorArgs || undefined,
+          contract_name: vyperContractName || undefined,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.ok) {
+        setVyperResult({ ok: true, message: `${t('verify.success')} (${data.data.contractName})` });
+      } else {
+        setVyperResult({ ok: false, message: data.error || t('verify.failed') });
+      }
+    } catch (e) {
+      setVyperResult({ ok: false, message: e instanceof Error ? e.message : t('verify.requestFailed') });
+    } finally {
+      setVyperLoading(false);
+    }
+  };
+
   // Build entry contract options from uploaded file names
   const entryOptions: string[] = [];
   for (const f of multiFiles) {
@@ -261,7 +304,9 @@ export default function ContractVerification({
         {/* Source code */}
         <div className="rounded-xl border border-slate-800 bg-slate-900/50 overflow-hidden">
           <div className="flex items-center justify-between px-4 py-2 border-b border-slate-800 bg-slate-800/50">
-            <span className="text-sm text-slate-400 font-mono">Contract.sol</span>
+            <span className="text-sm text-slate-400 font-mono">
+              {existingCompiler?.startsWith('vyper:') ? 'Contract.vy' : 'Contract.sol'}
+            </span>
             <button
               onClick={() => navigator.clipboard.writeText(existingSource)}
               className="text-xs text-slate-500 hover:text-slate-300 transition-colors"
@@ -315,6 +360,16 @@ export default function ContractVerification({
               }`}
             >
               {t('verify.multiFile')}
+            </button>
+            <button
+              onClick={() => setActiveTab('vyper')}
+              className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 -mb-px ${
+                activeTab === 'vyper'
+                  ? 'text-blue-400 border-blue-400'
+                  : 'text-slate-400 border-transparent hover:text-slate-200'
+              }`}
+            >
+              {t('verify.vyper')}
             </button>
           </div>
 
@@ -641,6 +696,115 @@ export default function ContractVerification({
                   }`}
                 >
                   {multiResult.message}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ======== VYPER TAB ======== */}
+          {activeTab === 'vyper' && (
+            <div className="space-y-4">
+              {/* Compiler settings */}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="block text-xs text-slate-500 uppercase tracking-wider mb-1">
+                    {t('verify.vyperCompilerVersion')}
+                  </label>
+                  <select
+                    value={vyperCompilerVersion}
+                    onChange={(e) => setVyperCompilerVersion(e.target.value)}
+                    className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200 focus:border-blue-500 focus:outline-none"
+                  >
+                    {VYPER_COMPILER_VERSIONS.map((v) => (
+                      <option key={v} value={v}>{v}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs text-slate-500 uppercase tracking-wider mb-1">
+                    {t('verify.evmVersion')}
+                  </label>
+                  <select
+                    value={vyperEvmVersion}
+                    onChange={(e) => setVyperEvmVersion(e.target.value)}
+                    className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200 focus:border-blue-500 focus:outline-none"
+                  >
+                    {EVM_VERSIONS.map((v) => (
+                      <option key={v} value={v}>{v}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Contract name (optional) */}
+              <div>
+                <label className="block text-xs text-slate-500 uppercase tracking-wider mb-1">
+                  {t('verify.vyperContractName')}
+                </label>
+                <input
+                  type="text"
+                  value={vyperContractName}
+                  onChange={(e) => setVyperContractName(e.target.value)}
+                  placeholder={t('verify.vyperContractNamePlaceholder')}
+                  className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm font-mono text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+                />
+              </div>
+
+              {/* Vyper source code */}
+              <div>
+                <label className="block text-xs text-slate-500 uppercase tracking-wider mb-1">
+                  {t('verify.vyperSource')}
+                </label>
+                <textarea
+                  value={vyperSource}
+                  onChange={(e) => setVyperSource(e.target.value)}
+                  placeholder={t('verify.vyperSourcePlaceholder')}
+                  rows={16}
+                  className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 text-sm font-mono text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none leading-relaxed"
+                />
+              </div>
+
+              {/* Constructor args */}
+              <div>
+                <label className="block text-xs text-slate-500 uppercase tracking-wider mb-1">
+                  {t('verify.constructorArgs')}
+                </label>
+                <input
+                  type="text"
+                  value={vyperConstructorArgs}
+                  onChange={(e) => setVyperConstructorArgs(e.target.value)}
+                  placeholder="0x000000000000..."
+                  className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm font-mono text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+                />
+              </div>
+
+              {/* Submit */}
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={handleVyperVerify}
+                  disabled={vyperLoading || !vyperSource.trim()}
+                  className="rounded-lg bg-blue-500 px-6 py-2.5 text-sm font-medium text-white hover:bg-blue-600 transition-colors disabled:opacity-50"
+                >
+                  {vyperLoading ? t('verify.verifying') : t('verify.verifyPublish')}
+                </button>
+                <button
+                  onClick={() => { setShowForm(false); setVyperResult(null); }}
+                  className="rounded-lg border border-slate-700 px-4 py-2.5 text-sm text-slate-400 hover:text-slate-200 transition-colors"
+                >
+                  {t('verify.cancel')}
+                </button>
+              </div>
+
+              {/* Result */}
+              {vyperResult && (
+                <div
+                  className={`rounded-lg p-3 text-sm ${
+                    vyperResult.ok
+                      ? 'bg-green-500/10 border border-green-500/30 text-green-400'
+                      : 'bg-red-500/10 border border-red-500/30 text-red-400'
+                  }`}
+                >
+                  {vyperResult.message}
                 </div>
               )}
             </div>

@@ -17,6 +17,16 @@ const ContractInteraction = dynamic_import(
   }
 );
 
+const ContractComments = dynamic_import(
+  () => import('@/components/ContractComments'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-48 animate-pulse rounded-xl border border-slate-800 bg-slate-900/50" />
+    ),
+  }
+);
+
 const ContractVerification = dynamic_import(
   () => import('@/components/ContractVerification'),
   {
@@ -107,6 +117,17 @@ export default async function ContractPage(props: Props) {
             <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/20 px-2.5 py-1 text-xs font-medium text-amber-400 border border-amber-500/30">
               Proxy ({proxyType})
             </span>
+          )}
+          {isVerified && (
+            <Link
+              href={`/contract/diff?a=${address}`}
+              className="inline-flex items-center gap-1.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-medium text-cyan-400 hover:bg-cyan-500/20 transition-colors"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+              Compare
+            </Link>
           )}
         </div>
       </header>
@@ -255,6 +276,9 @@ export default async function ContractPage(props: Props) {
           </div>
         </section>
       )}
+
+      {/* Comments & Ratings */}
+      <ContractComments address={address} />
 
       {/* Link to address page */}
       <div className="text-center">

@@ -522,6 +522,43 @@ export type ApiContractRatingUpsert = ApiOk<{
   count: number;
 }>;
 
+// --- Contract Diff ---
+
+export type DiffHunkLine = {
+  type: 'same' | 'added' | 'removed';
+  content: string;
+};
+
+export type DiffHunk = {
+  a_start: number;
+  b_start: number;
+  lines: DiffHunkLine[];
+};
+
+export type DiffStats = {
+  additions: number;
+  deletions: number;
+  unchanged: number;
+};
+
+export type DiffContractInfo = {
+  address: string;
+  name: string | null;
+  compiler: string;
+};
+
+export type ApiContractDiff = ApiOk<{
+  contract_a: DiffContractInfo;
+  contract_b: DiffContractInfo;
+  hunks: DiffHunk[];
+  stats: DiffStats;
+  abi_diff: {
+    added: string[];
+    removed: string[];
+    modified: string[];
+  };
+}>;
+
 export type ApiTokenTransfersList = ApiOk<{
   page: number;
   limit: number;
