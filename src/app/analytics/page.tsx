@@ -1,5 +1,7 @@
 export const dynamic = "force-dynamic";
 
+export const metadata = { title: 'Analytics', description: 'QFC blockchain analytics and charts' };
+
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
 import type { ApiNetwork, ApiStats } from '@/lib/api-types';

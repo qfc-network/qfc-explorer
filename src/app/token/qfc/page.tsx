@@ -1,5 +1,7 @@
 export const dynamic = "force-dynamic";
 
+export const metadata = { title: 'QFC Tokenomics', description: 'QFC native token supply and distribution' };
+
 import SectionHeader from '@/components/SectionHeader';
 import { TOKENOMICS } from '@/lib/tokenomics';
 

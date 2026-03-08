@@ -1,10 +1,15 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
 import type { ApiTokenDetail, ApiTokenHolders } from '@/lib/api-types';
 import { shortenHash } from '@/lib/format';
 import CopyButton from '@/components/CopyButton';
+
+export async function generateMetadata({ params }: { params: { address: string } }): Promise<Metadata> {
+  return { title: `Token ${shortenHash(params.address)}` };
+}
 
 const PAGE_SIZE = 25;
 

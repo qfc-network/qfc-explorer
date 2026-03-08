@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
 import type { ApiBlockDetail } from '@/lib/api-types';
@@ -10,6 +11,10 @@ import CopyButton from '@/components/CopyButton';
 import StatusBadge from '@/components/StatusBadge';
 import AddressTag from '@/components/AddressTag';
 import { resolveAddressLabels } from '@/lib/labels';
+
+export async function generateMetadata({ params }: { params: { height: string } }): Promise<Metadata> {
+  return { title: `Block ${params.height}` };
+}
 
 const PAGE_SIZE = 25;
 

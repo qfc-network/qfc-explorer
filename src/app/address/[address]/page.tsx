@@ -1,11 +1,16 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
 import type { ApiAddressDetail } from '@/lib/api-types';
-import { formatNumber, formatWeiToQfc } from '@/lib/format';
+import { formatNumber, formatWeiToQfc, shortenHash } from '@/lib/format';
 import CopyButton from '@/components/CopyButton';
 import AddressTabs from '@/components/AddressTabs';
+
+export async function generateMetadata({ params }: { params: { address: string } }): Promise<Metadata> {
+  return { title: `Address ${shortenHash(params.address)}` };
+}
 
 const PAGE_SIZE = 25;
 

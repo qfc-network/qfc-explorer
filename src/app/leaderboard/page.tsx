@@ -1,5 +1,7 @@
 export const dynamic = "force-dynamic";
 
+export const metadata = { title: 'Leaderboard', description: 'Top accounts, validators, and contracts on QFC' };
+
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
 import { shortenHash, formatWeiToQfc, formatNumber } from '@/lib/format';

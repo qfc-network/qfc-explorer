@@ -1,5 +1,7 @@
 export const dynamic = "force-dynamic";
 
+export const metadata = { title: 'Admin', description: 'QFC Explorer admin dashboard' };
+
 import Link from 'next/link';
 import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';

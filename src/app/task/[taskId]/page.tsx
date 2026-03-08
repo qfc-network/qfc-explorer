@@ -1,10 +1,15 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
 import type { ApiTaskStatus } from '@/lib/api-types';
 import { formatWeiToQfc } from '@/lib/format';
 import CopyButton from '@/components/CopyButton';
+
+export async function generateMetadata({ params }: { params: { taskId: string } }): Promise<Metadata> {
+  return { title: `Inference Task ${params.taskId}` };
+}
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; dotColor: string }> = {
   Pending:   { label: 'Pending',   color: 'bg-yellow-500/10 text-yellow-400', dotColor: 'bg-yellow-400' },

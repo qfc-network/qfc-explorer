@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
 import type { ApiTransactionDetail } from '@/lib/api-types';
@@ -8,6 +9,10 @@ import CopyButton from '@/components/CopyButton';
 import StatusBadge from '@/components/StatusBadge';
 import { decodeInput, formatParam, decodeEventTopic } from '@/lib/decode-input';
 import { resolveAddressLabels } from '@/lib/labels';
+
+export async function generateMetadata({ params }: { params: { hash: string } }): Promise<Metadata> {
+  return { title: `Transaction ${shortenHash(params.hash)}` };
+}
 
 export default async function TransactionDetailPage({
   params,

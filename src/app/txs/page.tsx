@@ -1,5 +1,7 @@
 export const dynamic = "force-dynamic";
 
+export const metadata = { title: 'Transactions', description: 'Browse all transactions on QFC blockchain' };
+
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
 import type { ApiTransactionsList } from '@/lib/api-types';

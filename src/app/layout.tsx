@@ -1,11 +1,25 @@
 import './globals.css';
 import type { ReactNode } from 'react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 
-export const metadata = {
-  title: 'QFC Explorer',
-  description: 'QFC blockchain explorer — track blocks, transactions, and accounts on the QFC network.',
+export const metadata: Metadata = {
+  metadataBase: new URL('https://explorer.testnet.qfc.network'),
+  title: {
+    default: 'QFC Explorer',
+    template: '%s | QFC Explorer',
+  },
+  description:
+    'QFC blockchain explorer — track blocks, transactions, accounts, tokens, and smart contracts on the QFC network.',
+  openGraph: {
+    siteName: 'QFC Explorer',
+    type: 'website',
+    locale: 'en_US',
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

@@ -1,5 +1,7 @@
 export const dynamic = "force-dynamic";
 
+export const metadata = { title: 'Token Transfers', description: 'Recent token transfer activity on QFC' };
+
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
 import { shortenHash, formatNumber } from '@/lib/format';

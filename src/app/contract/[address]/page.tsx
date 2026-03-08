@@ -1,11 +1,16 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
 import { shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import ContractInteraction from '@/components/ContractInteraction';
 import ContractVerification from '@/components/ContractVerification';
+
+export async function generateMetadata({ params }: { params: { address: string } }): Promise<Metadata> {
+  return { title: `Contract ${shortenHash(params.address)}` };
+}
 
 type ContractInfo = {
   ok: boolean;

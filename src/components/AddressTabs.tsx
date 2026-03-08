@@ -134,14 +134,9 @@ export default function AddressTabs(props: Props) {
         })}
       </div>
 
-      {/* Export buttons */}
+      {/* Export with date range */}
       {(activeTab === 'transactions' || activeTab === 'token_transfers') && (
-        <div className="mt-3 flex justify-end">
-          <ExportButton
-            endpoint={`/api/analytics/export?type=${activeTab === 'token_transfers' ? 'token_transfers' : 'transactions'}&address=${address}`}
-            filename={`qfc_${address.slice(0, 10)}_${activeTab}`}
-          />
-        </div>
+        <ExportWithDateRange address={address} type={activeTab === 'token_transfers' ? 'token_transfers' : 'transactions'} />
       )}
 
       {/* Tab content */}
@@ -595,6 +590,43 @@ function ContractTab({ address, contract }: { address: string; contract: Contrac
           View Full Contract Page
         </Link>
       </div>
+    </div>
+  );
+}
+
+function ExportWithDateRange({ address, type }: { address: string; type: string }) {
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
+  const endpoint = useMemo(() => {
+    let url = `/api/analytics/export?type=${type}&address=${address}`;
+    if (startDate) url += `&start_date=${startDate}`;
+    if (endDate) url += `&end_date=${endDate}`;
+    return url;
+  }, [address, type, startDate, endDate]);
+
+  return (
+    <div className="mt-3 flex flex-wrap items-center justify-end gap-2">
+      <div className="flex items-center gap-1.5 text-xs text-slate-500">
+        <span>From</span>
+        <input
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+          className="rounded border border-slate-700 bg-slate-900 px-2 py-1 text-xs text-slate-300 focus:border-cyan-500 focus:outline-none"
+        />
+        <span>To</span>
+        <input
+          type="date"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+          className="rounded border border-slate-700 bg-slate-900 px-2 py-1 text-xs text-slate-300 focus:border-cyan-500 focus:outline-none"
+        />
+      </div>
+      <ExportButton
+        endpoint={endpoint}
+        filename={`qfc_${address.slice(0, 10)}_${type}`}
+      />
     </div>
   );
 }

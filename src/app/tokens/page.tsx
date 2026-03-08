@@ -1,5 +1,7 @@
 export const dynamic = "force-dynamic";
 
+export const metadata = { title: 'Token List', description: 'ERC-20 tokens on QFC blockchain' };
+
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
 import type { ApiTokensList } from '@/lib/api-types';

@@ -1,5 +1,7 @@
 export const dynamic = "force-dynamic";
 
+export const metadata = { title: 'Search', description: 'Search QFC blockchain' };
+
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
 import type { ApiSearch, ApiSearchSuggest } from '@/lib/api-types';

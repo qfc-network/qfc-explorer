@@ -1,5 +1,7 @@
 export const dynamic = "force-dynamic";
 
+export const metadata = { title: 'Gas Tracker', description: 'Real-time gas prices and block gas usage on QFC' };
+
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
 import { formatNumber, shortenHash } from '@/lib/format';
@@ -39,6 +41,17 @@ function formatGwei(wei: string): string {
   if (gwei < 1) return gwei.toFixed(3);
   if (gwei < 100) return gwei.toFixed(2);
   return gwei.toFixed(0);
+}
+
+function formatFee(gasPriceWei: string, gasUnits: number): string {
+  const price = Number(gasPriceWei);
+  if (!Number.isFinite(price) || price === 0) return '0 QFC';
+  const feeWei = price * gasUnits;
+  const feeQfc = feeWei / 1e18;
+  if (feeQfc < 0.000001) return '<0.000001 QFC';
+  if (feeQfc < 0.001) return `${feeQfc.toFixed(6)} QFC`;
+  if (feeQfc < 1) return `${feeQfc.toFixed(4)} QFC`;
+  return `${feeQfc.toFixed(2)} QFC`;
 }
 
 function gasUtilization(used: string, limit: string): number {
@@ -84,6 +97,50 @@ export default async function GasTrackerPage() {
           <GasCard title="Average" gwei={formatGwei(prices.average)} color="blue" sub="Mean" />
           <GasCard title="Median" gwei={formatGwei(prices.median)} color="yellow" sub="50th percentile" />
           <GasCard title="High" gwei={formatGwei(prices.high)} color="red" sub="Maximum" />
+        </section>
+      )}
+
+      {/* Fee Estimates */}
+      {prices && (
+        <section className="space-y-4">
+          <SectionHeader title="Estimated Transaction Fees" description="Based on current gas prices" />
+          <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/40">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-slate-800 text-left text-xs uppercase tracking-wider text-slate-500">
+                  <th className="px-4 py-3">Operation</th>
+                  <th className="px-4 py-3 text-right">Gas Units</th>
+                  <th className="px-4 py-3 text-right">Low</th>
+                  <th className="px-4 py-3 text-right">Average</th>
+                  <th className="px-4 py-3 text-right">High</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-800/40">
+                {[
+                  { op: 'QFC Transfer', gas: 21000 },
+                  { op: 'ERC-20 Transfer', gas: 65000 },
+                  { op: 'ERC-20 Approve', gas: 46000 },
+                  { op: 'NFT Transfer', gas: 85000 },
+                  { op: 'Swap (DEX)', gas: 150000 },
+                  { op: 'Contract Deploy (small)', gas: 250000 },
+                ].map(({ op, gas }) => (
+                  <tr key={op} className="hover:bg-slate-900/60">
+                    <td className="px-4 py-2.5 text-slate-300">{op}</td>
+                    <td className="px-4 py-2.5 text-right font-mono text-slate-400">{formatNumber(gas)}</td>
+                    <td className="px-4 py-2.5 text-right font-mono text-green-400">
+                      {formatFee(prices.low, gas)}
+                    </td>
+                    <td className="px-4 py-2.5 text-right font-mono text-blue-400">
+                      {formatFee(prices.average, gas)}
+                    </td>
+                    <td className="px-4 py-2.5 text-right font-mono text-red-400">
+                      {formatFee(prices.high, gas)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </section>
       )}
 

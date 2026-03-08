@@ -1,5 +1,7 @@
 export const dynamic = "force-dynamic";
 
+export const metadata = { title: 'Verified Contracts', description: 'Verified smart contracts on QFC blockchain' };
+
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
 import { shortenHash, formatNumber } from '@/lib/format';
