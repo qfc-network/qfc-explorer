@@ -1,5 +1,18 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Inference',
+  description: 'QFC AI inference tasks and statistics.',
+  openGraph: {
+    title: 'Inference | QFC Explorer',
+    description: 'QFC AI inference tasks and statistics.',
+    type: 'website',
+  },
+};
+
+import Link from 'next/link';
 import SectionHeader from '@/components/SectionHeader';
 import StatsCard from '@/components/StatsCard';
 import Table from '@/components/Table';
@@ -33,10 +46,18 @@ export default async function InferencePage() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 px-6 py-12">
-      <SectionHeader
-        title="AI Inference"
-        description="Network inference statistics and validator compute contributions."
-      />
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <SectionHeader
+          title="AI Inference"
+          description="Network inference statistics and validator compute contributions."
+        />
+        <Link
+          href="/inference/analytics"
+          className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors"
+        >
+          View Analytics
+        </Link>
+      </div>
 
       {/* Overview Stats */}
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -100,6 +121,7 @@ export default async function InferencePage() {
         />
         <Table
           rows={models}
+          keyField="name"
           emptyMessage="No models registered yet."
           columns={[
             {
@@ -144,6 +166,7 @@ export default async function InferencePage() {
         />
         <Table
           rows={validators}
+          keyField="address"
           emptyMessage="No validators reported yet."
           columns={[
             {

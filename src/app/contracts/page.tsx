@@ -1,8 +1,20 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Verified Contracts',
+  description: 'Verified smart contracts on the QFC blockchain.',
+  openGraph: {
+    title: 'Verified Contracts | QFC Explorer',
+    description: 'Verified smart contracts on the QFC blockchain.',
+    type: 'website',
+  },
+};
+
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
-import { shortenHash, formatTimestampMs } from '@/lib/format';
+import { shortenHash, formatNumber } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
 
@@ -13,19 +25,43 @@ type ContractsResponse = {
       address: string;
       creator_tx_hash: string | null;
       created_at_block: string | null;
+      is_verified: boolean;
+    }>;
+    total: number;
+  };
+};
+
+type VerifiedResponse = {
+  ok: boolean;
+  data: {
+    items: Array<{
+      address: string;
+      compiler_version: string | null;
+      verified_at: string | null;
+      token_name: string | null;
+      token_symbol: string | null;
+      interaction_count: number;
     }>;
     total: number;
   };
 };
 
 export default async function ContractsPage() {
-  const contractsResponse = await fetchJsonSafe<ContractsResponse>(
-    '/api/contracts?limit=50',
-    { next: { revalidate: 30 } }
-  );
+  const [contractsResponse, verifiedResponse] = await Promise.all([
+    fetchJsonSafe<ContractsResponse>(
+      '/api/contracts?limit=50',
+      { next: { revalidate: 30 } }
+    ),
+    fetchJsonSafe<VerifiedResponse>(
+      '/api/contracts/verified',
+      { next: { revalidate: 60 } }
+    ),
+  ]);
 
   const contracts = contractsResponse?.data?.items ?? [];
   const total = contractsResponse?.data?.total ?? 0;
+  const verifiedContracts = verifiedResponse?.data?.items ?? [];
+  const verifiedTotal = verifiedResponse?.data?.total ?? 0;
 
   return (
     <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-6 px-6 py-12">
@@ -75,6 +111,63 @@ export default async function ContractsPage() {
         </div>
       </section>
 
+      {/* Verified Contracts Leaderboard */}
+      {verifiedContracts.length > 0 && (
+        <section className="space-y-4">
+          <SectionHeader
+            title={`Verified Contracts (${verifiedTotal})`}
+            description="Verified contracts ranked by interaction count"
+          />
+          <Table
+            rows={verifiedContracts}
+            keyField="address"
+            emptyMessage="No verified contracts"
+            columns={[
+              {
+                key: 'rank',
+                header: '#',
+                render: (_, i) => (
+                  <span className="text-slate-500">{(i ?? 0) + 1}</span>
+                ),
+              },
+              {
+                key: 'address',
+                header: 'Contract',
+                render: (row) => (
+                  <div>
+                    <Link
+                      href={`/contract/${row.address}`}
+                      className="font-mono text-cyan-400 hover:text-cyan-300"
+                    >
+                      {shortenHash(row.address, 8)}
+                    </Link>
+                    {(row.token_name || row.token_symbol) && (
+                      <span className="ml-2 text-xs text-slate-400">
+                        {row.token_name || row.token_symbol}
+                      </span>
+                    )}
+                  </div>
+                ),
+              },
+              {
+                key: 'compiler',
+                header: 'Compiler',
+                render: (row) => (
+                  <span className="text-xs text-slate-400">{row.compiler_version || '—'}</span>
+                ),
+              },
+              {
+                key: 'interactions',
+                header: 'Interactions',
+                render: (row) => (
+                  <span className="text-slate-300">{formatNumber(row.interaction_count)}</span>
+                ),
+              },
+            ]}
+          />
+        </section>
+      )}
+
       {/* Contracts List */}
       {contracts.length > 0 ? (
         <section className="space-y-4">
@@ -84,18 +177,29 @@ export default async function ContractsPage() {
           />
           <Table
             rows={contracts}
+            keyField="address"
             emptyMessage="No contracts found"
             columns={[
               {
                 key: 'address',
                 header: 'Contract Address',
                 render: (row) => (
-                  <Link
-                    href={`/contract/${row.address}`}
-                    className="font-mono text-slate-200 hover:text-white"
-                  >
-                    {shortenHash(row.address, 8)}
-                  </Link>
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href={`/contract/${row.address}`}
+                      className="font-mono text-slate-200 hover:text-white"
+                    >
+                      {shortenHash(row.address, 8)}
+                    </Link>
+                    {row.is_verified && (
+                      <span className="inline-flex items-center gap-0.5 rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] text-emerald-400">
+                        <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                        Verified
+                      </span>
+                    )}
+                  </div>
                 ),
               },
               {

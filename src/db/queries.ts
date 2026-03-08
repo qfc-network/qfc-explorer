@@ -186,13 +186,18 @@ export async function getTransactionByHash(hash: string): Promise<{
   gas_price: string;
   nonce: string;
   data: string | null;
+  type: string | null;
+  timestamp_ms: string | null;
 } | null> {
   const pool = getPool();
   const result = await pool.query(
     `
-    SELECT hash, block_height, from_address, to_address, value, status, gas_limit, gas_price, nonce, data
-    FROM transactions
-    WHERE hash = $1
+    SELECT t.hash, t.block_height, t.from_address, t.to_address, t.value, t.status,
+           t.gas_limit, t.gas_price, t.nonce, t.data, t.type,
+           b.timestamp_ms
+    FROM transactions t
+    LEFT JOIN blocks b ON b.height = t.block_height
+    WHERE t.hash = $1
     LIMIT 1
     `,
     [hash]
@@ -204,6 +209,7 @@ export async function getTransactionByHash(hash: string): Promise<{
   return {
     ...row,
     data: row.data ? `0x${row.data.toString('hex')}` : null,
+    timestamp_ms: row.timestamp_ms?.toString() ?? null,
   };
 }
 
@@ -499,12 +505,12 @@ export async function getTokensPage(
   limit: number,
   offset: number,
   order: 'asc' | 'desc' = 'desc'
-): Promise<Array<{ address: string; name: string | null; symbol: string | null; decimals: number | null; total_supply: string | null; last_seen_block: string | null }>> {
+): Promise<Array<{ address: string; name: string | null; symbol: string | null; decimals: number | null; total_supply: string | null; last_seen_block: string | null; token_type: string }>> {
   const pool = getPool();
   const direction = order === 'asc' ? 'ASC' : 'DESC';
   const result = await pool.query(
     `
-    SELECT address, name, symbol, decimals, total_supply, last_seen_block
+    SELECT address, name, symbol, decimals, total_supply, last_seen_block, token_type
     FROM tokens
     ORDER BY last_seen_block ${direction} NULLS LAST
     LIMIT $1 OFFSET $2
@@ -521,11 +527,12 @@ export async function getTokenByAddress(address: string): Promise<{
   decimals: number | null;
   total_supply: string | null;
   last_seen_block: string | null;
+  token_type: string;
 } | null> {
   const pool = getPool();
   const result = await pool.query(
     `
-    SELECT address, name, symbol, decimals, total_supply, last_seen_block
+    SELECT address, name, symbol, decimals, total_supply, last_seen_block, token_type
     FROM tokens
     WHERE address = $1
     LIMIT 1
@@ -540,12 +547,12 @@ export async function getTokenTransfers(
   limit: number,
   offset: number,
   order: 'asc' | 'desc' = 'desc'
-): Promise<Array<{ tx_hash: string; block_height: string; from_address: string; to_address: string; value: string }>> {
+): Promise<Array<{ tx_hash: string; block_height: string; from_address: string; to_address: string; value: string; token_id: string | null }>> {
   const pool = getPool();
   const direction = order === 'asc' ? 'ASC' : 'DESC';
   const result = await pool.query(
     `
-    SELECT tx_hash, block_height, from_address, to_address, value
+    SELECT tx_hash, block_height, from_address, to_address, value, token_id
     FROM token_transfers
     WHERE token_address = $1
     ORDER BY block_height ${direction}, log_index ${direction}
@@ -571,26 +578,241 @@ export async function getTokenHolders(
 
   const result = await pool.query(
     `
-    SELECT address, SUM(balance)::numeric AS balance
-    FROM (
-      SELECT to_address AS address, value::numeric AS balance
-      FROM token_transfers
-      WHERE token_address = $1
-      UNION ALL
-      SELECT from_address AS address, -value::numeric AS balance
-      FROM token_transfers
-      WHERE token_address = $1
-    ) balances
-    GROUP BY address
-    HAVING SUM(balance) > 0
-    ORDER BY SUM(balance) DESC
+    SELECT holder_address AS address, balance
+    FROM token_balances
+    WHERE token_address = $1 AND token_id IS NULL AND balance::numeric > 0
+    ORDER BY balance::numeric DESC
     LIMIT $2
     `,
     [tokenAddress, limit]
   );
 
-  return result.rows.map((row) => ({
-    address: row.address,
-    balance: row.balance.toString(),
-  }));
+  return result.rows;
+}
+
+export async function getTokenTransfersByAddress(
+  address: string,
+  limit: number,
+  offset: number,
+  order: 'asc' | 'desc' = 'desc'
+): Promise<Array<{
+  tx_hash: string;
+  block_height: string;
+  token_address: string;
+  from_address: string;
+  to_address: string;
+  value: string;
+  token_name: string | null;
+  token_symbol: string | null;
+  token_decimals: number | null;
+}>> {
+  const pool = getPool();
+  const direction = order === 'asc' ? 'ASC' : 'DESC';
+  const result = await pool.query(
+    `
+    SELECT tt.tx_hash, tt.block_height, tt.token_address, tt.from_address, tt.to_address, tt.value,
+           t.name AS token_name, t.symbol AS token_symbol, t.decimals AS token_decimals
+    FROM token_transfers tt
+    LEFT JOIN tokens t ON t.address = tt.token_address
+    WHERE tt.from_address = $1 OR tt.to_address = $1
+    ORDER BY tt.block_height ${direction}, tt.log_index ${direction}
+    LIMIT $2 OFFSET $3
+    `,
+    [address, limit, offset]
+  );
+  return result.rows;
+}
+
+export async function getTokenHoldingsByAddress(
+  address: string
+): Promise<Array<{
+  token_address: string;
+  token_name: string | null;
+  token_symbol: string | null;
+  token_decimals: number | null;
+  token_type: string;
+  balance: string;
+}>> {
+  const pool = getPool();
+  const result = await pool.query(
+    `
+    SELECT
+      tb.token_address,
+      t.name AS token_name,
+      t.symbol AS token_symbol,
+      t.decimals AS token_decimals,
+      t.token_type,
+      tb.balance
+    FROM token_balances tb
+    LEFT JOIN tokens t ON t.address = tb.token_address
+    WHERE tb.holder_address = $1 AND tb.token_id IS NULL AND tb.balance::numeric > 0
+    ORDER BY tb.balance::numeric DESC
+    `,
+    [address]
+  );
+  return result.rows;
+}
+
+export async function getNftHoldingsByAddress(
+  address: string
+): Promise<Array<{
+  token_address: string;
+  token_name: string | null;
+  token_symbol: string | null;
+  token_type: string;
+  token_id: string;
+  balance: string;
+}>> {
+  const pool = getPool();
+  const result = await pool.query(
+    `
+    SELECT
+      tb.token_address,
+      t.name AS token_name,
+      t.symbol AS token_symbol,
+      t.token_type,
+      tb.token_id,
+      tb.balance
+    FROM token_balances tb
+    LEFT JOIN tokens t ON t.address = tb.token_address
+    WHERE tb.holder_address = $1 AND tb.token_id IS NOT NULL AND tb.balance::numeric > 0
+    ORDER BY tb.token_address, tb.token_id
+    `,
+    [address]
+  );
+  return result.rows;
+}
+
+export async function getNftHoldersByToken(
+  tokenAddress: string,
+  limit: number
+): Promise<Array<{ address: string; token_id: string; balance: string }>> {
+  const pool = getPool();
+  const result = await pool.query(
+    `
+    SELECT holder_address AS address, token_id, balance
+    FROM token_balances
+    WHERE token_address = $1 AND token_id IS NOT NULL AND balance::numeric > 0
+    ORDER BY token_id::numeric ASC
+    LIMIT $2
+    `,
+    [tokenAddress, limit]
+  );
+  return result.rows;
+}
+
+export async function getDailyStats(
+  days: number = 30
+): Promise<Array<{
+  date: string;
+  tx_count: string;
+  active_addresses: number;
+  new_contracts: number;
+  total_gas_used: string;
+  avg_gas_price: string;
+  block_count: number;
+  avg_block_time_ms: string;
+}>> {
+  const pool = getPool();
+  const result = await pool.query(
+    `
+    SELECT
+      date::text,
+      tx_count::text,
+      active_addresses,
+      new_contracts,
+      total_gas_used::text,
+      avg_gas_price::text,
+      block_count,
+      avg_block_time_ms::text
+    FROM daily_stats
+    WHERE date >= CURRENT_DATE - $1::int
+    ORDER BY date ASC
+    `,
+    [days]
+  );
+  return result.rows;
+}
+
+export async function upsertDailyStats(date: string, stats: {
+  tx_count: number;
+  active_addresses: number;
+  new_contracts: number;
+  total_gas_used: string;
+  avg_gas_price: string;
+  block_count: number;
+  avg_block_time_ms: string;
+}): Promise<void> {
+  const pool = getPool();
+  await pool.query(
+    `
+    INSERT INTO daily_stats (date, tx_count, active_addresses, new_contracts, total_gas_used, avg_gas_price, block_count, avg_block_time_ms)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    ON CONFLICT (date) DO UPDATE SET
+      tx_count = EXCLUDED.tx_count,
+      active_addresses = EXCLUDED.active_addresses,
+      new_contracts = EXCLUDED.new_contracts,
+      total_gas_used = EXCLUDED.total_gas_used,
+      avg_gas_price = EXCLUDED.avg_gas_price,
+      block_count = EXCLUDED.block_count,
+      avg_block_time_ms = EXCLUDED.avg_block_time_ms
+    `,
+    [date, stats.tx_count, stats.active_addresses, stats.new_contracts, stats.total_gas_used, stats.avg_gas_price, stats.block_count, stats.avg_block_time_ms]
+  );
+}
+
+export async function searchTokensByName(
+  query: string,
+  limit: number
+): Promise<Array<{ address: string; name: string | null; symbol: string | null; token_type: string }>> {
+  const pool = getPool();
+  const result = await pool.query(
+    `
+    SELECT address, name, symbol, token_type
+    FROM tokens
+    WHERE name ILIKE $1 OR symbol ILIKE $1
+    ORDER BY last_seen_block DESC NULLS LAST
+    LIMIT $2
+    `,
+    [`%${query}%`, limit]
+  );
+  return result.rows;
+}
+
+export async function searchContractsByName(
+  query: string,
+  limit: number
+): Promise<Array<{ address: string; name: string | null; is_verified: boolean }>> {
+  const pool = getPool();
+  // Search verified contracts by matching source code contract name
+  // Contract names appear in the source code; we search the ABI for contract-like names
+  const result = await pool.query(
+    `
+    SELECT c.address, t.name, COALESCE(c.is_verified, false) AS is_verified
+    FROM contracts c
+    LEFT JOIN tokens t ON t.address = c.address
+    WHERE c.is_verified = true
+      AND (t.name ILIKE $1 OR t.symbol ILIKE $1)
+    ORDER BY c.created_at_block DESC NULLS LAST
+    LIMIT $2
+    `,
+    [`%${query}%`, limit]
+  );
+  return result.rows;
+}
+
+export async function getContractByAddress(
+  address: string
+): Promise<{
+  creator_tx_hash: string | null;
+  created_at_block: string | null;
+  code_hash: string | null;
+  is_verified: boolean;
+} | null> {
+  const pool = getPool();
+  const result = await pool.query(
+    `SELECT creator_tx_hash, created_at_block, code_hash, is_verified FROM contracts WHERE address = $1 LIMIT 1`,
+    [address]
+  );
+  return result.rows[0] ?? null;
 }

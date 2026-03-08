@@ -1,103 +1,75 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Transactions',
+  description: 'Browse all transactions on the QFC blockchain.',
+  openGraph: {
+    title: 'Transactions | QFC Explorer',
+    description: 'Browse all transactions on the QFC blockchain.',
+    type: 'website',
+  },
+};
+
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
 import type { ApiTransactionsList } from '@/lib/api-types';
-import { formatWeiToQfc, shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
-import Table from '@/components/Table';
-import StatusBadge from '@/components/StatusBadge';
 import AutoRefresh from '@/components/AutoRefresh';
+import TranslatedText from '@/components/TranslatedText';
+import TxsPageClient from '@/components/TxsPageClient';
+import { resolveAddressLabels } from '@/lib/labels';
 
 const PAGE_SIZE = 25;
 
 export default async function TransactionsPage({
   searchParams,
 }: {
-  searchParams: { page?: string };
+  searchParams: { page?: string; cursor?: string };
 }) {
+  const cursor = searchParams.cursor ?? null;
   const page = Math.max(1, Number(searchParams.page ?? '1'));
-  const response = await fetchJsonSafe<ApiTransactionsList>(
-    `/api/transactions?page=${page}&limit=${PAGE_SIZE}`,
-    { next: { revalidate: 10 } }
-  );
+
+  // Use cursor-based fetch when cursor is present, otherwise fall back to page-based
+  const apiQuery = cursor
+    ? `/api/transactions?cursor=${encodeURIComponent(cursor)}&limit=${PAGE_SIZE}`
+    : `/api/transactions?page=${page}&limit=${PAGE_SIZE}`;
+
+  const response = await fetchJsonSafe<ApiTransactionsList>(apiQuery, {
+    next: { revalidate: 10 },
+  });
   const transactions = response?.data.items ?? [];
+  const nextCursor = response?.data.next_cursor ?? null;
+
+  // Resolve address labels
+  const allAddresses = transactions.flatMap((tx) => [tx.from_address, tx.to_address].filter(Boolean) as string[]);
+  const labels = await resolveAddressLabels(allAddresses);
 
   return (
     <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 px-6 py-12">
       <AutoRefresh intervalMs={20000} />
       <SectionHeader
-        title="Transactions"
-        description={`Showing page ${page}`}
+        title={<TranslatedText tKey="txs.title" />}
+        description={cursor ? <TranslatedText tKey="common.browsingData" /> : <><TranslatedText tKey="common.showingPage" /> {page}</>}
         action={
           <Link
             href="/"
             className="rounded-full border border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-200"
           >
-            Back
+            <TranslatedText tKey="common.back" />
           </Link>
         }
       />
 
-      <Table
-        rows={transactions}
-        emptyMessage="No transactions indexed yet."
-        columns={[
-          {
-            key: 'hash',
-            header: 'Hash',
-            render: (row) => (
-              <Link href={`/txs/${row.hash}`} className="text-slate-200">
-                {shortenHash(row.hash)}
-              </Link>
-            ),
-          },
-          {
-            key: 'from',
-            header: 'From',
-            render: (row) => (
-              <Link href={`/address/${row.from_address}`} className="text-slate-200">
-                {shortenHash(row.from_address)}
-              </Link>
-            ),
-          },
-          {
-            key: 'to',
-            header: 'To',
-            render: (row) =>
-              row.to_address ? (
-                <Link href={`/address/${row.to_address}`} className="text-slate-200">
-                  {shortenHash(row.to_address)}
-                </Link>
-              ) : (
-                '—'
-              ),
-          },
-          {
-            key: 'value',
-            header: 'Value',
-            render: (row) => `${formatWeiToQfc(row.value)} QFC`,
-          },
-          {
-            key: 'status',
-            header: 'Status',
-            render: (row) => <StatusBadge status={row.status} />,
-          },
-        ]}
+      <TxsPageClient
+        transactions={transactions}
+        labels={labels}
+        page={page}
+        cursor={cursor}
+        nextCursor={nextCursor}
+        pageSize={PAGE_SIZE}
       />
-
-      <div className="flex items-center justify-between text-sm text-slate-400">
-        <Link
-          href={`/txs?page=${Math.max(1, page - 1)}`}
-          className="rounded-full border border-slate-800 px-4 py-2"
-        >
-          Previous
-        </Link>
-        <span>Page {page}</span>
-        <Link href={`/txs?page=${page + 1}`} className="rounded-full border border-slate-800 px-4 py-2">
-          Next
-        </Link>
-      </div>
     </main>
   );
 }

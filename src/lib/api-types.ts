@@ -6,6 +6,7 @@ export type ApiBlocksList = ApiOk<{
   limit: number;
   order: string;
   producer?: string | null;
+  next_cursor?: string | null;
   items: Array<{
     hash: string;
     height: string;
@@ -48,6 +49,7 @@ export type ApiTransactionsList = ApiOk<{
   order: string;
   address?: string | null;
   status?: string | null;
+  next_cursor?: string | null;
   items: Array<{
     hash: string;
     block_height: string;
@@ -68,8 +70,11 @@ export type ApiTransactionDetail = ApiOk<{
     status: string;
     gas_limit: string;
     gas_price: string;
+    gas_used: string | null;
     nonce: string;
     data: string | null;
+    type: string | null;
+    timestamp_ms: string | null;
   };
   logs: Array<{
     contract_address: string;
@@ -96,9 +101,33 @@ export type ApiAddressDetail = ApiOk<{
     sent_value: string;
     received_value: string;
   } | null;
+  contract?: {
+    creator_tx_hash: string | null;
+    created_at_block: string | null;
+    code_hash: string | null;
+    is_verified: boolean;
+  } | null;
+  tokenHoldings: Array<{
+    token_address: string;
+    token_name: string | null;
+    token_symbol: string | null;
+    token_decimals: number | null;
+    token_type: string;
+    balance: string;
+  }>;
+  nftHoldings: Array<{
+    token_address: string;
+    token_name: string | null;
+    token_symbol: string | null;
+    token_type: string;
+    token_id: string;
+    balance: string;
+  }>;
+  tab: string;
   page: number;
   limit: number;
   order: string;
+  next_cursor?: string | null;
   transactions: Array<{
     hash: string;
     block_height: string;
@@ -107,7 +136,20 @@ export type ApiAddressDetail = ApiOk<{
     value: string;
     status: string;
   }>;
+  tokenTransfers: Array<{
+    tx_hash: string;
+    block_height: string;
+    token_address: string;
+    from_address: string;
+    to_address: string;
+    value: string;
+    token_name: string | null;
+    token_symbol: string | null;
+    token_decimals: number | null;
+  }>;
 }>;
+
+export type TokenSearchResult = { address: string; name: string | null; symbol: string | null; token_type: string };
 
 export type ApiSearch = ApiOk<{
   query: string;
@@ -115,6 +157,7 @@ export type ApiSearch = ApiOk<{
   blockByHash: { hash: string; height: string } | null;
   transaction: { hash: string } | null;
   address: { address: string } | null;
+  tokens: TokenSearchResult[];
 }>;
 
 export type ApiSearchSuggest = ApiOk<{
@@ -123,6 +166,7 @@ export type ApiSearchSuggest = ApiOk<{
   blockHashes: Array<{ hash: string; height: string }>;
   txHashes: Array<{ hash: string; block_height: string }>;
   addresses: string[];
+  tokens?: TokenSearchResult[];
 }>;
 
 export type ApiNetwork = ApiOk<{
@@ -169,6 +213,7 @@ export type ApiTokensList = ApiOk<{
     decimals: number | null;
     total_supply: string | null;
     last_seen_block: string | null;
+    token_type: string;
   }>;
 }>;
 
@@ -180,6 +225,7 @@ export type ApiTokenDetail = ApiOk<{
     decimals: number | null;
     total_supply: string | null;
     last_seen_block: string | null;
+    token_type: string;
   };
   page: number;
   limit: number;
@@ -190,6 +236,7 @@ export type ApiTokenDetail = ApiOk<{
     from_address: string;
     to_address: string;
     value: string;
+    token_id: string | null;
   }>;
 }>;
 
@@ -197,6 +244,11 @@ export type ApiTokenHolders = ApiOk<{
   token: string;
   holders: Array<{
     address: string;
+    balance: string;
+  }>;
+  nftHolders: Array<{
+    address: string;
+    token_id: string;
     balance: string;
   }>;
 }>;
@@ -275,4 +327,119 @@ export type ApiTaskStatus = ApiOk<{
   resultSize?: number;
   minerAddress?: string;
   executionTimeMs?: number;
+}>;
+
+export type ApiTxPool = ApiOk<{
+  pending: Array<{
+    hash: string;
+    from: string;
+    to: string | null;
+    value: string;
+    gasPrice: string;
+    nonce: number;
+    gas: string | null;
+  }>;
+  count: number;
+  queued: number;
+  sort: string;
+  order: string;
+  limit: number;
+}>;
+
+export type ApiTxPoolStatus = ApiOk<{
+  pending: number;
+  queued: number;
+}>;
+
+export type ApiGasTracker = ApiOk<{
+  prices: {
+    low: string;
+    median: string;
+    average: string;
+    high: string;
+    sampleSize: number;
+  };
+  blocks: Array<{
+    height: string;
+    gasUsed: string;
+    gasLimit: string;
+    txCount: number;
+    timestampMs: string;
+  }>;
+  topContracts: Array<{
+    address: string;
+    totalGas: string;
+    txCount: number;
+  }>;
+}>;
+
+export type ApiAdminIndexer = ApiOk<{
+  items: Array<{ key: string; value: string; updated_at: string }>;
+  lastBatch: {
+    fromBlock: string;
+    toBlock: string;
+    blocks: number;
+    transactions: number;
+    durationMs: number;
+    timestamp: string;
+  } | null;
+  failed: {
+    block: string;
+    error: string;
+    timestamp: string;
+  } | null;
+}>;
+
+export type ApiAdminDb = ApiOk<{
+  pool: { total: number; idle: number; waiting: number };
+}>;
+
+export type ApiAdminRateLimit = ApiOk<{
+  config: { windowMs: number; maxRequests: number; windowSeconds: number };
+  stats: { activeIps: number; totalRequests: number; limitedRequests: number; limitedPercentage: string };
+  topIps: Array<{ ip: string; requests: number; limited: boolean; resetAt: number }>;
+  recentRequests: Array<{ ip: string; path: string; timestamp: number; limited: boolean }>;
+}>;
+
+export type ApiAdminArchive = ApiOk<{
+  threshold: string;
+  tables: Array<{ table: string; rows: number }>;
+  recentOperations: Array<{ table_name: string; partition_key: string; rows_archived: number; archived_at: string }>;
+}>;
+
+export type ApiAdminLabels = ApiOk<{
+  labels: Array<{ address: string; label: string; category: string | null; description: string | null; website: string | null; created_at: string }>;
+}>;
+
+export type ApiAdminWs = ApiOk<{
+  connections: number;
+  channels: number;
+  addresses: number;
+  polling: boolean;
+}>;
+
+export type ApiAdminRedis = ApiOk<{
+  mode: string;
+  nodes: number;
+  connected: boolean;
+}>;
+
+export type ApiTokenTransfersList = ApiOk<{
+  page: number;
+  limit: number;
+  order: string;
+  type: string | null;
+  items: Array<{
+    tx_hash: string;
+    block_height: string;
+    token_address: string;
+    from_address: string;
+    to_address: string;
+    value: string;
+    token_id: string | null;
+    token_name: string | null;
+    token_symbol: string | null;
+    token_decimals: number | null;
+    token_type: string | null;
+  }>;
 }>;

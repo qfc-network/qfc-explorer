@@ -1,8 +1,21 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Network',
+  description: 'QFC network validators, epoch info, and hashrate.',
+  openGraph: {
+    title: 'Network | QFC Explorer',
+    description: 'QFC network validators, epoch info, and hashrate.',
+    type: 'website',
+  },
+};
+
 import SectionHeader from '@/components/SectionHeader';
 import StatsCard from '@/components/StatsCard';
 import Table from '@/components/Table';
+import TranslatedText from '@/components/TranslatedText';
 import { fetchJsonSafe } from '@/lib/api-client';
 import type { ApiNetwork } from '@/lib/api-types';
 import { formatNumber, shortenHash } from '@/lib/format';
@@ -17,12 +30,13 @@ export default async function NetworkPage() {
   if (!response) {
     return (
       <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-6 px-6 py-12">
-        <SectionHeader title="Network" description="Network data not available" />
+        <SectionHeader title={<TranslatedText tKey="network.title" />} description={<TranslatedText tKey="network.dataNotAvailable" />} />
       </main>
     );
   }
 
-  const { epoch, nodeInfo, totalHashrate } = response.data;
+  const { epoch, totalHashrate } = response.data;
+  const nodeInfo = response.data.nodeInfo ?? { chainId: '9000', peerCount: 0, version: '—', isValidator: false, syncing: false };
   const validatorsRaw = response.data.validators ?? [];
   const miningValidators = validatorsRaw.filter(v => v.providesCompute).length;
   const validators = validatorsRaw.sort((a, b) => {
@@ -36,42 +50,41 @@ export default async function NetworkPage() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 px-6 py-12">
-      <SectionHeader title="Network" description="QFC validator and epoch status." />
+      <SectionHeader title={<TranslatedText tKey="network.title" />} description={<TranslatedText tKey="network.description" />} />
 
       <section className="grid gap-4 sm:grid-cols-3">
-        <StatsCard label="Chain ID" value={nodeInfo.chainId} />
-        <StatsCard label="Epoch" value={epoch.number} sub={`Duration ${epoch.durationMs} ms`} />
-        <StatsCard label="Peers" value={formatNumber(nodeInfo.peerCount)} />
+        <StatsCard label={<TranslatedText tKey="stats.chainId" />} value={nodeInfo.chainId} />
+        <StatsCard label={<TranslatedText tKey="network.epoch" />} value={epoch.number} sub={`${epoch.durationMs} ms`} />
+        <StatsCard label={<TranslatedText tKey="network.peers" />} value={formatNumber(nodeInfo.peerCount)} />
       </section>
 
       <section className="grid gap-4 sm:grid-cols-3">
-        <StatsCard label="Version" value={nodeInfo.version} />
-        <StatsCard label="Validator" value={nodeInfo.isValidator ? 'Yes' : 'No'} />
-        <StatsCard label="Syncing" value={nodeInfo.syncing ? 'Yes' : 'No'} />
+        <StatsCard label={<TranslatedText tKey="network.version" />} value={nodeInfo.version} />
+        <StatsCard label={<TranslatedText tKey="network.validator" />} value={nodeInfo.isValidator ? 'Yes' : 'No'} />
+        <StatsCard label={<TranslatedText tKey="network.syncing" />} value={nodeInfo.syncing ? 'Yes' : 'No'} />
       </section>
 
       <section className="grid gap-4 sm:grid-cols-3">
         <StatsCard
-          label="Total Hashrate"
+          label={<TranslatedText tKey="network.totalHashrate" />}
           value={formatHashrate(totalHashrate || '0')}
-          sub="Network compute power"
         />
         <StatsCard
-          label="Mining Validators"
+          label={<TranslatedText tKey="network.miningValidators" />}
           value={miningValidators.toString()}
-          sub={`of ${validators.length} total`}
+          sub={`${validators.length} total`}
         />
         <StatsCard
-          label="Compute Weight"
+          label={<TranslatedText tKey="network.computeWeight" />}
           value="20%"
-          sub="PoC contribution"
         />
       </section>
 
       <section className="space-y-4">
-        <SectionHeader title="Validators" description={`${validators.length} active validators`} />
+        <SectionHeader title={<TranslatedText tKey="network.validators" />} description={`${validators.length}`} />
         <Table
           rows={validators}
+          keyField="address"
           emptyMessage="No validators reported yet."
           columns={[
             {
@@ -107,7 +120,7 @@ export default async function NetworkPage() {
             {
               key: 'inferenceScore',
               header: 'Inference',
-              render: (row) => (row as any).inferenceScore !== '0' ? (row as any).inferenceScore : '—',
+              render: (row) => row.inferenceScore !== '0' ? row.inferenceScore : '—',
             },
             {
               key: 'hashrate',

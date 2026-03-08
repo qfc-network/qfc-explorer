@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { apiUrl } from '@/lib/client-api';
 
 type Props = {
   address: string;
@@ -190,7 +191,7 @@ function FunctionCard({
     setResult(null);
 
     try {
-      const response = await fetch('/api/contract/call', {
+      const response = await fetch(apiUrl('/api/contract/call'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -231,6 +232,7 @@ function FunctionCard({
           </span>
         </div>
         <svg
+          aria-hidden="true"
           className={`w-5 h-5 text-slate-400 transition-transform ${expanded ? 'rotate-180' : ''}`}
           fill="none"
           viewBox="0 0 24 24"

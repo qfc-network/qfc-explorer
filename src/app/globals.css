@@ -4,11 +4,38 @@
 
 :root {
   color-scheme: light;
+  --bg-primary: #f8fafc;
+  --bg-secondary: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f8fafc;
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --border-color: #e2e8f0;
+  --border-subtle: #f1f5f9;
+}
+
+.dark {
+  color-scheme: dark;
+  --bg-primary: #0b1220;
+  --bg-secondary: #0f172a;
+  --bg-card: rgba(15, 23, 42, 0.6);
+  --bg-card-hover: rgba(15, 23, 42, 0.4);
+  --text-primary: #e5e7eb;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border-color: rgba(30, 41, 59, 0.6);
+  --border-subtle: rgba(30, 41, 59, 0.4);
 }
 
 body {
   margin: 0;
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.dark body {
   background: #0b1220;
   color: #e5e7eb;
 }

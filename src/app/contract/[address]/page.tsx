@@ -1,11 +1,44 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from 'next';
 import Link from 'next/link';
+import dynamic_import from 'next/dynamic';
 import { fetchJsonSafe } from '@/lib/api-client';
 import { shortenHash } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
-import ContractInteraction from '@/components/ContractInteraction';
-import ContractVerification from '@/components/ContractVerification';
+
+const ContractInteraction = dynamic_import(
+  () => import('@/components/ContractInteraction'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-64 animate-pulse rounded-xl border border-slate-800 bg-slate-900/50" />
+    ),
+  }
+);
+
+const ContractVerification = dynamic_import(
+  () => import('@/components/ContractVerification'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-48 animate-pulse rounded-xl border border-slate-800 bg-slate-900/50" />
+    ),
+  }
+);
+
+export async function generateMetadata({ params }: { params: { address: string } }): Promise<Metadata> {
+  const short = shortenHash(params.address);
+  return {
+    title: `Contract ${short}`,
+    description: `Smart contract ${short} on the QFC blockchain — bytecode, verification, and interaction.`,
+    openGraph: {
+      title: `Contract ${short} | QFC Explorer`,
+      description: `Smart contract ${short} on the QFC blockchain.`,
+      type: 'article',
+    },
+  };
+}
 
 type ContractInfo = {
   ok: boolean;
@@ -24,6 +57,9 @@ type ContractInfo = {
     evm_version?: string;
     optimization_runs?: number;
     verified_at?: string;
+    similar_contracts?: Array<{ address: string; is_verified: boolean }>;
+    proxy_type?: string;
+    implementation_address?: string;
   };
 };
 
@@ -42,6 +78,8 @@ export default async function ContractPage(props: Props) {
   const isContract = contractInfo?.data?.is_contract ?? false;
   const code = contractInfo?.data?.code ?? '0x';
   const isVerified = contractInfo?.data?.is_verified ?? false;
+  const proxyType = contractInfo?.data?.proxy_type;
+  const implAddress = contractInfo?.data?.implementation_address;
 
   return (
     <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-6 px-6 py-12">
@@ -63,6 +101,11 @@ export default async function ContractPage(props: Props) {
                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
               </svg>
               Verified
+            </span>
+          )}
+          {proxyType && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/20 px-2.5 py-1 text-xs font-medium text-amber-400 border border-amber-500/30">
+              Proxy ({proxyType})
             </span>
           )}
         </div>
@@ -108,6 +151,22 @@ export default async function ContractPage(props: Props) {
               </Link>
             </div>
           )}
+          {proxyType && implAddress && (
+            <div className="sm:col-span-2">
+              <p className="text-xs text-slate-500 uppercase tracking-wider">Implementation Contract</p>
+              <div className="flex items-center gap-2 mt-1">
+                <Link
+                  href={`/contract/${implAddress}`}
+                  className="font-mono text-cyan-400 hover:text-cyan-300 break-all"
+                >
+                  {implAddress}
+                </Link>
+                <span className="shrink-0 rounded bg-amber-500/10 px-2 py-0.5 text-[10px] text-amber-400">
+                  {proxyType}
+                </span>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -127,6 +186,59 @@ export default async function ContractPage(props: Props) {
       {/* Contract Interaction */}
       {isContract && (
         <ContractInteraction address={address} />
+      )}
+
+      {/* Read/Write as Proxy */}
+      {proxyType && implAddress && (
+        <section className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-5">
+          <h2 className="text-sm font-semibold text-amber-400">Proxy Contract Detected</h2>
+          <p className="mt-1 text-xs text-slate-400">
+            This is a {proxyType} proxy. The implementation contract is at{' '}
+            <Link href={`/contract/${implAddress}`} className="text-cyan-400 hover:text-cyan-300 font-mono">
+              {shortenHash(implAddress)}
+            </Link>.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Link
+              href={`/contract/${implAddress}`}
+              className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-2 text-xs font-medium text-amber-300 hover:bg-amber-500/20 transition-colors"
+            >
+              View Implementation Contract
+            </Link>
+            <Link
+              href={`/address/${address}`}
+              className="rounded-lg border border-slate-700 px-4 py-2 text-xs font-medium text-slate-300 hover:bg-slate-800 transition-colors"
+            >
+              View Proxy Address
+            </Link>
+          </div>
+        </section>
+      )}
+
+      {/* Similar Contracts */}
+      {isContract && contractInfo?.data?.similar_contracts && contractInfo.data.similar_contracts.length > 0 && (
+        <section className="space-y-4">
+          <SectionHeader
+            title="Similar Contracts"
+            description="Contracts with the same bytecode hash"
+          />
+          <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
+            <div className="flex flex-wrap gap-2">
+              {contractInfo.data.similar_contracts.map((c) => (
+                <Link
+                  key={c.address}
+                  href={`/contract/${c.address}`}
+                  className="inline-flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800/50 px-3 py-2 text-xs font-mono hover:border-cyan-500/40 hover:bg-slate-800 transition-colors"
+                >
+                  <span className="text-cyan-400">{shortenHash(c.address, 8, 6)}</span>
+                  {c.is_verified && (
+                    <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] text-emerald-400">Verified</span>
+                  )}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
       )}
 
       {/* Contract Bytecode */}

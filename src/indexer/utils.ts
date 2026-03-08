@@ -60,6 +60,45 @@ export function decodeUint256(hexValue: string): string | null {
   }
 }
 
+export function decodeUint256Pair(hexValue: string): { id: string; value: string } | null {
+  const stripped = stripHexPrefix(hexValue);
+  if (!stripped || stripped.length < 128) {
+    return null;
+  }
+  try {
+    const id = BigInt(`0x${stripped.slice(0, 64)}`).toString(10);
+    const value = BigInt(`0x${stripped.slice(64, 128)}`).toString(10);
+    return { id, value };
+  } catch {
+    return null;
+  }
+}
+
+export function decodeUint256Arrays(hexValue: string): Array<{ id: string; value: string }> | null {
+  const stripped = stripHexPrefix(hexValue);
+  if (!stripped || stripped.length < 256) {
+    return null;
+  }
+  try {
+    const idsOffset = Number(BigInt(`0x${stripped.slice(0, 64)}`)) * 2;
+    const valuesOffset = Number(BigInt(`0x${stripped.slice(64, 128)}`)) * 2;
+    const idsLen = Number(BigInt(`0x${stripped.slice(idsOffset, idsOffset + 64)}`));
+    const valuesLen = Number(BigInt(`0x${stripped.slice(valuesOffset, valuesOffset + 64)}`));
+    if (idsLen !== valuesLen || idsLen === 0) return null;
+    const results: Array<{ id: string; value: string }> = [];
+    for (let i = 0; i < idsLen; i++) {
+      const idStart = idsOffset + 64 + i * 64;
+      const valStart = valuesOffset + 64 + i * 64;
+      const id = BigInt(`0x${stripped.slice(idStart, idStart + 64)}`).toString(10);
+      const value = BigInt(`0x${stripped.slice(valStart, valStart + 64)}`).toString(10);
+      results.push({ id, value });
+    }
+    return results;
+  } catch {
+    return null;
+  }
+}
+
 export function decodeString(hexValue: string): string | null {
   const stripped = stripHexPrefix(hexValue);
   if (!stripped || stripped.length < 64) {

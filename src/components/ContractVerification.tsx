@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { apiUrl } from '@/lib/client-api';
 
 type Props = {
   address: string;
@@ -50,7 +51,7 @@ export default function ContractVerification({
     setResult(null);
 
     try {
-      const response = await fetch('/api/contracts/verify', {
+      const response = await fetch(apiUrl('/api/contracts/verify'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -85,7 +86,7 @@ export default function ContractVerification({
           <div className="flex items-center gap-2">
             <h2 className="text-xl font-semibold text-white">Contract Source Code</h2>
             <span className="inline-flex items-center gap-1 rounded-full bg-green-500/20 px-2.5 py-0.5 text-xs font-medium text-green-400 border border-green-500/30">
-              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+              <svg aria-hidden="true" className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
               </svg>
               Verified

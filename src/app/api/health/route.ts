@@ -1,17 +1,25 @@
 export const dynamic = "force-dynamic";
 
-import { checkDatabaseHealth } from '@/db/health';
+import { checkDatabaseHealth, checkRpcHealth, checkIndexerLag } from '@/db/health';
 import { ok } from '@/lib/api-response';
 
 export async function GET() {
-  const db = await checkDatabaseHealth();
-  const status = db.ok ? 200 : 503;
+  const [db, rpc, indexer] = await Promise.all([
+    checkDatabaseHealth(),
+    checkRpcHealth(),
+    checkIndexerLag(),
+  ]);
+
+  const healthy = db.ok && rpc.ok && indexer.ok;
 
   return ok(
     {
+      status: healthy ? 'healthy' : 'degraded',
       db,
+      rpc,
+      indexer,
       timestamp: new Date().toISOString(),
     },
-    { status }
+    { status: healthy ? 200 : 503 }
   );
 }
