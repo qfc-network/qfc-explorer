@@ -22,6 +22,7 @@ const NAV_ITEMS: NavItem[] = [
     children: [
       { label: 'Token List (ERC-20)', href: '/tokens' },
       { label: 'Token Transfers', href: '/token-transfers' },
+      { label: 'Approval Checker', href: '/approvals' },
       { label: 'QFC Tokenomics', href: '/token/qfc' },
     ],
   },

@@ -1,9 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { shortenHash, formatWeiToQfc } from '@/lib/format';
+import { getApiBaseUrl } from '@/lib/api-client';
 import ExportButton from '@/components/ExportButton';
 
 type Tab = 'transactions' | 'token_transfers' | 'token_holdings' | 'nft_holdings' | 'contract';
@@ -155,7 +156,7 @@ export default function AddressTabs(props: Props) {
           <TokenHoldingsTab holdings={tokenHoldings} />
         )}
         {activeTab === 'nft_holdings' && (
-          <NftHoldingsTab holdings={nftHoldings} />
+          <NftHoldingsTab address={address} holdings={nftHoldings} />
         )}
         {activeTab === 'contract' && contract && (
           <ContractTab address={address} contract={contract} />
@@ -386,8 +387,31 @@ function TokenHoldingsTab({ holdings }: { holdings: TokenHolding[] }) {
   );
 }
 
-function NftHoldingsTab({ holdings }: { holdings: NftHolding[] }) {
+type NftMetadata = {
+  tokenAddress: string;
+  tokenId: string;
+  metadata: { uri: string; name?: string; description?: string; image?: string } | null;
+};
+
+function NftHoldingsTab({ address, holdings }: { address: string; holdings: NftHolding[] }) {
   const [view, setView] = useState<'grid' | 'list'>('grid');
+  const [metadataMap, setMetadataMap] = useState<Record<string, NftMetadata['metadata']>>({});
+
+  useEffect(() => {
+    if (holdings.length === 0) return;
+    const base = getApiBaseUrl();
+    const url = base ? `${base}/address/${address}/nft-metadata` : `/api/address/${address}/nft-metadata`;
+    fetch(url)
+      .then((r) => r.json())
+      .then((json) => {
+        const map: Record<string, NftMetadata['metadata']> = {};
+        for (const nft of json.data?.nfts ?? []) {
+          map[`${nft.tokenAddress}:${nft.tokenId}`] = nft.metadata;
+        }
+        setMetadataMap(map);
+      })
+      .catch(() => {});
+  }, [address, holdings.length]);
 
   if (holdings.length === 0) {
     return <p className="py-8 text-center text-sm text-slate-500">No NFT holdings found.</p>;
@@ -419,38 +443,57 @@ function NftHoldingsTab({ holdings }: { holdings: NftHolding[] }) {
 
       {view === 'grid' ? (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {holdings.map((h) => (
-            <Link
-              key={`${h.token_address}-${h.token_id}`}
-              href={`/token/${h.token_address}`}
-              className="group rounded-xl border border-slate-800 bg-slate-900/40 overflow-hidden hover:border-slate-600 transition-colors"
-            >
-              {/* Placeholder image */}
-              <div className="aspect-square bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
-                <span className="text-3xl font-bold text-slate-700 group-hover:text-slate-600 transition-colors">
-                  #{h.token_id.length > 4 ? h.token_id.slice(0, 4) : h.token_id}
-                </span>
-              </div>
-              <div className="p-3">
-                <p className="text-xs font-medium text-white truncate group-hover:text-cyan-300">
-                  {h.token_name ?? shortenHash(h.token_address)}
-                </p>
-                <p className="mt-0.5 text-[10px] text-slate-400">
-                  Token ID: <span className="font-mono">{h.token_id.length > 8 ? `${h.token_id.slice(0, 8)}...` : h.token_id}</span>
-                </p>
-                <div className="mt-1.5 flex items-center justify-between">
-                  <span className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${
-                    h.token_type === 'erc721' ? 'bg-purple-500/10 text-purple-400' : 'bg-orange-500/10 text-orange-400'
-                  }`}>
-                    {h.token_type === 'erc721' ? '721' : '1155'}
-                  </span>
-                  {h.token_type !== 'erc721' && (
-                    <span className="text-[10px] text-slate-500">x{h.balance}</span>
+          {holdings.map((h) => {
+            const meta = metadataMap[`${h.token_address}:${h.token_id}`];
+            const imageUrl = meta?.image;
+            const nftName = meta?.name;
+            return (
+              <Link
+                key={`${h.token_address}-${h.token_id}`}
+                href={`/token/${h.token_address}`}
+                className="group rounded-xl border border-slate-800 bg-slate-900/40 overflow-hidden hover:border-slate-600 transition-colors"
+              >
+                {/* Image or placeholder */}
+                <div className="aspect-square bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center overflow-hidden">
+                  {imageUrl ? (
+                    <img
+                      src={imageUrl}
+                      alt={nftName ?? `#${h.token_id}`}
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none';
+                        (e.target as HTMLImageElement).parentElement!.innerHTML =
+                          `<span class="text-3xl font-bold text-slate-700">#${h.token_id.length > 4 ? h.token_id.slice(0, 4) : h.token_id}</span>`;
+                      }}
+                    />
+                  ) : (
+                    <span className="text-3xl font-bold text-slate-700 group-hover:text-slate-600 transition-colors">
+                      #{h.token_id.length > 4 ? h.token_id.slice(0, 4) : h.token_id}
+                    </span>
                   )}
                 </div>
-              </div>
-            </Link>
-          ))}
+                <div className="p-3">
+                  <p className="text-xs font-medium text-white truncate group-hover:text-cyan-300">
+                    {nftName ?? h.token_name ?? shortenHash(h.token_address)}
+                  </p>
+                  <p className="mt-0.5 text-[10px] text-slate-400">
+                    Token ID: <span className="font-mono">{h.token_id.length > 8 ? `${h.token_id.slice(0, 8)}...` : h.token_id}</span>
+                  </p>
+                  <div className="mt-1.5 flex items-center justify-between">
+                    <span className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${
+                      h.token_type === 'erc721' ? 'bg-purple-500/10 text-purple-400' : 'bg-orange-500/10 text-orange-400'
+                    }`}>
+                      {h.token_type === 'erc721' ? '721' : '1155'}
+                    </span>
+                    {h.token_type !== 'erc721' && (
+                      <span className="text-[10px] text-slate-500">x{h.balance}</span>
+                    )}
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       ) : (
         <div className="overflow-x-auto">

@@ -201,13 +201,16 @@ ERC-20/721/1155 Token 追踪、Internal Transactions、AI 推理任务查询、
 
 ### 7.6 NFT Gallery 视图 ✅
 - [x] 地址页 NFT tab 改为网格布局（Grid/List 切换）
-- [ ] tokenURI metadata 获取 + 图片展示（需 tokenURI 调用 + IPFS gateway）
-- [ ] IPFS gateway 集成
+- [x] tokenURI metadata 获取 + 图片展示（eth_call tokenURI/uri + JSON metadata）
+- [x] IPFS gateway 集成（ipfs:// → https://ipfs.io/ipfs/）
+- [x] data: URI 支持（base64 + URL-encoded JSON）
+- [x] 1小时 Redis 缓存 NFT metadata
 
-### 7.7 Token Approval Checker
-- [ ] 地址输入 → 展示所有 ERC-20 Approval 记录
-- [ ] 显示 spender、allowance 金额
-- [ ] 高亮 unlimited approval 风险
+### 7.7 Token Approval Checker ✅
+- [x] 地址输入 → 展示所有 ERC-20 Approval 记录（/approvals 页面）
+- [x] 显示 spender、allowance 金额
+- [x] 高亮 unlimited approval 风险（红色 High 标签）
+- [x] 后端 API：GET /address/:address/approvals（从 events 表查询 Approval 事件）
 
 ### 7.8 地址页 CSV 导出 ✅
 - [x] 交易记录导出 CSV
