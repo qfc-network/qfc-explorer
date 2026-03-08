@@ -8,6 +8,7 @@ import StatChart from '@/components/StatChart';
 import AutoRefresh from '@/components/AutoRefresh';
 import SearchBar from '@/components/SearchBar';
 import LatestBlocksAndTxs from '@/components/LatestBlocksAndTxs';
+import { resolveAddressLabels } from '@/lib/labels';
 
 export default async function Home() {
   const [blocksResponse, transactionsResponse, statsResponse] = await Promise.all([
@@ -26,6 +27,13 @@ export default async function Home() {
   ]);
   const blocks = blocksResponse?.data.items ?? [];
   const transactions = transactionsResponse?.data.items ?? [];
+
+  // Resolve address labels for homepage
+  const homeAddresses = [
+    ...blocks.map((b) => b.producer).filter(Boolean) as string[],
+    ...transactions.flatMap((tx) => [tx.from_address, tx.to_address].filter(Boolean) as string[]),
+  ];
+  const labels = await resolveAddressLabels(homeAddresses);
 
   const latestHeight = statsResponse?.data.stats.latest_block ?? blocks[0]?.height ?? '0';
   const avgBlockTimeMs = statsResponse?.data.stats.avg_block_time_ms;
@@ -74,7 +82,7 @@ export default async function Home() {
 
       {/* Latest Blocks + Latest Transactions (dual column) */}
       <section className="mt-8">
-        <LatestBlocksAndTxs blocks={blocks} transactions={transactions} />
+        <LatestBlocksAndTxs blocks={blocks} transactions={transactions} labels={labels} />
       </section>
     </main>
   );

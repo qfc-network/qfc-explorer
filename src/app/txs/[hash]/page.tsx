@@ -7,6 +7,7 @@ import { formatNumber, formatTimestampMs, formatWeiToQfc, shortenHash } from '@/
 import CopyButton from '@/components/CopyButton';
 import StatusBadge from '@/components/StatusBadge';
 import { decodeInput, formatParam, decodeEventTopic } from '@/lib/decode-input';
+import { resolveAddressLabels } from '@/lib/labels';
 
 export default async function TransactionDetailPage({
   params,
@@ -36,6 +37,10 @@ export default async function TransactionDetailPage({
       </main>
     );
   }
+
+  // Resolve address labels
+  const addrList = [tx.from_address, tx.to_address].filter(Boolean) as string[];
+  const labels = await resolveAddressLabels(addrList);
 
   const decoded = decodeInput(tx.data);
   const gasLimit = Number(tx.gas_limit);
@@ -100,6 +105,11 @@ export default async function TransactionDetailPage({
           <Link href={`/address/${tx.from_address}`} className="font-mono text-sm text-cyan-400 hover:text-cyan-300">
             {tx.from_address}
           </Link>
+          {labels[tx.from_address.toLowerCase()]?.label && (
+            <span className="rounded bg-cyan-500/10 px-1.5 py-0.5 text-[10px] font-medium text-cyan-400">
+              {labels[tx.from_address.toLowerCase()].label}
+            </span>
+          )}
           <CopyButton value={tx.from_address} label="Copy" />
         </Row>
         <Row label="To">
@@ -108,6 +118,11 @@ export default async function TransactionDetailPage({
               <Link href={`/address/${tx.to_address}`} className="font-mono text-sm text-cyan-400 hover:text-cyan-300">
                 {tx.to_address}
               </Link>
+              {labels[tx.to_address.toLowerCase()]?.label && (
+                <span className="rounded bg-cyan-500/10 px-1.5 py-0.5 text-[10px] font-medium text-cyan-400">
+                  {labels[tx.to_address.toLowerCase()].label}
+                </span>
+              )}
               <CopyButton value={tx.to_address} label="Copy" />
             </>
           ) : (

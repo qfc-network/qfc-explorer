@@ -8,6 +8,8 @@ import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
 import StatusBadge from '@/components/StatusBadge';
 import AutoRefresh from '@/components/AutoRefresh';
+import AddressTag from '@/components/AddressTag';
+import { resolveAddressLabels } from '@/lib/labels';
 
 const PAGE_SIZE = 25;
 
@@ -22,6 +24,10 @@ export default async function TransactionsPage({
     { next: { revalidate: 10 } }
   );
   const transactions = response?.data.items ?? [];
+
+  // Resolve address labels
+  const allAddresses = transactions.flatMap((tx) => [tx.from_address, tx.to_address].filter(Boolean) as string[]);
+  const labels = await resolveAddressLabels(allAddresses);
 
   return (
     <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 px-6 py-12">
@@ -56,9 +62,7 @@ export default async function TransactionsPage({
             key: 'from',
             header: 'From',
             render: (row) => (
-              <Link href={`/address/${row.from_address}`} className="text-slate-200">
-                {shortenHash(row.from_address)}
-              </Link>
+              <AddressTag address={row.from_address} label={labels[row.from_address.toLowerCase()]?.label} />
             ),
           },
           {
@@ -66,11 +70,9 @@ export default async function TransactionsPage({
             header: 'To',
             render: (row) =>
               row.to_address ? (
-                <Link href={`/address/${row.to_address}`} className="text-slate-200">
-                  {shortenHash(row.to_address)}
-                </Link>
+                <AddressTag address={row.to_address} label={labels[row.to_address.toLowerCase()]?.label} />
               ) : (
-                '—'
+                <span className="text-emerald-400 text-xs">Contract Creation</span>
               ),
           },
           {

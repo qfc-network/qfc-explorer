@@ -51,12 +51,16 @@ function TxIcon() {
   );
 }
 
+type LabelMap = Record<string, { label: string; category: string | null }>;
+
 export default function LatestBlocksAndTxs({
   blocks,
   transactions,
+  labels = {},
 }: {
   blocks: Block[];
   transactions: Transaction[];
+  labels?: LabelMap;
 }) {
   return (
     <div className="grid gap-6 lg:grid-cols-2">
@@ -89,6 +93,11 @@ export default function LatestBlocksAndTxs({
                       <Link href={`/address/${block.producer}`} className="text-slate-300 hover:text-white">
                         {shortenHash(block.producer)}
                       </Link>
+                      {labels[block.producer.toLowerCase()]?.label && (
+                        <span className="ml-1 rounded bg-cyan-500/10 px-1 py-0.5 text-[10px] text-cyan-400">
+                          {labels[block.producer.toLowerCase()].label}
+                        </span>
+                      )}
                     </>
                   ) : (
                     'Unknown producer'
@@ -129,12 +138,12 @@ export default function LatestBlocksAndTxs({
                 </div>
                 <p className="mt-0.5 text-xs text-slate-400">
                   <Link href={`/address/${tx.from_address}`} className="text-slate-300 hover:text-white">
-                    {shortenHash(tx.from_address)}
+                    {labels[tx.from_address.toLowerCase()]?.label ?? shortenHash(tx.from_address)}
                   </Link>
                   <span className="mx-1 text-slate-600">→</span>
                   {tx.to_address ? (
                     <Link href={`/address/${tx.to_address}`} className="text-slate-300 hover:text-white">
-                      {shortenHash(tx.to_address)}
+                      {labels[tx.to_address.toLowerCase()]?.label ?? shortenHash(tx.to_address)}
                     </Link>
                   ) : (
                     <span className="text-emerald-400">Contract Creation</span>

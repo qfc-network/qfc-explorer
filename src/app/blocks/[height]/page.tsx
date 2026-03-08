@@ -8,6 +8,8 @@ import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
 import CopyButton from '@/components/CopyButton';
 import StatusBadge from '@/components/StatusBadge';
+import AddressTag from '@/components/AddressTag';
+import { resolveAddressLabels } from '@/lib/labels';
 
 const PAGE_SIZE = 25;
 
@@ -27,6 +29,10 @@ export default async function BlockDetailPage({
 
   const block = response?.data.block ?? null;
   const transactions = response?.data.transactions ?? [];
+
+  // Resolve address labels for transactions
+  const allAddresses = transactions.flatMap((tx) => [tx.from_address, tx.to_address].filter(Boolean) as string[]);
+  const labels = await resolveAddressLabels(allAddresses);
 
   if (!block) {
     return (
@@ -121,9 +127,7 @@ export default async function BlockDetailPage({
               key: 'from',
               header: 'From',
               render: (row) => (
-                <Link href={`/address/${row.from_address}`} className="text-slate-200">
-                  {shortenHash(row.from_address)}
-                </Link>
+                <AddressTag address={row.from_address} label={labels[row.from_address.toLowerCase()]?.label} />
               ),
             },
             {
@@ -131,11 +135,9 @@ export default async function BlockDetailPage({
               header: 'To',
               render: (row) =>
                 row.to_address ? (
-                  <Link href={`/address/${row.to_address}`} className="text-slate-200">
-                    {shortenHash(row.to_address)}
-                  </Link>
+                  <AddressTag address={row.to_address} label={labels[row.to_address.toLowerCase()]?.label} />
                 ) : (
-                  '—'
+                  <span className="text-emerald-400 text-xs">Contract Creation</span>
                 ),
             },
             {
