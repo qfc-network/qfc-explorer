@@ -7,6 +7,8 @@ import type { ApiTransactionDetail } from '@/lib/api-types';
 import { formatNumber, formatTimestampMs, formatWeiToQfc, shortenHash } from '@/lib/format';
 import CopyButton from '@/components/CopyButton';
 import StatusBadge from '@/components/StatusBadge';
+import TransactionFlowSection from '@/components/TransactionFlowSection';
+import TransactionLabel from '@/components/TransactionLabel';
 import { decodeInput, formatParam, decodeEventTopic } from '@/lib/decode-input';
 import { resolveAddressLabels } from '@/lib/labels';
 
@@ -37,6 +39,7 @@ export default async function TransactionDetailPage({
   const tx = response?.data.transaction ?? null;
   const logs = response?.data.logs ?? [];
   const fromRpc = response?.data.source === 'rpc';
+  const defiLabel = response?.data.defi_label ?? null;
 
   if (!tx) {
     return (
@@ -67,6 +70,7 @@ export default async function TransactionDetailPage({
       <div className="flex flex-wrap items-center gap-3">
         <h1 className="text-lg font-semibold text-white">Transaction Details</h1>
         <StatusBadge status={tx.status} />
+        {defiLabel && <TransactionLabel label={defiLabel} />}
       </div>
 
       {fromRpc && (
@@ -316,6 +320,9 @@ export default async function TransactionDetailPage({
           )}
         </div>
       </div>
+
+      {/* Transaction Flow (Sankey diagram) */}
+      <TransactionFlowSection hash={hash} />
     </main>
   );
 }

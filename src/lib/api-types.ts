@@ -1,6 +1,13 @@
 export type ApiOk<T> = { ok: true; data: T };
 export type ApiError = { ok: false; error: string };
 
+export type DefiLabel = {
+  action: string;
+  category: string;
+  protocolName?: string;
+  icon?: string;
+};
+
 export type ApiBlocksList = ApiOk<{
   page: number;
   limit: number;
@@ -57,6 +64,7 @@ export type ApiTransactionsList = ApiOk<{
     to_address: string | null;
     value: string;
     status: string;
+    defi_label?: DefiLabel;
   }>;
 }>;
 
@@ -76,6 +84,7 @@ export type ApiTransactionDetail = ApiOk<{
     type: string | null;
     timestamp_ms: string | null;
   };
+  defi_label?: DefiLabel;
   logs: Array<{
     contract_address: string;
     topic0: string | null;
@@ -147,6 +156,24 @@ export type ApiAddressDetail = ApiOk<{
     token_symbol: string | null;
     token_decimals: number | null;
   }>;
+}>;
+
+export interface FlowNode {
+  address: string;
+  label?: string;
+}
+
+export interface FlowLink {
+  source: string;
+  target: string;
+  value: string;
+  token?: string;
+  type: 'native' | 'erc20' | 'internal';
+}
+
+export type ApiTxFlow = ApiOk<{
+  nodes: FlowNode[];
+  links: FlowLink[];
 }>;
 
 export type TokenSearchResult = { address: string; name: string | null; symbol: string | null; token_type: string };

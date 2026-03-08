@@ -398,6 +398,37 @@ const zh: Record<string, string> = {
   'governance.forAgainst': '赞成/反对',
   'governance.rejected': '已拒绝',
 
+  // Transaction Flow
+  'txFlow.title': '交易流向',
+  'txFlow.showFlow': '显示流向图',
+  'txFlow.hideFlow': '隐藏流向图',
+  'txFlow.nativeTransfer': '原生转账',
+  'txFlow.tokenTransfer': '代币转账',
+  'txFlow.internalCall': '内部调用',
+  'txFlow.noFlowData': '无流向数据',
+  'txFlow.value': '金额',
+  'txFlow.clickToView': '点击地址查看详情',
+
+  // DeFi labels
+  'defi.swap': '兑换',
+  'defi.addLiquidity': '添加流动性',
+  'defi.removeLiquidity': '移除流动性',
+  'defi.deposit': '存入',
+  'defi.withdraw': '提取',
+  'defi.borrow': '借款',
+  'defi.repay': '还款',
+  'defi.stake': '质押',
+  'defi.unstake': '解除质押',
+  'defi.claimRewards': '领取奖励',
+  'defi.mint': '铸造',
+  'defi.transfer': '转账',
+  'defi.approve': '授权',
+  'defi.vote': '投票',
+  'defi.propose': '提案',
+  'defi.execute': '执行',
+  'defi.protocol': '协议',
+  'defi.action': '操作',
+
   // 404 page
   'notFound.title': '页面未找到',
   'notFound.description': '您访问的页面不存在或已被移动。',

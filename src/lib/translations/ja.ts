@@ -398,6 +398,37 @@ const ja: Record<string, string> = {
   'governance.forAgainst': '賛成/反対',
   'governance.rejected': '否決',
 
+  // Transaction Flow
+  'txFlow.title': 'トランザクションフロー',
+  'txFlow.showFlow': 'フロー図を表示',
+  'txFlow.hideFlow': 'フロー図を非表示',
+  'txFlow.nativeTransfer': 'ネイティブ送金',
+  'txFlow.tokenTransfer': 'トークン送金',
+  'txFlow.internalCall': '内部呼出し',
+  'txFlow.noFlowData': 'フローデータがありません',
+  'txFlow.value': '金額',
+  'txFlow.clickToView': 'アドレスをクリックして詳細を表示',
+
+  // DeFi labels
+  'defi.swap': 'スワップ',
+  'defi.addLiquidity': '流動性追加',
+  'defi.removeLiquidity': '流動性除去',
+  'defi.deposit': '預入',
+  'defi.withdraw': '引出',
+  'defi.borrow': '借入',
+  'defi.repay': '返済',
+  'defi.stake': 'ステーク',
+  'defi.unstake': 'アンステーク',
+  'defi.claimRewards': '報酬受取',
+  'defi.mint': 'ミント',
+  'defi.transfer': '送金',
+  'defi.approve': '承認',
+  'defi.vote': '投票',
+  'defi.propose': '提案',
+  'defi.execute': '実行',
+  'defi.protocol': 'プロトコル',
+  'defi.action': 'アクション',
+
   // 404 page
   'notFound.title': 'ページが見つかりません',
   'notFound.description': 'お探しのページは存在しないか、移動された可能性があります。',

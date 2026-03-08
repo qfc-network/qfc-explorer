@@ -398,6 +398,37 @@ const ko: Record<string, string> = {
   'governance.forAgainst': '찬성/반대',
   'governance.rejected': '거부됨',
 
+  // Transaction Flow
+  'txFlow.title': '트랜잭션 흐름',
+  'txFlow.showFlow': '흐름도 표시',
+  'txFlow.hideFlow': '흐름도 숨기기',
+  'txFlow.nativeTransfer': '네이티브 전송',
+  'txFlow.tokenTransfer': '토큰 전송',
+  'txFlow.internalCall': '내부 호출',
+  'txFlow.noFlowData': '흐름 데이터가 없습니다',
+  'txFlow.value': '금액',
+  'txFlow.clickToView': '주소를 클릭하여 상세 보기',
+
+  // DeFi labels
+  'defi.swap': '스왑',
+  'defi.addLiquidity': '유동성 추가',
+  'defi.removeLiquidity': '유동성 제거',
+  'defi.deposit': '예치',
+  'defi.withdraw': '출금',
+  'defi.borrow': '대출',
+  'defi.repay': '상환',
+  'defi.stake': '스테이킹',
+  'defi.unstake': '언스테이킹',
+  'defi.claimRewards': '보상 수령',
+  'defi.mint': '민팅',
+  'defi.transfer': '전송',
+  'defi.approve': '승인',
+  'defi.vote': '투표',
+  'defi.propose': '제안',
+  'defi.execute': '실행',
+  'defi.protocol': '프로토콜',
+  'defi.action': '작업',
+
   // 404 page
   'notFound.title': '페이지를 찾을 수 없습니다',
   'notFound.description': '찾으시는 페이지가 존재하지 않거나 이동되었습니다.',

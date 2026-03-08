@@ -398,6 +398,37 @@ const en = {
   'governance.forAgainst': 'For/Against',
   'governance.rejected': 'Rejected',
 
+  // Transaction Flow
+  'txFlow.title': 'Transaction Flow',
+  'txFlow.showFlow': 'Show Flow Diagram',
+  'txFlow.hideFlow': 'Hide Flow Diagram',
+  'txFlow.nativeTransfer': 'Native Transfer',
+  'txFlow.tokenTransfer': 'Token Transfer',
+  'txFlow.internalCall': 'Internal Call',
+  'txFlow.noFlowData': 'No flow data available',
+  'txFlow.value': 'Value',
+  'txFlow.clickToView': 'Click address to view details',
+
+  // DeFi labels
+  'defi.swap': 'Swap',
+  'defi.addLiquidity': 'Add Liquidity',
+  'defi.removeLiquidity': 'Remove Liquidity',
+  'defi.deposit': 'Deposit',
+  'defi.withdraw': 'Withdraw',
+  'defi.borrow': 'Borrow',
+  'defi.repay': 'Repay',
+  'defi.stake': 'Stake',
+  'defi.unstake': 'Unstake',
+  'defi.claimRewards': 'Claim Rewards',
+  'defi.mint': 'Mint',
+  'defi.transfer': 'Transfer',
+  'defi.approve': 'Approve',
+  'defi.vote': 'Vote',
+  'defi.propose': 'Propose',
+  'defi.execute': 'Execute',
+  'defi.protocol': 'Protocol',
+  'defi.action': 'Action',
+
   // 404 page
   'notFound.title': 'Page Not Found',
   'notFound.description': 'The page you are looking for does not exist or has been moved.',

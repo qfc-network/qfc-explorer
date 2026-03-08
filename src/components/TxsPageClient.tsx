@@ -7,6 +7,8 @@ import Table from '@/components/Table';
 import StatusBadge from '@/components/StatusBadge';
 import AddressTag from '@/components/AddressTag';
 import TranslatedPagination from '@/components/TranslatedPagination';
+import TransactionLabel from '@/components/TransactionLabel';
+import type { DefiLabel } from '@/lib/api-types';
 
 type Transaction = {
   hash: string;
@@ -14,6 +16,7 @@ type Transaction = {
   to_address: string | null;
   value: string;
   status: string;
+  defi_label?: DefiLabel;
 };
 
 type Props = {
@@ -43,6 +46,16 @@ export default function TxsPageClient({ transactions, labels, page, cursor, next
                 {shortenHash(row.hash)}
               </Link>
             ),
+          },
+          {
+            key: 'action',
+            header: t('defi.action'),
+            render: (row) =>
+              row.defi_label ? (
+                <TransactionLabel label={row.defi_label} />
+              ) : (
+                <span className="text-xs text-slate-600">-</span>
+              ),
           },
           {
             key: 'from',
