@@ -561,6 +561,15 @@ const zh: Record<string, string> = {
   // Mobile menu
   'nav.menu': '菜单',
 
+  // Error boundaries
+  'error.title': '出错了',
+  'error.message': '发生了意外错误，请稍后重试。',
+  'error.retry': '重试',
+  'error.goHome': '返回首页',
+  'error.notFound': '页面未找到',
+  'error.notFoundMessage': '您访问的页面不存在或已被移动。',
+  'error.apiError': '无法加载数据',
+
   // Locale switcher
   'locale.switchLanguage': '切换语言',
 };

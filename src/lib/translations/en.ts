@@ -561,6 +561,15 @@ const en = {
   // Mobile menu
   'nav.menu': 'Menu',
 
+  // Error boundaries
+  'error.title': 'Something went wrong',
+  'error.message': 'An unexpected error occurred. Please try again later.',
+  'error.retry': 'Try Again',
+  'error.goHome': 'Go Home',
+  'error.notFound': 'Page Not Found',
+  'error.notFoundMessage': 'The page you are looking for does not exist or has been moved.',
+  'error.apiError': 'Unable to load data',
+
   // Locale switcher
   'locale.switchLanguage': 'Switch Language',
 } as const;

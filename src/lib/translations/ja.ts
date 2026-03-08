@@ -561,6 +561,15 @@ const ja: Record<string, string> = {
   // Mobile menu
   'nav.menu': 'メニュー',
 
+  // Error boundaries
+  'error.title': '問題が発生しました',
+  'error.message': '予期しないエラーが発生しました。後でもう一度お試しください。',
+  'error.retry': '再試行',
+  'error.goHome': 'ホームへ',
+  'error.notFound': 'ページが見つかりません',
+  'error.notFoundMessage': 'お探しのページは存在しないか、移動された可能性があります。',
+  'error.apiError': 'データを読み込めません',
+
   // Locale switcher
   'locale.switchLanguage': '言語を切替',
 };

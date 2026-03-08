@@ -4,14 +4,15 @@ import { fetchJsonSafe } from '@/lib/api-client';
 import type { ApiBlocksList, ApiStats, ApiTransactionsList } from '@/lib/api-types';
 import { formatNumber } from '@/lib/format';
 import nextDynamic from 'next/dynamic';
-import AutoRefresh from '@/components/AutoRefresh';
-import LatestBlocksAndTxs from '@/components/LatestBlocksAndTxs';
 import HomeHero from '@/components/HomeHero';
 import HomeStats from '@/components/HomeStats';
 import HomeCharts from '@/components/HomeCharts';
+import LatestBlocksAndTxs from '@/components/LatestBlocksAndTxs';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import { resolveAddressLabels } from '@/lib/labels';
 
 const GasTracker = nextDynamic(() => import('@/components/GasTracker'), { ssr: false });
+const HomeLiveUpdater = nextDynamic(() => import('@/components/HomeLiveUpdater'), { ssr: false });
 
 export default async function Home() {
   const [blocksResponse, transactionsResponse, statsResponse] = await Promise.all([
@@ -58,24 +59,36 @@ export default async function Home() {
 
   return (
     <main className="mx-auto max-w-7xl px-4">
-      <AutoRefresh intervalMs={12000} />
-
       {/* Hero section with search */}
       <HomeHero />
 
-      {/* Network overview stats */}
-      <HomeStats stats={statItems} />
+      {/* SSE-powered live stats + blocks/txs — falls back to SSR data */}
+      <ErrorBoundary>
+        <HomeLiveUpdater
+          initialBlocks={blocks}
+          initialTransactions={transactions}
+          initialStats={statItems}
+          initialLabels={labels}
+        />
+      </ErrorBoundary>
 
       {/* Gas price oracle widget */}
-      <GasTracker />
+      <ErrorBoundary>
+        <GasTracker />
+      </ErrorBoundary>
 
       {/* Mini charts */}
-      {series ? <HomeCharts series={series} /> : null}
+      <ErrorBoundary>
+        {series ? <HomeCharts series={series} /> : null}
+      </ErrorBoundary>
 
-      {/* Latest Blocks + Latest Transactions (dual column) */}
-      <section className="mt-8">
-        <LatestBlocksAndTxs blocks={blocks} transactions={transactions} labels={labels} />
-      </section>
+      {/* SSR fallback: stats + blocks/txs shown until client hydrates */}
+      <noscript>
+        <HomeStats stats={statItems} />
+        <section className="mt-8">
+          <LatestBlocksAndTxs blocks={blocks} transactions={transactions} labels={labels} />
+        </section>
+      </noscript>
     </main>
   );
 }

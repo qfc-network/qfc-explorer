@@ -13,6 +13,7 @@ export const metadata: Metadata = {
 };
 
 import Link from 'next/link';
+import nextDynamic from 'next/dynamic';
 import { fetchJsonSafe } from '@/lib/api-client';
 import type { ApiTransactionsList } from '@/lib/api-types';
 import SectionHeader from '@/components/SectionHeader';
@@ -20,6 +21,8 @@ import AutoRefresh from '@/components/AutoRefresh';
 import TranslatedText from '@/components/TranslatedText';
 import TxsPageClient from '@/components/TxsPageClient';
 import { resolveAddressLabels } from '@/lib/labels';
+
+const TxsLiveBanner = nextDynamic(() => import('@/components/TxsLiveBanner'), { ssr: false });
 
 const PAGE_SIZE = 25;
 
@@ -46,6 +49,8 @@ export default async function TransactionsPage({
   const allAddresses = transactions.flatMap((tx) => [tx.from_address, tx.to_address].filter(Boolean) as string[]);
   const labels = await resolveAddressLabels(allAddresses);
 
+  const latestBlockHeight = transactions[0]?.block_height ?? '0';
+
   return (
     <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 px-6 py-12">
       <AutoRefresh intervalMs={20000} />
@@ -61,6 +66,8 @@ export default async function TransactionsPage({
           </Link>
         }
       />
+
+      <TxsLiveBanner initialHeight={latestBlockHeight} />
 
       <TxsPageClient
         transactions={transactions}

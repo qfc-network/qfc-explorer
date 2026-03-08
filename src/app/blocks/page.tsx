@@ -13,12 +13,15 @@ export const metadata: Metadata = {
 };
 
 import Link from 'next/link';
+import nextDynamic from 'next/dynamic';
 import { fetchJsonSafe } from '@/lib/api-client';
 import type { ApiBlocksList } from '@/lib/api-types';
 import SectionHeader from '@/components/SectionHeader';
 import AutoRefresh from '@/components/AutoRefresh';
 import TranslatedText from '@/components/TranslatedText';
 import BlocksPageClient from '@/components/BlocksPageClient';
+
+const BlocksLiveBanner = nextDynamic(() => import('@/components/BlocksLiveBanner'), { ssr: false });
 
 const PAGE_SIZE = 25;
 
@@ -56,6 +59,8 @@ export default async function BlocksPage({
           </Link>
         }
       />
+
+      <BlocksLiveBanner initialHeight={blocks[0]?.height ?? '0'} />
 
       <BlocksPageClient
         blocks={blocks}

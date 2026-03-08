@@ -561,6 +561,15 @@ const ko: Record<string, string> = {
   // Mobile menu
   'nav.menu': '메뉴',
 
+  // Error boundaries
+  'error.title': '문제가 발생했습니다',
+  'error.message': '예기치 않은 오류가 발생했습니다. 나중에 다시 시도해 주세요.',
+  'error.retry': '다시 시도',
+  'error.goHome': '홈으로',
+  'error.notFound': '페이지를 찾을 수 없습니다',
+  'error.notFoundMessage': '찾으시는 페이지가 존재하지 않거나 이동되었습니다.',
+  'error.apiError': '데이터를 불러올 수 없습니다',
+
   // Locale switcher
   'locale.switchLanguage': '언어 전환',
 };
