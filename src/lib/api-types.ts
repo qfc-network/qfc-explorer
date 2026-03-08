@@ -276,3 +276,28 @@ export type ApiTaskStatus = ApiOk<{
   minerAddress?: string;
   executionTimeMs?: number;
 }>;
+
+export type ApiMinerDetail = ApiOk<{
+  address: string;
+  totalEarned: string;
+  locked: string;
+  available: string;
+  activeTranches: number;
+  contributionScore: string;
+  earnings: Array<{
+    blockHeight: string;
+    reward: string;
+    taskType: string;
+    flops: string;
+    timestamp: string;
+  }>;
+  tranches: Array<{
+    blockHeight: string;
+    amount: string;
+    vested: string;
+    startTime: string;
+    cliffEnd: string;
+    endTime: string;
+    percentVested: number;
+  }>;
+}>;

@@ -52,6 +52,12 @@ export default async function AddressDetailPage({
           <div className="flex items-center gap-3">
             <CopyButton value={address} label="Copy address" />
             <Link
+              href={`/miner/${address}`}
+              className="rounded-full border border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-emerald-400"
+            >
+              Miner
+            </Link>
+            <Link
               href="/"
               className="rounded-full border border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-200"
             >

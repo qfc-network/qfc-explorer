@@ -73,12 +73,17 @@ export default async function SearchPage({
       ) : null}
 
       {address ? (
-        <Link
-          href={`/address/${address.address}`}
-          className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 text-slate-200"
-        >
-          Address {shortenHash(address.address)}
-        </Link>
+        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+          <Link href={`/address/${address.address}`} className="text-slate-200">
+            Address {shortenHash(address.address)}
+          </Link>
+          <Link
+            href={`/miner/${address.address}`}
+            className="ml-4 text-xs text-emerald-400 hover:text-emerald-300"
+          >
+            View miner dashboard
+          </Link>
+        </div>
       ) : null}
 
       {!blockByHeight && !blockByHash && !txByHash && !address ? (
