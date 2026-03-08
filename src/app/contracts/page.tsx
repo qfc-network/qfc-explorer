@@ -17,6 +17,7 @@ import { fetchJsonSafe } from '@/lib/api-client';
 import { shortenHash, formatNumber } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
+import ContractsCsvExport from '@/components/ContractsCsvExport';
 
 type ContractsResponse = {
   ok: boolean;
@@ -114,10 +115,13 @@ export default async function ContractsPage() {
       {/* Verified Contracts Leaderboard */}
       {verifiedContracts.length > 0 && (
         <section className="space-y-4">
-          <SectionHeader
-            title={`Verified Contracts (${verifiedTotal})`}
-            description="Verified contracts ranked by interaction count"
-          />
+          <div className="flex items-center justify-between">
+            <SectionHeader
+              title={`Verified Contracts (${verifiedTotal})`}
+              description="Verified contracts ranked by interaction count"
+            />
+            <ContractsCsvExport contracts={verifiedContracts} />
+          </div>
           <Table
             rows={verifiedContracts}
             keyField="address"

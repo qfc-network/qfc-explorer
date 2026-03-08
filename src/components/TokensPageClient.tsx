@@ -1,9 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import { useMemo } from 'react';
 import { useTranslation } from '@/components/LocaleProvider';
 import { shortenHash } from '@/lib/format';
 import TranslatedPagination from '@/components/TranslatedPagination';
+import CsvExport from '@/components/CsvExport';
 
 type Token = {
   address: string;
@@ -38,6 +40,29 @@ type Props = {
 export default function TokensPageClient({ tokens, page, pageSize }: Props) {
   const { t } = useTranslation();
 
+  const csvData = useMemo(() =>
+    tokens.map((token, i) => ({
+      rank: String((page - 1) * pageSize + i + 1),
+      name: token.name ?? '',
+      symbol: token.symbol ?? '',
+      type: token.token_type,
+      address: token.address,
+      decimals: token.decimals != null ? String(token.decimals) : '',
+      total_supply: formatSupply(token.total_supply, token.decimals),
+    })),
+    [tokens, page, pageSize]
+  );
+
+  const csvColumns = useMemo(() => [
+    { key: 'rank', label: '#' },
+    { key: 'name', label: t('tokens.token') },
+    { key: 'symbol', label: 'Symbol' },
+    { key: 'type', label: t('tokens.type') },
+    { key: 'address', label: t('tokens.contract') },
+    { key: 'decimals', label: t('tokens.decimals') },
+    { key: 'total_supply', label: t('tokens.totalSupply') },
+  ], [t]);
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -45,6 +70,7 @@ export default function TokensPageClient({ tokens, page, pageSize }: Props) {
           <h1 className="text-lg font-semibold text-white">{t('tokens.title')}</h1>
           <p className="mt-1 text-sm text-slate-400">{t('tokens.description')}</p>
         </div>
+        <CsvExport data={csvData} filename="qfc_tokens" columns={csvColumns} />
       </div>
 
       <div className="mt-6 rounded-xl border border-slate-800 bg-slate-900/40 overflow-x-auto">

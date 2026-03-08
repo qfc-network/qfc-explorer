@@ -1,10 +1,12 @@
 'use client';
 
 import Link from 'next/link';
+import { useMemo } from 'react';
 import { useTranslation } from '@/components/LocaleProvider';
 import { formatNumber, formatTimestampMs, shortenHash } from '@/lib/format';
 import Table from '@/components/Table';
 import TranslatedPagination from '@/components/TranslatedPagination';
+import CsvExport from '@/components/CsvExport';
 
 type Block = {
   height: string;
@@ -25,8 +27,30 @@ type Props = {
 export default function BlocksPageClient({ blocks, page, cursor, nextCursor, pageSize }: Props) {
   const { t } = useTranslation();
 
+  const csvData = useMemo(() =>
+    blocks.map((b) => ({
+      height: b.height,
+      hash: b.hash,
+      producer: b.producer ?? '',
+      tx_count: String(b.tx_count),
+      timestamp: formatTimestampMs(b.timestamp_ms),
+    })),
+    [blocks]
+  );
+
+  const csvColumns = useMemo(() => [
+    { key: 'height', label: t('common.height') },
+    { key: 'hash', label: t('common.hash') },
+    { key: 'producer', label: t('common.producer') },
+    { key: 'tx_count', label: t('common.txs') },
+    { key: 'timestamp', label: t('common.timestamp') },
+  ], [t]);
+
   return (
     <>
+      <div className="mb-4 flex justify-end">
+        <CsvExport data={csvData} filename="qfc_blocks" columns={csvColumns} />
+      </div>
       <Table
         rows={blocks}
         keyField="hash"

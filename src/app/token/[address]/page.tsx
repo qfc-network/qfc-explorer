@@ -8,6 +8,7 @@ import { shortenHash } from '@/lib/format';
 import CopyButton from '@/components/CopyButton';
 import { fetchNftMetadataBatch, type NftMetadata } from '@/lib/nft-metadata';
 import NftCard from '@/components/NftCard';
+import TokenHoldersCsvExport from '@/components/TokenHoldersCsvExport';
 
 export async function generateMetadata({ params }: { params: { address: string } }): Promise<Metadata> {
   const response = await fetchJsonSafe<ApiTokenDetail>(
@@ -249,6 +250,11 @@ export default async function TokenDetailPage({
       {/* ERC-20 Holders Tab */}
       {tab === 'holders' && !isNft && (
         <div className="mt-4">
+          {holders.length > 0 && (
+            <div className="mb-3 flex justify-end">
+              <TokenHoldersCsvExport holders={holders} tokenDecimals={token.decimals} tokenSymbol={token.symbol} />
+            </div>
+          )}
           <div className="rounded-xl border border-slate-800 bg-slate-900/40 overflow-x-auto">
             <table className="w-full text-sm">
               <thead>

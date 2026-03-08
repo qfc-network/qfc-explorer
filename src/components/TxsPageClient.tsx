@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useMemo } from 'react';
 import { useTranslation } from '@/components/LocaleProvider';
 import { formatWeiToQfc, shortenHash } from '@/lib/format';
 import Table from '@/components/Table';
@@ -8,6 +9,7 @@ import StatusBadge from '@/components/StatusBadge';
 import AddressTag from '@/components/AddressTag';
 import TranslatedPagination from '@/components/TranslatedPagination';
 import TransactionLabel from '@/components/TransactionLabel';
+import CsvExport from '@/components/CsvExport';
 import type { DefiLabel } from '@/lib/api-types';
 
 type Transaction = {
@@ -31,8 +33,30 @@ type Props = {
 export default function TxsPageClient({ transactions, labels, page, cursor, nextCursor, pageSize }: Props) {
   const { t } = useTranslation();
 
+  const csvData = useMemo(() =>
+    transactions.map((tx) => ({
+      hash: tx.hash,
+      from: tx.from_address,
+      to: tx.to_address ?? '',
+      value: formatWeiToQfc(tx.value),
+      status: tx.status,
+    })),
+    [transactions]
+  );
+
+  const csvColumns = useMemo(() => [
+    { key: 'hash', label: t('common.hash') },
+    { key: 'from', label: t('common.from') },
+    { key: 'to', label: t('common.to') },
+    { key: 'value', label: t('common.value') },
+    { key: 'status', label: t('common.status') },
+  ], [t]);
+
   return (
     <>
+      <div className="mb-4 flex justify-end">
+        <CsvExport data={csvData} filename="qfc_transactions" columns={csvColumns} />
+      </div>
       <Table
         rows={transactions}
         keyField="hash"

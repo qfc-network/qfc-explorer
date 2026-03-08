@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { shortenHash, formatWeiToQfc } from '@/lib/format';
 import { getApiBaseUrl } from '@/lib/api-client';
 import ExportButton from '@/components/ExportButton';
+import CsvExport from '@/components/CsvExport';
 import { useTranslation } from '@/components/LocaleProvider';
 import type { TranslationKey } from '@/lib/translations/en';
 
@@ -168,12 +169,36 @@ export default function AddressTabs(props: Props) {
 function TransactionsTab({ address, transactions, page, nextCursor }: { address: string; transactions: Transaction[]; page: number; nextCursor?: string | null }) {
   const { t } = useTranslation();
 
+  const csvData = useMemo(() =>
+    transactions.map((tx) => ({
+      hash: tx.hash,
+      block: tx.block_height,
+      from: tx.from_address,
+      to: tx.to_address ?? '',
+      value: formatWeiToQfc(tx.value),
+      status: tx.status,
+    })),
+    [transactions]
+  );
+
+  const csvColumns = useMemo(() => [
+    { key: 'hash', label: t('common.hash') },
+    { key: 'block', label: t('common.block') },
+    { key: 'from', label: t('common.from') },
+    { key: 'to', label: t('common.to') },
+    { key: 'value', label: t('common.value') },
+    { key: 'status', label: t('common.status') },
+  ], [t]);
+
   if (transactions.length === 0) {
     return <p className="py-8 text-center text-sm text-slate-500">{t('address.noTxFound')}</p>;
   }
 
   return (
     <>
+      <div className="mb-3 flex justify-end">
+        <CsvExport data={csvData} filename={`qfc_${address.slice(0, 10)}_txs`} columns={csvColumns} />
+      </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
