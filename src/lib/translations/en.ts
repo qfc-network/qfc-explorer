@@ -574,6 +574,35 @@ const en = {
   // Locale switcher
   'locale.switchLanguage': 'Switch Language',
 
+  // Contracts filter
+  'contracts.filter.searchPlaceholder': 'Search by name or address...',
+  'contracts.filter.allCompilers': 'All Compilers',
+  'contracts.filter.sortVerifiedDate': 'Verified Date',
+  'contracts.filter.sortCreatedDate': 'Created Date',
+  'contracts.filter.sortName': 'Name',
+  'contracts.filter.ascending': 'Ascending',
+  'contracts.filter.descending': 'Descending',
+  'contracts.filter.clear': 'Clear Filters',
+  'contracts.filter.resultsCount': '{count} results',
+
+  // NFT
+  'nft.notFound': 'NFT not found',
+  'nft.backToCollection': 'Back to collection',
+  'nft.description': 'Description',
+  'nft.details': 'Details',
+  'nft.contract': 'Contract',
+  'nft.tokenId': 'Token ID',
+  'nft.standard': 'Standard',
+  'nft.owner': 'Owner',
+  'nft.attributes': 'Attributes',
+  'nft.viewCollection': 'View Collection',
+  'nft.transferHistory': 'Transfer History',
+  'nft.noTransfers': 'No transfers found for this token.',
+  'nft.gallery': 'Gallery',
+  'nft.noItems': 'No NFTs found in this collection.',
+  'nft.loadMore': 'Load More',
+  'nft.loading': 'Loading...',
+
   // Live SSE updates
   'live.connected': 'Live',
   'live.disconnected': 'Offline',

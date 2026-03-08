@@ -559,6 +559,55 @@ export type ApiContractDiff = ApiOk<{
   };
 }>;
 
+// --- NFT Gallery & Detail ---
+
+export type NftGalleryItem = {
+  token_id: string;
+  owner: string;
+  balance: string;
+  image: string | null;
+  name: string | null;
+};
+
+export type ApiNftGallery = ApiOk<{
+  items: NftGalleryItem[];
+  total: number;
+  page: number;
+  limit: number;
+}>;
+
+export type NftTransfer = {
+  tx_hash: string;
+  block_height: string;
+  from_address: string;
+  to_address: string;
+  value: string;
+};
+
+export type NftAttribute = {
+  trait_type?: string;
+  value?: string | number;
+};
+
+export type ApiNftDetail = ApiOk<{
+  token: {
+    name: string | null;
+    symbol: string | null;
+    standard: string;
+  };
+  nft: {
+    token_id: string;
+    owner: string | null;
+    metadata: {
+      name: string | null;
+      description: string | null;
+      image: string | null;
+      attributes: NftAttribute[];
+    };
+    transfers: NftTransfer[];
+  };
+}>;
+
 export type ApiTokenTransfersList = ApiOk<{
   page: number;
   limit: number;

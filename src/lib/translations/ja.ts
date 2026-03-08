@@ -575,6 +575,35 @@ const ja: Record<string, string> = {
   'locale.switchLanguage': '言語を切替',
 
   // Live SSE updates
+  // Contracts filter
+  'contracts.filter.searchPlaceholder': '名前またはアドレスで検索...',
+  'contracts.filter.allCompilers': 'すべてのコンパイラ',
+  'contracts.filter.sortVerifiedDate': '検証日',
+  'contracts.filter.sortCreatedDate': '作成日',
+  'contracts.filter.sortName': '名前',
+  'contracts.filter.ascending': '昇順',
+  'contracts.filter.descending': '降順',
+  'contracts.filter.clear': 'フィルタをクリア',
+  'contracts.filter.resultsCount': '{count} 件の結果',
+
+  // NFT
+  'nft.notFound': 'NFTが見つかりません',
+  'nft.backToCollection': 'コレクションに戻る',
+  'nft.description': '説明',
+  'nft.details': '詳細',
+  'nft.contract': 'コントラクト',
+  'nft.tokenId': 'トークンID',
+  'nft.standard': '規格',
+  'nft.owner': '所有者',
+  'nft.attributes': '属性',
+  'nft.viewCollection': 'コレクションを表示',
+  'nft.transferHistory': '転送履歴',
+  'nft.noTransfers': 'このトークンの転送履歴はありません。',
+  'nft.gallery': 'ギャラリー',
+  'nft.noItems': 'このコレクションにNFTはありません。',
+  'nft.loadMore': 'もっと見る',
+  'nft.loading': '読み込み中...',
+
   'live.connected': 'ライブ',
   'live.disconnected': 'オフライン',
   'live.newBlocks': '{count} 件の新しいブロック',

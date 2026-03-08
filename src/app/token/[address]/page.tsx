@@ -9,6 +9,8 @@ import CopyButton from '@/components/CopyButton';
 import { fetchNftMetadataBatch, type NftMetadata } from '@/lib/nft-metadata';
 import NftCard from '@/components/NftCard';
 import TokenHoldersCsvExport from '@/components/TokenHoldersCsvExport';
+import NftGallery from '@/components/NftGallery';
+import type { ApiNftGallery } from '@/lib/api-types';
 
 export async function generateMetadata({ params }: { params: { address: string } }): Promise<Metadata> {
   const response = await fetchJsonSafe<ApiTokenDetail>(
@@ -100,7 +102,18 @@ export default async function TokenDetailPage({
   // Fetch NFT metadata for inventory tab (server-side)
   let nftMetadataMap: Record<string, NftMetadata | null> = {};
   const isNftToken = token && (token.token_type === 'erc721' || token.token_type === 'erc1155');
-  if (isNftToken && tab === 'inventory' && nftHolders.length > 0) {
+
+  // Fetch gallery data from the paginated API endpoint for inventory tab
+  let galleryResponse: ApiNftGallery | null = null;
+  if (isNftToken && tab === 'inventory') {
+    galleryResponse = await fetchJsonSafe<ApiNftGallery>(
+      `/api/tokens/${address}/nfts?page=1&limit=20`,
+      { next: { revalidate: 30 } },
+    );
+  }
+
+  // Legacy: still fetch metadata map for fallback
+  if (isNftToken && tab === 'inventory' && !galleryResponse && nftHolders.length > 0) {
     try {
       const rpcUrl = process.env.RPC_URL || 'http://127.0.0.1:8545';
       const items = nftHolders.slice(0, 50).map((h) => ({
@@ -303,35 +316,42 @@ export default async function TokenDetailPage({
       {/* NFT Inventory Tab — Gallery View */}
       {tab === 'inventory' && isNft && (
         <div className="mt-4">
-          {nftHolders.length === 0 ? (
+          {galleryResponse?.data ? (
+            <NftGallery
+              tokenAddress={address}
+              initialItems={galleryResponse.data.items}
+              total={galleryResponse.data.total}
+              initialPage={galleryResponse.data.page}
+              limit={galleryResponse.data.limit}
+              tokenType={token.token_type}
+            />
+          ) : nftHolders.length === 0 ? (
             <p className="py-8 text-center text-sm text-slate-500">No items indexed.</p>
           ) : (
-            <>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-                {nftHolders.map((h) => {
-                  const meta = nftMetadataMap[h.token_id];
-                  return (
-                    <div key={`${h.address}-${h.token_id}`} className="flex flex-col">
-                      <NftCard
-                        tokenAddress={address}
-                        tokenId={h.token_id}
-                        collectionName={token.name}
-                        nftName={meta?.name}
-                        imageUrl={meta?.image}
-                        tokenType={token.token_type}
-                        balance={h.balance}
-                      />
-                      <p className="mt-1 text-center text-[10px] text-slate-500">
-                        Owner:{' '}
-                        <Link href={`/address/${h.address}`} className="text-cyan-400 hover:text-cyan-300 font-mono">
-                          {shortenHash(h.address, 6, 4)}
-                        </Link>
-                      </p>
-                    </div>
-                  );
-                })}
-              </div>
-            </>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+              {nftHolders.map((h) => {
+                const meta = nftMetadataMap[h.token_id];
+                return (
+                  <div key={`${h.address}-${h.token_id}`} className="flex flex-col">
+                    <NftCard
+                      tokenAddress={address}
+                      tokenId={h.token_id}
+                      collectionName={token.name}
+                      nftName={meta?.name}
+                      imageUrl={meta?.image}
+                      tokenType={token.token_type}
+                      balance={h.balance}
+                    />
+                    <p className="mt-1 text-center text-[10px] text-slate-500">
+                      Owner:{' '}
+                      <Link href={`/address/${h.address}`} className="text-cyan-400 hover:text-cyan-300 font-mono">
+                        {shortenHash(h.address, 6, 4)}
+                      </Link>
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
           )}
         </div>
       )}

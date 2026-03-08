@@ -575,6 +575,35 @@ const ko: Record<string, string> = {
   'locale.switchLanguage': '언어 전환',
 
   // Live SSE updates
+  // Contracts filter
+  'contracts.filter.searchPlaceholder': '이름 또는 주소로 검색...',
+  'contracts.filter.allCompilers': '모든 컴파일러',
+  'contracts.filter.sortVerifiedDate': '검증 날짜',
+  'contracts.filter.sortCreatedDate': '생성 날짜',
+  'contracts.filter.sortName': '이름',
+  'contracts.filter.ascending': '오름차순',
+  'contracts.filter.descending': '내림차순',
+  'contracts.filter.clear': '필터 초기화',
+  'contracts.filter.resultsCount': '{count}개 결과',
+
+  // NFT
+  'nft.notFound': 'NFT를 찾을 수 없습니다',
+  'nft.backToCollection': '컬렉션으로 돌아가기',
+  'nft.description': '설명',
+  'nft.details': '상세 정보',
+  'nft.contract': '컨트랙트',
+  'nft.tokenId': '토큰 ID',
+  'nft.standard': '표준',
+  'nft.owner': '소유자',
+  'nft.attributes': '속성',
+  'nft.viewCollection': '컬렉션 보기',
+  'nft.transferHistory': '전송 내역',
+  'nft.noTransfers': '이 토큰의 전송 내역이 없습니다.',
+  'nft.gallery': '갤러리',
+  'nft.noItems': '이 컬렉션에 NFT가 없습니다.',
+  'nft.loadMore': '더 보기',
+  'nft.loading': '로딩 중...',
+
   'live.connected': '실시간',
   'live.disconnected': '오프라인',
   'live.newBlocks': '{count}개의 새 블록',

@@ -38,7 +38,7 @@ export default function NftCard({
 
   return (
     <Link
-      href={`/token/${tokenAddress}`}
+      href={`/nft/${tokenAddress}/${tokenId}`}
       className="group rounded-xl border border-slate-800 bg-slate-900/40 overflow-hidden hover:border-slate-600 transition-colors"
     >
       {/* Image or placeholder */}

@@ -18,6 +18,7 @@ import { shortenHash, formatNumber } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
 import ContractsCsvExport from '@/components/ContractsCsvExport';
+import ContractsFilter from '@/components/ContractsFilter';
 
 type ContractsResponse = {
   ok: boolean;
@@ -44,18 +45,47 @@ type VerifiedResponse = {
       interaction_count: number;
     }>;
     total: number;
+    page: number;
+    limit: number;
   };
 };
 
-export default async function ContractsPage() {
-  const [contractsResponse, verifiedResponse] = await Promise.all([
+type CompilersResponse = {
+  ok: boolean;
+  data: string[];
+};
+
+type Props = {
+  searchParams: Record<string, string | string[] | undefined>;
+};
+
+export default async function ContractsPage({ searchParams }: Props) {
+  // Build query string from search params for the verified endpoint
+  const verifiedParams = new URLSearchParams();
+  const paramKeys = ['search', 'compiler', 'sort', 'order', 'has_abi', 'page', 'limit'];
+  for (const key of paramKeys) {
+    const value = searchParams[key];
+    if (typeof value === 'string' && value) {
+      verifiedParams.set(key, value);
+    }
+  }
+  const verifiedQs = verifiedParams.toString();
+  const verifiedPath = verifiedQs
+    ? `/api/contracts/verified?${verifiedQs}`
+    : '/api/contracts/verified';
+
+  const [contractsResponse, verifiedResponse, compilersResponse] = await Promise.all([
     fetchJsonSafe<ContractsResponse>(
       '/api/contracts?limit=50',
       { next: { revalidate: 30 } }
     ),
     fetchJsonSafe<VerifiedResponse>(
-      '/api/contracts/verified',
-      { next: { revalidate: 60 } }
+      verifiedPath,
+      { next: { revalidate: 30 } }
+    ),
+    fetchJsonSafe<CompilersResponse>(
+      '/api/contracts/compilers',
+      { next: { revalidate: 300 } }
     ),
   ]);
 
@@ -63,6 +93,12 @@ export default async function ContractsPage() {
   const total = contractsResponse?.data?.total ?? 0;
   const verifiedContracts = verifiedResponse?.data?.items ?? [];
   const verifiedTotal = verifiedResponse?.data?.total ?? 0;
+  const verifiedPage = verifiedResponse?.data?.page ?? 1;
+  const verifiedLimit = verifiedResponse?.data?.limit ?? 25;
+  const compilers = compilersResponse?.data ?? [];
+
+  const hasPrevPage = verifiedPage > 1;
+  const hasNextPage = verifiedContracts.length === verifiedLimit;
 
   return (
     <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-6 px-6 py-12">
@@ -112,65 +148,91 @@ export default async function ContractsPage() {
         </div>
       </section>
 
-      {/* Verified Contracts Leaderboard */}
-      {verifiedContracts.length > 0 && (
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <SectionHeader
-              title={`Verified Contracts (${verifiedTotal})`}
-              description="Verified contracts ranked by interaction count"
-            />
-            <ContractsCsvExport contracts={verifiedContracts} />
-          </div>
-          <Table
-            rows={verifiedContracts}
-            keyField="address"
-            emptyMessage="No verified contracts"
-            columns={[
-              {
-                key: 'rank',
-                header: '#',
-                render: (_, i) => (
-                  <span className="text-slate-500">{(i ?? 0) + 1}</span>
-                ),
-              },
-              {
-                key: 'address',
-                header: 'Contract',
-                render: (row) => (
-                  <div>
-                    <Link
-                      href={`/contract/${row.address}`}
-                      className="font-mono text-cyan-400 hover:text-cyan-300"
-                    >
-                      {shortenHash(row.address, 8)}
-                    </Link>
-                    {(row.token_name || row.token_symbol) && (
-                      <span className="ml-2 text-xs text-slate-400">
-                        {row.token_name || row.token_symbol}
-                      </span>
-                    )}
-                  </div>
-                ),
-              },
-              {
-                key: 'compiler',
-                header: 'Compiler',
-                render: (row) => (
-                  <span className="text-xs text-slate-400">{row.compiler_version || '—'}</span>
-                ),
-              },
-              {
-                key: 'interactions',
-                header: 'Interactions',
-                render: (row) => (
-                  <span className="text-slate-300">{formatNumber(row.interaction_count)}</span>
-                ),
-              },
-            ]}
+      {/* Verified Contracts with Filter */}
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <SectionHeader
+            title={`Verified Contracts (${verifiedTotal})`}
+            description="Verified contracts ranked by interaction count"
           />
-        </section>
-      )}
+          {verifiedContracts.length > 0 && (
+            <ContractsCsvExport contracts={verifiedContracts} />
+          )}
+        </div>
+
+        <ContractsFilter compilers={compilers} total={verifiedTotal} />
+
+        {verifiedContracts.length > 0 ? (
+          <>
+            <Table
+              rows={verifiedContracts}
+              keyField="address"
+              emptyMessage="No verified contracts"
+              columns={[
+                {
+                  key: 'rank',
+                  header: '#',
+                  render: (_, i) => (
+                    <span className="text-slate-500">{(verifiedPage - 1) * verifiedLimit + (i ?? 0) + 1}</span>
+                  ),
+                },
+                {
+                  key: 'address',
+                  header: 'Contract',
+                  render: (row) => (
+                    <div>
+                      <Link
+                        href={`/contract/${row.address}`}
+                        className="font-mono text-cyan-400 hover:text-cyan-300"
+                      >
+                        {shortenHash(row.address, 8)}
+                      </Link>
+                      {(row.token_name || row.token_symbol) && (
+                        <span className="ml-2 text-xs text-slate-400">
+                          {row.token_name || row.token_symbol}
+                        </span>
+                      )}
+                    </div>
+                  ),
+                },
+                {
+                  key: 'compiler',
+                  header: 'Compiler',
+                  render: (row) => (
+                    <span className="text-xs text-slate-400">{row.compiler_version || '\u2014'}</span>
+                  ),
+                },
+                {
+                  key: 'interactions',
+                  header: 'Interactions',
+                  render: (row) => (
+                    <span className="text-slate-300">{formatNumber(row.interaction_count)}</span>
+                  ),
+                },
+              ]}
+            />
+
+            {/* Pagination */}
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-slate-500">
+                Page {verifiedPage}
+              </span>
+              <div className="flex gap-2">
+                {hasPrevPage && (
+                  <PaginationLink searchParams={searchParams} page={verifiedPage - 1} label="Previous" />
+                )}
+                {hasNextPage && (
+                  <PaginationLink searchParams={searchParams} page={verifiedPage + 1} label="Next" />
+                )}
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-8 text-center">
+            <p className="text-slate-400">No verified contracts match the current filters.</p>
+          </div>
+        )}
+      </section>
 
       {/* Contracts List */}
       {contracts.length > 0 ? (
@@ -218,7 +280,7 @@ export default async function ContractsPage() {
                       {shortenHash(row.creator_tx_hash)}
                     </Link>
                   ) : (
-                    <span className="text-slate-500">—</span>
+                    <span className="text-slate-500">{'\u2014'}</span>
                   ),
               },
               {
@@ -233,7 +295,7 @@ export default async function ContractsPage() {
                       #{row.created_at_block}
                     </Link>
                   ) : (
-                    <span className="text-slate-500">—</span>
+                    <span className="text-slate-500">{'\u2014'}</span>
                   ),
               },
               {
@@ -281,5 +343,32 @@ function ContractAddressInput() {
         Go
       </button>
     </form>
+  );
+}
+
+function PaginationLink({
+  searchParams,
+  page,
+  label,
+}: {
+  searchParams: Record<string, string | string[] | undefined>;
+  page: number;
+  label: string;
+}) {
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(searchParams)) {
+    if (typeof value === 'string' && value && key !== 'page') {
+      params.set(key, value);
+    }
+  }
+  params.set('page', String(page));
+
+  return (
+    <Link
+      href={`/contracts?${params.toString()}`}
+      className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 text-sm text-slate-300 hover:bg-slate-700 transition-colors"
+    >
+      {label}
+    </Link>
   );
 }

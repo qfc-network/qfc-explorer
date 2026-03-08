@@ -575,6 +575,35 @@ const zh: Record<string, string> = {
   'locale.switchLanguage': '切换语言',
 
   // Live SSE updates
+  // Contracts filter
+  'contracts.filter.searchPlaceholder': '按名称或地址搜索...',
+  'contracts.filter.allCompilers': '所有编译器',
+  'contracts.filter.sortVerifiedDate': '验证日期',
+  'contracts.filter.sortCreatedDate': '创建日期',
+  'contracts.filter.sortName': '名称',
+  'contracts.filter.ascending': '升序',
+  'contracts.filter.descending': '降序',
+  'contracts.filter.clear': '清除筛选',
+  'contracts.filter.resultsCount': '{count} 个结果',
+
+  // NFT
+  'nft.notFound': '未找到 NFT',
+  'nft.backToCollection': '返回合集',
+  'nft.description': '描述',
+  'nft.details': '详情',
+  'nft.contract': '合约',
+  'nft.tokenId': 'Token ID',
+  'nft.standard': '标准',
+  'nft.owner': '所有者',
+  'nft.attributes': '属性',
+  'nft.viewCollection': '查看合集',
+  'nft.transferHistory': '转移历史',
+  'nft.noTransfers': '未找到此代币的转移记录。',
+  'nft.gallery': '画廊',
+  'nft.noItems': '此合集中未找到 NFT。',
+  'nft.loadMore': '加载更多',
+  'nft.loading': '加载中...',
+
   'live.connected': '实时',
   'live.disconnected': '离线',
   'live.newBlocks': '{count} 个新区块',
