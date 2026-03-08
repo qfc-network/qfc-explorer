@@ -18,7 +18,7 @@ const NAV_ITEMS: NavItem[] = [
     children: [
       { labelKey: 'nav.blocks', href: '/blocks' },
       { labelKey: 'nav.transactions', href: '/txs' },
-      { labelKey: 'nav.pendingTxs', href: '/pending' },
+      { labelKey: 'nav.pendingTxs', href: '/txpool' },
       { labelKey: 'nav.gasTracker', href: '/gas-tracker' },
     ],
   },
@@ -44,7 +44,8 @@ const NAV_ITEMS: NavItem[] = [
   {
     labelKey: 'nav.network',
     children: [
-      { labelKey: 'nav.validators', href: '/network' },
+      { labelKey: 'nav.validators', href: '/validators' },
+      { labelKey: 'nav.networkStatus', href: '/network' },
       { labelKey: 'nav.analytics', href: '/analytics' },
       { labelKey: 'nav.leaderboard', href: '/leaderboard' },
       { labelKey: 'nav.governance', href: '/governance/models' },

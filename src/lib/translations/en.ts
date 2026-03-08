@@ -344,6 +344,22 @@ const en = {
   'pending.noPending': 'No pending transactions in the mempool.',
   'pending.mempoolEmpty': 'The mempool is empty or txpool RPC methods are not available on this node.',
 
+  // TxPool (Mempool) page
+  'txpool.title': 'Pending Transactions',
+  'txpool.description': 'Real-time view of pending and queued transactions in the mempool.',
+  'txpool.totalPending': 'Total Pending',
+  'txpool.totalQueued': 'Total Queued',
+  'txpool.avgGasPrice': 'Avg Gas Price',
+  'txpool.maxGasPrice': 'Max Gas Price',
+  'txpool.tabPending': 'Pending',
+  'txpool.tabQueued': 'Queued',
+  'txpool.sortBy': 'Sort by:',
+  'txpool.lastUpdated': 'Updated {seconds}s ago',
+  'txpool.noPending': 'No pending transactions in the mempool.',
+  'txpool.mempoolEmpty': 'The mempool is empty or txpool RPC methods are not available on this node.',
+  'txpool.gasPriceDistribution': 'Gas Price Distribution',
+  'txpool.avg': 'Avg',
+
   // Inference page
   'inference.title': 'AI Inference',
   'inference.description': 'Network inference statistics and validator compute contributions.',
@@ -624,6 +640,30 @@ const en = {
   'live.disconnected': 'Offline',
   'live.newBlocks': '{count} new blocks',
   'live.newTxs': 'New transactions available',
+
+  // Validators page
+  'validators.title': 'Validators',
+  'validators.description': 'Block producers and validator statistics on the QFC blockchain.',
+  'validators.totalValidators': 'Total Validators',
+  'validators.totalBlocks': 'Total Blocks',
+  'validators.mostActive': 'Most Active Validator',
+  'validators.blocksProduced': 'Blocks Produced',
+  'validators.lastActive': 'Last Active',
+  'validators.sortBy': 'Sort by:',
+  'validators.firstBlock': 'First Block',
+  'validators.lastBlock': 'Last Block',
+  'validators.totalGasUsed': 'Total Gas Used',
+  'validators.avgGasUsed': 'Avg Gas Used',
+  'validators.blockTimeline': 'Block Production (30 days)',
+  'validators.recentBlocks': 'Recent Blocks',
+  'validators.validatorProfile': 'Validator Profile',
+  'validators.notFound': 'Validator not found',
+  'validators.backToList': 'Back to Validators',
+  'validators.viewAddress': 'View Address Page',
+  'validators.viewAllBlocks': 'View All Blocks',
+
+  // Navigation
+  'nav.networkStatus': 'Network Status',
 
   // Keyboard shortcuts
   'shortcuts.title': 'Keyboard Shortcuts',

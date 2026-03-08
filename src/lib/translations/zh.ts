@@ -344,6 +344,22 @@ const zh: Record<string, string> = {
   'pending.noPending': '内存池中无待处理交易。',
   'pending.mempoolEmpty': '内存池为空或此节点不支持 txpool RPC 方法。',
 
+  // TxPool (Mempool) page
+  'txpool.title': '待处理交易',
+  'txpool.description': '内存池中待处理和排队交易的实时视图。',
+  'txpool.totalPending': '待处理总数',
+  'txpool.totalQueued': '排队总数',
+  'txpool.avgGasPrice': '平均 Gas 价格',
+  'txpool.maxGasPrice': '最高 Gas 价格',
+  'txpool.tabPending': '待处理',
+  'txpool.tabQueued': '排队中',
+  'txpool.sortBy': '排序：',
+  'txpool.lastUpdated': '{seconds} 秒前更新',
+  'txpool.noPending': '内存池中无待处理交易。',
+  'txpool.mempoolEmpty': '内存池为空或此节点不支持 txpool RPC 方法。',
+  'txpool.gasPriceDistribution': 'Gas 价格分布',
+  'txpool.avg': '平均',
+
   // Inference page
   'inference.title': 'AI 推理',
   'inference.description': '网络推理统计和验证者计算贡献。',
@@ -624,6 +640,30 @@ const zh: Record<string, string> = {
   'live.disconnected': '离线',
   'live.newBlocks': '{count} 个新区块',
   'live.newTxs': '有新交易',
+
+  // Validators page
+  'validators.title': '验证者',
+  'validators.description': 'QFC 区块链上的出块者和验证者统计。',
+  'validators.totalValidators': '验证者总数',
+  'validators.totalBlocks': '总区块数',
+  'validators.mostActive': '最活跃验证者',
+  'validators.blocksProduced': '出块数',
+  'validators.lastActive': '最后活跃',
+  'validators.sortBy': '排序：',
+  'validators.firstBlock': '首个区块',
+  'validators.lastBlock': '最新区块',
+  'validators.totalGasUsed': '总 Gas 消耗',
+  'validators.avgGasUsed': '平均 Gas 消耗',
+  'validators.blockTimeline': '出块统计（30天）',
+  'validators.recentBlocks': '最近区块',
+  'validators.validatorProfile': '验证者详情',
+  'validators.notFound': '未找到验证者',
+  'validators.backToList': '返回验证者列表',
+  'validators.viewAddress': '查看地址页面',
+  'validators.viewAllBlocks': '查看所有区块',
+
+  // Navigation
+  'nav.networkStatus': '网络状态',
 
   // Keyboard shortcuts
   'shortcuts.title': '键盘快捷键',

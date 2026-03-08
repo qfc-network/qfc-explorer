@@ -344,6 +344,22 @@ const ja: Record<string, string> = {
   'pending.noPending': 'メモリプールに保留中のトランザクションはありません。',
   'pending.mempoolEmpty': 'メモリプールが空か、このノードでtxpool RPCメソッドが利用できません。',
 
+  // TxPool (Mempool) page
+  'txpool.title': '保留中のトランザクション',
+  'txpool.description': 'メモリプール内の保留中およびキュー中のトランザクションのリアルタイムビュー。',
+  'txpool.totalPending': '保留中の合計',
+  'txpool.totalQueued': 'キュー中の合計',
+  'txpool.avgGasPrice': '平均Gas価格',
+  'txpool.maxGasPrice': '最大Gas価格',
+  'txpool.tabPending': '保留中',
+  'txpool.tabQueued': 'キュー中',
+  'txpool.sortBy': 'ソート：',
+  'txpool.lastUpdated': '{seconds}秒前に更新',
+  'txpool.noPending': 'メモリプールに保留中のトランザクションはありません。',
+  'txpool.mempoolEmpty': 'メモリプールが空か、このノードでtxpool RPCメソッドが利用できません。',
+  'txpool.gasPriceDistribution': 'Gas価格分布',
+  'txpool.avg': '平均',
+
   // Inference page
   'inference.title': 'AI推論',
   'inference.description': 'ネットワーク推論統計とバリデーターのコンピュート貢献。',

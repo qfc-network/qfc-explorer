@@ -56,8 +56,11 @@ export default async function TaskDetailPage({
   }
 
   const statusCfg = STATUS_CONFIG[task.status] ?? STATUS_CONFIG.Pending;
-  const createdAt = task.createdAt ? new Date(task.createdAt * 1000) : null;
-  const deadline = task.deadline ? new Date(task.deadline * 1000) : null;
+  // Timestamps may be in milliseconds (13 digits) or seconds (10 digits).
+  // If already ms, use directly; if seconds, multiply by 1000.
+  const toDate = (v: number) => new Date(v > 1e12 ? v : v * 1000);
+  const createdAt = task.createdAt ? toDate(task.createdAt) : null;
+  const deadline = task.deadline ? toDate(task.deadline) : null;
   const isCompleted = task.status === 'Completed';
   const isFailed = task.status === 'Failed';
   const isExpired = task.status === 'Expired';

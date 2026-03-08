@@ -608,6 +608,55 @@ export type ApiNftDetail = ApiOk<{
   };
 }>;
 
+// --- Validators ---
+
+export type ValidatorItem = {
+  address: string;
+  blocks_produced: number;
+  first_block: string;
+  last_block: string;
+  last_active_ms: string;
+  total_gas_used: string;
+  label: string | null;
+  category: string | null;
+};
+
+export type ApiValidatorsList = ApiOk<{
+  page: number;
+  limit: number;
+  sort: string;
+  total_validators: number;
+  total_blocks: number;
+  items: ValidatorItem[];
+}>;
+
+export type ApiValidatorDetail = ApiOk<{
+  stats: {
+    address: string;
+    blocks_produced: number;
+    first_block: string;
+    last_block: string;
+    last_active_ms: string;
+    total_gas_used: string;
+    avg_gas_used: string;
+    total_blocks: number;
+    avg_block_time_ms: string | null;
+    label: string | null;
+    category: string | null;
+  };
+  recent_blocks: Array<{
+    hash: string;
+    height: string;
+    timestamp_ms: string;
+    tx_count: number;
+    gas_used: string;
+  }>;
+  timeline: Array<{
+    date: string;
+    block_count: number;
+  }>;
+}>;
+
 export type ApiTokenTransfersList = ApiOk<{
   page: number;
   limit: number;

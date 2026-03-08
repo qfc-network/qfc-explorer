@@ -344,6 +344,22 @@ const ko: Record<string, string> = {
   'pending.noPending': '멤풀에 대기 중인 트랜잭션이 없습니다.',
   'pending.mempoolEmpty': '멤풀이 비어 있거나 이 노드에서 txpool RPC 메서드를 사용할 수 없습니다.',
 
+  // TxPool (Mempool) page
+  'txpool.title': '대기 중인 트랜잭션',
+  'txpool.description': '멤풀의 대기 중 및 큐잉된 트랜잭션 실시간 보기.',
+  'txpool.totalPending': '대기 중 총수',
+  'txpool.totalQueued': '큐잉 총수',
+  'txpool.avgGasPrice': '평균 Gas 가격',
+  'txpool.maxGasPrice': '최대 Gas 가격',
+  'txpool.tabPending': '대기 중',
+  'txpool.tabQueued': '큐잉됨',
+  'txpool.sortBy': '정렬:',
+  'txpool.lastUpdated': '{seconds}초 전 업데이트',
+  'txpool.noPending': '멤풀에 대기 중인 트랜잭션이 없습니다.',
+  'txpool.mempoolEmpty': '멤풀이 비어 있거나 이 노드에서 txpool RPC 메서드를 사용할 수 없습니다.',
+  'txpool.gasPriceDistribution': 'Gas 가격 분포',
+  'txpool.avg': '평균',
+
   // Inference page
   'inference.title': 'AI 추론',
   'inference.description': '네트워크 추론 통계 및 검증자 컴퓨트 기여.',
@@ -624,6 +640,21 @@ const ko: Record<string, string> = {
   'live.disconnected': '오프라인',
   'live.newBlocks': '{count}개의 새 블록',
   'live.newTxs': '새 트랜잭션이 있습니다',
+
+  // Keyboard shortcuts
+  'shortcuts.title': '키보드 단축키',
+  'shortcuts.general': '일반',
+  'shortcuts.navigation': '탐색',
+  'shortcuts.focusSearch': '검색창 포커스',
+  'shortcuts.showHelp': '이 도움말 표시',
+  'shortcuts.closeModal': '모달 닫기 / 포커스 해제',
+  'shortcuts.goBlocks': '블록으로 이동',
+  'shortcuts.goTransactions': '트랜잭션으로 이동',
+  'shortcuts.goTokens': '토큰으로 이동',
+  'shortcuts.goContracts': '컨트랙트로 이동',
+  'shortcuts.goAnalytics': '분석으로 이동',
+  'shortcuts.goNetwork': '네트워크로 이동',
+  'shortcuts.hint': '?를 누르면 이 대화상자를 전환합니다',
 };
 
 export default ko;
