@@ -476,6 +476,13 @@ const zh: Record<string, string> = {
   'notFound.title': '页面未找到',
   'notFound.description': '您访问的页面不存在或已被移动。',
 
+  // Multisig
+  'multisig.badge': '多签钱包',
+  'multisig.version': '版本',
+  'multisig.threshold': '签名阈值',
+  'multisig.nonce': '随机数',
+  'multisig.owners': '所有者',
+
   // Locale switcher
   'locale.switchLanguage': '切换语言',
 };

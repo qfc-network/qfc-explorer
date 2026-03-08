@@ -9,6 +9,7 @@ import CopyButton from '@/components/CopyButton';
 import AddressTabs from '@/components/AddressTabs';
 import TranslatedText from '@/components/TranslatedText';
 import AddressOverview from '@/components/AddressOverview';
+import MultisigBadge from '@/components/MultisigBadge';
 
 export async function generateMetadata({ params }: { params: { address: string } }): Promise<Metadata> {
   const short = shortenHash(params.address);
@@ -103,6 +104,7 @@ export default async function AddressDetailPage({
             <TranslatedText tKey="common.verified" />
           </span>
         )}
+        {isContract && <MultisigBadge address={address} />}
         <span className="font-mono text-sm text-slate-400 break-all">{address}</span>
         <CopyButton value={address} label="Copy" />
       </div>

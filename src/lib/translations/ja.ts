@@ -476,6 +476,13 @@ const ja: Record<string, string> = {
   'notFound.title': 'ページが見つかりません',
   'notFound.description': 'お探しのページは存在しないか、移動された可能性があります。',
 
+  // Multisig
+  'multisig.badge': 'マルチシグ',
+  'multisig.version': 'バージョン',
+  'multisig.threshold': '閾値',
+  'multisig.nonce': 'ナンス',
+  'multisig.owners': 'オーナー',
+
   // Locale switcher
   'locale.switchLanguage': '言語を切替',
 };

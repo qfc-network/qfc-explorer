@@ -476,6 +476,13 @@ const ko: Record<string, string> = {
   'notFound.title': '페이지를 찾을 수 없습니다',
   'notFound.description': '찾으시는 페이지가 존재하지 않거나 이동되었습니다.',
 
+  // Multisig
+  'multisig.badge': '다중서명',
+  'multisig.version': '버전',
+  'multisig.threshold': '임계값',
+  'multisig.nonce': '논스',
+  'multisig.owners': '소유자',
+
   // Locale switcher
   'locale.switchLanguage': '언어 전환',
 };

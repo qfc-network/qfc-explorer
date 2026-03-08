@@ -474,6 +474,54 @@ export type ApiBatchAddresses = ApiOk<{
   addresses: ApiBatchAddressItem[];
 }>;
 
+export type MultisigInfo = {
+  type: 'safe';
+  version: string;
+  owners: string[];
+  threshold: number;
+  nonce: number;
+};
+
+export type ApiMultisig = ApiOk<MultisigInfo | null>;
+
+// --- Contract Comments & Ratings ---
+
+export type ContractComment = {
+  id: string;
+  contract_address: string;
+  user_id: string;
+  body: string;
+  is_flagged: boolean;
+  created_at: string;
+  updated_at: string;
+  display_name: string | null;
+  email: string;
+};
+
+export type ApiContractComments = ApiOk<{
+  comments: ContractComment[];
+  total: number;
+  page: number;
+  limit: number;
+}>;
+
+export type ApiContractRating = ApiOk<{
+  average: number | null;
+  count: number;
+  userRating: number | null;
+}>;
+
+export type ApiContractRatingUpsert = ApiOk<{
+  rating: {
+    contract_address: string;
+    user_id: string;
+    rating: number;
+    created_at: string;
+  };
+  average: number | null;
+  count: number;
+}>;
+
 export type ApiTokenTransfersList = ApiOk<{
   page: number;
   limit: number;
