@@ -23,6 +23,7 @@ import ValidatorTable from '@/components/ValidatorTable';
 import ExportButton from '@/components/ExportButton';
 import AutoRefresh from '@/components/AutoRefresh';
 import DailyCharts from '@/components/DailyCharts';
+import TranslatedText from '@/components/TranslatedText';
 
 type AnalyticsData = {
   ok: boolean;
@@ -94,19 +95,19 @@ export default async function AnalyticsPage() {
           <span className="text-slate-600">/</span>
           <span className="text-slate-300">Analytics</span>
         </div>
-        <h1 className="text-4xl font-semibold text-white">Network Analytics</h1>
+        <h1 className="text-4xl font-semibold text-white"><TranslatedText tKey="analytics.title" /></h1>
         <p className="max-w-2xl text-base text-slate-300">
-          Comprehensive metrics and trends for the QFC network.
+          <TranslatedText tKey="analytics.description" />
         </p>
       </header>
 
       {/* Overview Stats */}
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatsCard label="Total Blocks" value={formatNumber(overview.total_blocks)} />
-        <StatsCard label="Total Transactions" value={formatNumber(overview.total_transactions)} />
-        <StatsCard label="Unique Addresses" value={formatNumber(overview.total_addresses)} />
+        <StatsCard label={<TranslatedText tKey="analytics.totalBlocks" />} value={formatNumber(overview.total_blocks)} />
+        <StatsCard label={<TranslatedText tKey="analytics.totalTransactions" />} value={formatNumber(overview.total_transactions)} />
+        <StatsCard label={<TranslatedText tKey="analytics.uniqueAddresses" />} value={formatNumber(overview.total_addresses)} />
         <StatsCard
-          label="Total Gas Used"
+          label={<TranslatedText tKey="analytics.totalGasUsed" />}
           value={formatNumber(String(BigInt(overview.total_gas_used || '0') / BigInt(10 ** 9)))}
           suffix=" Gwei"
         />
@@ -115,12 +116,12 @@ export default async function AnalyticsPage() {
       {/* Live Metrics */}
       <section className="grid gap-4 sm:grid-cols-2">
         <StatsCard
-          label="Current TPS"
+          label={<TranslatedText tKey="analytics.currentTps" />}
           value={Number(currentTps).toFixed(2)}
           highlight
         />
         <StatsCard
-          label="Avg Block Time"
+          label={<TranslatedText tKey="analytics.avgBlockTime" />}
           value={`${Number(avgBlockTime).toFixed(0)} ms`}
           highlight
         />
@@ -129,8 +130,8 @@ export default async function AnalyticsPage() {
       {/* TPS Chart */}
       <section className="space-y-4">
         <SectionHeader
-          title="Transactions Per Second (TPS)"
-          description="Historical TPS over the last 100 blocks"
+          title={<TranslatedText tKey="analytics.tpsTitle" />}
+          description={<TranslatedText tKey="analytics.tpsDesc" />}
           action={
             <ExportButton
               endpoint="/api/analytics/export?type=tps"
@@ -151,8 +152,8 @@ export default async function AnalyticsPage() {
       {/* Gas Usage Chart */}
       <section className="space-y-4">
         <SectionHeader
-          title="Gas Usage Trend"
-          description="Gas consumed per block over the last 100 blocks"
+          title={<TranslatedText tKey="analytics.gasUsageTitle" />}
+          description={<TranslatedText tKey="analytics.gasUsageDesc" />}
           action={
             <ExportButton
               endpoint="/api/analytics/export?type=gas"
@@ -173,8 +174,8 @@ export default async function AnalyticsPage() {
       {/* Block Time Chart */}
       <section className="space-y-4">
         <SectionHeader
-          title="Block Time"
-          description="Time between blocks in milliseconds"
+          title={<TranslatedText tKey="analytics.blockTimeTitle" />}
+          description={<TranslatedText tKey="analytics.blockTimeDesc" />}
           action={
             <ExportButton
               endpoint="/api/analytics/export?type=block_time"
@@ -195,8 +196,8 @@ export default async function AnalyticsPage() {
       {/* Validator Statistics */}
       <section className="space-y-4">
         <SectionHeader
-          title="Validator Statistics"
-          description="Block production and contribution metrics for validators"
+          title={<TranslatedText tKey="analytics.validatorStats" />}
+          description={<TranslatedText tKey="analytics.validatorStatsDesc" />}
           action={
             <ExportButton
               endpoint="/api/analytics/export?type=validators"
@@ -213,8 +214,8 @@ export default async function AnalyticsPage() {
       {/* Transaction Volume Chart */}
       <section className="space-y-4">
         <SectionHeader
-          title="Transaction Volume"
-          description="Number of transactions per block"
+          title={<TranslatedText tKey="analytics.txVolume" />}
+          description={<TranslatedText tKey="analytics.txVolumeDesc" />}
         />
         <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
           <AnalyticsChart
@@ -229,8 +230,8 @@ export default async function AnalyticsPage() {
       {/* Daily Trend Charts */}
       <section className="space-y-4">
         <SectionHeader
-          title="Historical Daily Charts"
-          description="Aggregated daily metrics over 30, 90, or 365 days"
+          title={<TranslatedText tKey="analytics.dailyCharts" />}
+          description={<TranslatedText tKey="analytics.dailyChartsDesc" />}
         />
         <DailyCharts />
       </section>

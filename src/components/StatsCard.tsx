@@ -1,5 +1,7 @@
+import type { ReactNode } from 'react';
+
 type StatsCardProps = {
-  label: string;
+  label: ReactNode;
   value: string;
   sub?: string;
   suffix?: string;

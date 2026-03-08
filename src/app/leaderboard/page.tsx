@@ -15,6 +15,7 @@ export const metadata: Metadata = {
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
 import { shortenHash, formatWeiToQfc, formatNumber } from '@/lib/format';
+import TranslatedText from '@/components/TranslatedText';
 
 type LeaderboardData = {
   ok: boolean;
@@ -54,8 +55,8 @@ export default async function LeaderboardPage({
   return (
     <main className="mx-auto max-w-7xl px-4 py-8">
       <div>
-        <h1 className="text-lg font-semibold text-white">Leaderboard</h1>
-        <p className="mt-1 text-sm text-slate-400">Top accounts, validators, and contracts on QFC network</p>
+        <h1 className="text-lg font-semibold text-white"><TranslatedText tKey="leaderboard.title" /></h1>
+        <p className="mt-1 text-sm text-slate-400"><TranslatedText tKey="leaderboard.description" /></p>
       </div>
 
       {/* Tabs */}
