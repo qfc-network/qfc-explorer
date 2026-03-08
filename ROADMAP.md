@@ -199,9 +199,9 @@ ERC-20/721/1155 Token 追踪、Internal Transactions、AI 推理任务查询、
 - [x] `/contracts` 页已包含 Verified Contracts 排行榜（排名、编译器、交互次数）
 - [x] API `GET /contract/verified` 已集成
 
-### 7.6 NFT Gallery 视图
-- [ ] 地址页 NFT tab 改为网格布局
-- [ ] tokenURI metadata 获取 + 图片展示
+### 7.6 NFT Gallery 视图 ✅
+- [x] 地址页 NFT tab 改为网格布局（Grid/List 切换）
+- [ ] tokenURI metadata 获取 + 图片展示（需 tokenURI 调用 + IPFS gateway）
 - [ ] IPFS gateway 集成
 
 ### 7.7 Token Approval Checker
@@ -209,9 +209,9 @@ ERC-20/721/1155 Token 追踪、Internal Transactions、AI 推理任务查询、
 - [ ] 显示 spender、allowance 金额
 - [ ] 高亮 unlimited approval 风险
 
-### 7.8 地址页 CSV 导出
-- [ ] 交易记录导出 CSV
-- [ ] Token 转账导出 CSV
+### 7.8 地址页 CSV 导出 ✅
+- [x] 交易记录导出 CSV
+- [x] Token 转账导出 CSV
 - [ ] 日期范围筛选
 
 ---
@@ -284,7 +284,7 @@ ERC-20/721/1155 Token 追踪、Internal Transactions、AI 推理任务查询、
 | Input Data 解码 | 自动 | 自动（ABI + 已知选择器） | ✅ |
 | Internal Txs | 完整 | 完整（debug_traceTransaction） | ✅ |
 | ERC-20 | 完整 | 完整 | ✅ |
-| NFT | 完整 | 基础（缺 gallery） | Phase 7 |
+| NFT | 完整 | Gallery 网格视图（缺 metadata） | ✅ |
 | 合约代理识别 | 自动 | 自动（EIP-1967/1822/Beacon） | ✅ |
 | 合约验证 | 完整 | 完整（单文件+多文件） | ✅ |
 | 排行榜 | 丰富 | 丰富 | ✅ |

@@ -155,6 +155,35 @@ export async function GET(request: NextRequest) {
         break;
       }
 
+      case 'token_transfers': {
+        filename = 'qfc_token_transfers';
+        const limit = Math.min(parseInt(searchParams.get('limit') || '5000'), 10000);
+        const address = searchParams.get('address');
+
+        if (!address) {
+          return new NextResponse('address parameter required for token_transfers export', { status: 400 });
+        }
+
+        const result = await pool.query(`
+          SELECT
+            tt.tx_hash,
+            tt.block_height,
+            tt.token_address,
+            tt.from_address,
+            tt.to_address,
+            tt.value,
+            t.symbol AS token_symbol,
+            t.decimals AS token_decimals
+          FROM token_transfers tt
+          LEFT JOIN tokens t ON t.address = tt.token_address
+          WHERE tt.from_address = $2 OR tt.to_address = $2
+          ORDER BY tt.block_height DESC, tt.log_index DESC
+          LIMIT $1
+        `, [limit, address]);
+        data = result.rows;
+        break;
+      }
+
       default:
         return new NextResponse('Invalid export type', { status: 400 });
     }

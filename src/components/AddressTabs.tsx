@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { shortenHash, formatWeiToQfc } from '@/lib/format';
+import ExportButton from '@/components/ExportButton';
 
 type Tab = 'transactions' | 'token_transfers' | 'token_holdings' | 'nft_holdings' | 'contract';
 
@@ -131,6 +132,16 @@ export default function AddressTabs(props: Props) {
           );
         })}
       </div>
+
+      {/* Export buttons */}
+      {(activeTab === 'transactions' || activeTab === 'token_transfers') && (
+        <div className="mt-3 flex justify-end">
+          <ExportButton
+            endpoint={`/api/analytics/export?type=${activeTab === 'token_transfers' ? 'token_transfers' : 'transactions'}&address=${address}`}
+            filename={`qfc_${address.slice(0, 10)}_${activeTab}`}
+          />
+        </div>
+      )}
 
       {/* Tab content */}
       <div className="mt-4">
@@ -376,53 +387,116 @@ function TokenHoldingsTab({ holdings }: { holdings: TokenHolding[] }) {
 }
 
 function NftHoldingsTab({ holdings }: { holdings: NftHolding[] }) {
+  const [view, setView] = useState<'grid' | 'list'>('grid');
+
   if (holdings.length === 0) {
     return <p className="py-8 text-center text-sm text-slate-500">No NFT holdings found.</p>;
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="text-left text-xs uppercase tracking-wider text-slate-500">
-            <th className="px-3 py-2">#</th>
-            <th className="px-3 py-2">Collection</th>
-            <th className="px-3 py-2">Token ID</th>
-            <th className="px-3 py-2">Type</th>
-            <th className="px-3 py-2 text-right">Balance</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-slate-800/40">
-          {holdings.map((h, i) => (
-            <tr key={`${h.token_address}-${h.token_id}`} className="hover:bg-slate-900/40">
-              <td className="px-3 py-2.5 text-slate-500">{i + 1}</td>
-              <td className="px-3 py-2.5">
-                <Link href={`/token/${h.token_address}`} className="group">
-                  <span className="font-medium text-white group-hover:text-cyan-300">
-                    {h.token_name ?? shortenHash(h.token_address)}
-                  </span>
-                  {h.token_symbol && (
-                    <span className="ml-2 text-xs text-slate-400">({h.token_symbol})</span>
-                  )}
-                </Link>
-              </td>
-              <td className="px-3 py-2.5">
-                <span className="font-mono text-xs text-cyan-400">#{h.token_id}</span>
-              </td>
-              <td className="px-3 py-2.5">
-                <span className={`rounded px-2 py-0.5 text-xs font-medium ${
-                  h.token_type === 'erc721' ? 'bg-purple-500/10 text-purple-400' : 'bg-orange-500/10 text-orange-400'
-                }`}>
-                  {h.token_type === 'erc721' ? 'ERC-721' : 'ERC-1155'}
+    <div>
+      {/* View toggle */}
+      <div className="mb-4 flex justify-end gap-1">
+        <button
+          onClick={() => setView('grid')}
+          className={`rounded-lg p-2 transition-colors ${view === 'grid' ? 'bg-slate-800 text-white' : 'text-slate-500 hover:text-white'}`}
+          title="Grid view"
+        >
+          <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M1 2.5A1.5 1.5 0 012.5 1h3A1.5 1.5 0 017 2.5v3A1.5 1.5 0 015.5 7h-3A1.5 1.5 0 011 5.5v-3zm8 0A1.5 1.5 0 0110.5 1h3A1.5 1.5 0 0115 2.5v3A1.5 1.5 0 0113.5 7h-3A1.5 1.5 0 019 5.5v-3zm-8 8A1.5 1.5 0 012.5 9h3A1.5 1.5 0 017 10.5v3A1.5 1.5 0 015.5 15h-3A1.5 1.5 0 011 13.5v-3zm8 0A1.5 1.5 0 0110.5 9h3a1.5 1.5 0 011.5 1.5v3a1.5 1.5 0 01-1.5 1.5h-3A1.5 1.5 0 019 13.5v-3z" />
+          </svg>
+        </button>
+        <button
+          onClick={() => setView('list')}
+          className={`rounded-lg p-2 transition-colors ${view === 'list' ? 'bg-slate-800 text-white' : 'text-slate-500 hover:text-white'}`}
+          title="List view"
+        >
+          <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 16 16">
+            <path fillRule="evenodd" d="M2.5 12a.5.5 0 01.5-.5h10a.5.5 0 010 1H3a.5.5 0 01-.5-.5zm0-4a.5.5 0 01.5-.5h10a.5.5 0 010 1H3a.5.5 0 01-.5-.5zm0-4a.5.5 0 01.5-.5h10a.5.5 0 010 1H3a.5.5 0 01-.5-.5z" />
+          </svg>
+        </button>
+      </div>
+
+      {view === 'grid' ? (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          {holdings.map((h) => (
+            <Link
+              key={`${h.token_address}-${h.token_id}`}
+              href={`/token/${h.token_address}`}
+              className="group rounded-xl border border-slate-800 bg-slate-900/40 overflow-hidden hover:border-slate-600 transition-colors"
+            >
+              {/* Placeholder image */}
+              <div className="aspect-square bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
+                <span className="text-3xl font-bold text-slate-700 group-hover:text-slate-600 transition-colors">
+                  #{h.token_id.length > 4 ? h.token_id.slice(0, 4) : h.token_id}
                 </span>
-              </td>
-              <td className="px-3 py-2.5 text-right text-slate-300">
-                {h.token_type === 'erc721' ? '1' : h.balance}
-              </td>
-            </tr>
+              </div>
+              <div className="p-3">
+                <p className="text-xs font-medium text-white truncate group-hover:text-cyan-300">
+                  {h.token_name ?? shortenHash(h.token_address)}
+                </p>
+                <p className="mt-0.5 text-[10px] text-slate-400">
+                  Token ID: <span className="font-mono">{h.token_id.length > 8 ? `${h.token_id.slice(0, 8)}...` : h.token_id}</span>
+                </p>
+                <div className="mt-1.5 flex items-center justify-between">
+                  <span className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${
+                    h.token_type === 'erc721' ? 'bg-purple-500/10 text-purple-400' : 'bg-orange-500/10 text-orange-400'
+                  }`}>
+                    {h.token_type === 'erc721' ? '721' : '1155'}
+                  </span>
+                  {h.token_type !== 'erc721' && (
+                    <span className="text-[10px] text-slate-500">x{h.balance}</span>
+                  )}
+                </div>
+              </div>
+            </Link>
           ))}
-        </tbody>
-      </table>
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-xs uppercase tracking-wider text-slate-500">
+                <th className="px-3 py-2">#</th>
+                <th className="px-3 py-2">Collection</th>
+                <th className="px-3 py-2">Token ID</th>
+                <th className="px-3 py-2">Type</th>
+                <th className="px-3 py-2 text-right">Balance</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-800/40">
+              {holdings.map((h, i) => (
+                <tr key={`${h.token_address}-${h.token_id}`} className="hover:bg-slate-900/40">
+                  <td className="px-3 py-2.5 text-slate-500">{i + 1}</td>
+                  <td className="px-3 py-2.5">
+                    <Link href={`/token/${h.token_address}`} className="group">
+                      <span className="font-medium text-white group-hover:text-cyan-300">
+                        {h.token_name ?? shortenHash(h.token_address)}
+                      </span>
+                      {h.token_symbol && (
+                        <span className="ml-2 text-xs text-slate-400">({h.token_symbol})</span>
+                      )}
+                    </Link>
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <span className="font-mono text-xs text-cyan-400">#{h.token_id}</span>
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <span className={`rounded px-2 py-0.5 text-xs font-medium ${
+                      h.token_type === 'erc721' ? 'bg-purple-500/10 text-purple-400' : 'bg-orange-500/10 text-orange-400'
+                    }`}>
+                      {h.token_type === 'erc721' ? 'ERC-721' : 'ERC-1155'}
+                    </span>
+                  </td>
+                  <td className="px-3 py-2.5 text-right text-slate-300">
+                    {h.token_type === 'erc721' ? '1' : h.balance}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }
