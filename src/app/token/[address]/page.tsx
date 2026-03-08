@@ -6,6 +6,8 @@ import { fetchJsonSafe } from '@/lib/api-client';
 import type { ApiTokenDetail, ApiTokenHolders } from '@/lib/api-types';
 import { shortenHash } from '@/lib/format';
 import CopyButton from '@/components/CopyButton';
+import { fetchNftMetadataBatch, type NftMetadata } from '@/lib/nft-metadata';
+import NftCard from '@/components/NftCard';
 
 export async function generateMetadata({ params }: { params: { address: string } }): Promise<Metadata> {
   const response = await fetchJsonSafe<ApiTokenDetail>(
@@ -93,6 +95,25 @@ export default async function TokenDetailPage({
   const transfers = response?.data.transfers ?? [];
   const holders = holdersResponse?.data.holders ?? [];
   const nftHolders = holdersResponse?.data.nftHolders ?? [];
+
+  // Fetch NFT metadata for inventory tab (server-side)
+  let nftMetadataMap: Record<string, NftMetadata | null> = {};
+  const isNftToken = token && (token.token_type === 'erc721' || token.token_type === 'erc1155');
+  if (isNftToken && tab === 'inventory' && nftHolders.length > 0) {
+    try {
+      const rpcUrl = process.env.RPC_URL || 'http://127.0.0.1:8545';
+      const items = nftHolders.slice(0, 50).map((h) => ({
+        contractAddress: address,
+        tokenId: h.token_id,
+      }));
+      const results = await fetchNftMetadataBatch(items, rpcUrl, 4);
+      for (const r of results) {
+        nftMetadataMap[r.tokenId] = r.metadata;
+      }
+    } catch {
+      // metadata fetch failure is non-critical
+    }
+  }
 
   if (!token) {
     return (
@@ -273,41 +294,39 @@ export default async function TokenDetailPage({
         </div>
       )}
 
-      {/* NFT Inventory Tab */}
+      {/* NFT Inventory Tab — Gallery View */}
       {tab === 'inventory' && isNft && (
         <div className="mt-4">
-          <div className="rounded-xl border border-slate-800 bg-slate-900/40 overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-slate-800/60 text-left text-xs uppercase tracking-wider text-slate-500">
-                  <th className="px-4 py-3">Token ID</th>
-                  <th className="px-4 py-3">Owner</th>
-                  {token.token_type === 'erc1155' && <th className="px-4 py-3 text-right">Balance</th>}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/40">
-                {nftHolders.length === 0 ? (
-                  <tr><td colSpan={token.token_type === 'erc1155' ? 3 : 2} className="px-4 py-8 text-center text-slate-500">No items indexed.</td></tr>
-                ) : (
-                  nftHolders.map((h) => (
-                    <tr key={`${h.address}-${h.token_id}`} className="hover:bg-slate-900/40">
-                      <td className="px-4 py-2.5">
-                        <span className="font-mono text-sm text-purple-400">#{h.token_id}</span>
-                      </td>
-                      <td className="px-4 py-2.5">
-                        <Link href={`/address/${h.address}`} className="font-mono text-xs text-cyan-400 hover:text-cyan-300">
-                          {shortenHash(h.address, 8, 6)}
+          {nftHolders.length === 0 ? (
+            <p className="py-8 text-center text-sm text-slate-500">No items indexed.</p>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                {nftHolders.map((h) => {
+                  const meta = nftMetadataMap[h.token_id];
+                  return (
+                    <div key={`${h.address}-${h.token_id}`} className="flex flex-col">
+                      <NftCard
+                        tokenAddress={address}
+                        tokenId={h.token_id}
+                        collectionName={token.name}
+                        nftName={meta?.name}
+                        imageUrl={meta?.image}
+                        tokenType={token.token_type}
+                        balance={h.balance}
+                      />
+                      <p className="mt-1 text-center text-[10px] text-slate-500">
+                        Owner:{' '}
+                        <Link href={`/address/${h.address}`} className="text-cyan-400 hover:text-cyan-300 font-mono">
+                          {shortenHash(h.address, 6, 4)}
                         </Link>
-                      </td>
-                      {token.token_type === 'erc1155' && (
-                        <td className="px-4 py-2.5 text-right text-slate-300">{h.balance}</td>
-                      )}
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
         </div>
       )}
     </main>

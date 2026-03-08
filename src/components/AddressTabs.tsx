@@ -64,6 +64,7 @@ type Props = {
   contract: ContractInfo | null;
   currentTab: string;
   page: number;
+  nextCursor?: string | null;
   txCount: string;
   tokenTransferCount: string;
 };
@@ -92,7 +93,7 @@ function formatTokenValue(value: string, decimals: number | null): string {
 }
 
 export default function AddressTabs(props: Props) {
-  const { address, transactions, tokenTransfers, tokenHoldings, nftHoldings, contract, currentTab, page } = props;
+  const { address, transactions, tokenTransfers, tokenHoldings, nftHoldings, contract, currentTab, page, nextCursor } = props;
   const activeTab = (currentTab as Tab) || 'transactions';
 
   return (
@@ -142,10 +143,10 @@ export default function AddressTabs(props: Props) {
       {/* Tab content */}
       <div className="mt-4">
         {activeTab === 'transactions' && (
-          <TransactionsTab address={address} transactions={transactions} page={page} />
+          <TransactionsTab address={address} transactions={transactions} page={page} nextCursor={nextCursor} />
         )}
         {activeTab === 'token_transfers' && (
-          <TokenTransfersTab address={address} transfers={tokenTransfers} page={page} />
+          <TokenTransfersTab address={address} transfers={tokenTransfers} page={page} nextCursor={nextCursor} />
         )}
         {activeTab === 'token_holdings' && (
           <TokenHoldingsTab holdings={tokenHoldings} />
@@ -161,7 +162,7 @@ export default function AddressTabs(props: Props) {
   );
 }
 
-function TransactionsTab({ address, transactions, page }: { address: string; transactions: Transaction[]; page: number }) {
+function TransactionsTab({ address, transactions, page, nextCursor }: { address: string; transactions: Transaction[]; page: number; nextCursor?: string | null }) {
   if (transactions.length === 0) {
     return <p className="py-8 text-center text-sm text-slate-500">No transactions found.</p>;
   }
@@ -239,12 +240,12 @@ function TransactionsTab({ address, transactions, page }: { address: string; tra
           </tbody>
         </table>
       </div>
-      <Pagination address={address} tab="transactions" page={page} hasMore={transactions.length === 25} />
+      <Pagination address={address} tab="transactions" page={page} hasMore={transactions.length === 25} nextCursor={nextCursor} />
     </>
   );
 }
 
-function TokenTransfersTab({ address, transfers, page }: { address: string; transfers: TokenTransfer[]; page: number }) {
+function TokenTransfersTab({ address, transfers, page, nextCursor }: { address: string; transfers: TokenTransfer[]; page: number; nextCursor?: string | null }) {
   const [filter, setFilter] = useState<'all' | 'in' | 'out'>('all');
 
   const filtered = useMemo(() => {
@@ -330,7 +331,7 @@ function TokenTransfersTab({ address, transfers, page }: { address: string; tran
           </tbody>
         </table>
       </div>
-      <Pagination address={address} tab="token_transfers" page={page} hasMore={transfers.length === 25} />
+      <Pagination address={address} tab="token_transfers" page={page} hasMore={transfers.length === 25} nextCursor={nextCursor} />
     </>
   );
 }
@@ -631,7 +632,7 @@ function ExportWithDateRange({ address, type }: { address: string; type: string 
   );
 }
 
-function Pagination({ address, tab, page, hasMore }: { address: string; tab: string; page: number; hasMore: boolean }) {
+function Pagination({ address, tab, page, hasMore, nextCursor }: { address: string; tab: string; page: number; hasMore: boolean; nextCursor?: string | null }) {
   return (
     <div className="mt-4 flex items-center justify-between text-sm text-slate-400">
       {page > 1 ? (
@@ -645,7 +646,14 @@ function Pagination({ address, tab, page, hasMore }: { address: string; tab: str
         <span className="rounded-lg border border-slate-800/40 px-4 py-2 text-slate-600">Previous</span>
       )}
       <span>Page {page}</span>
-      {hasMore ? (
+      {nextCursor ? (
+        <Link
+          href={`/address/${address}?tab=${tab}&cursor=${encodeURIComponent(nextCursor)}`}
+          className="rounded-lg border border-slate-800 px-4 py-2 hover:bg-slate-900 transition-colors"
+        >
+          Next
+        </Link>
+      ) : hasMore ? (
         <Link
           href={`/address/${address}?tab=${tab}&page=${page + 1}`}
           className="rounded-lg border border-slate-800 px-4 py-2 hover:bg-slate-900 transition-colors"

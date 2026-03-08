@@ -6,6 +6,7 @@ export type ApiBlocksList = ApiOk<{
   limit: number;
   order: string;
   producer?: string | null;
+  next_cursor?: string | null;
   items: Array<{
     hash: string;
     height: string;
@@ -48,6 +49,7 @@ export type ApiTransactionsList = ApiOk<{
   order: string;
   address?: string | null;
   status?: string | null;
+  next_cursor?: string | null;
   items: Array<{
     hash: string;
     block_height: string;
@@ -125,6 +127,7 @@ export type ApiAddressDetail = ApiOk<{
   page: number;
   limit: number;
   order: string;
+  next_cursor?: string | null;
   transactions: Array<{
     hash: string;
     block_height: string;

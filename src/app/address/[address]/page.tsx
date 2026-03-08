@@ -28,16 +28,20 @@ export default async function AddressDetailPage({
   searchParams,
 }: {
   params: { address: string };
-  searchParams: { page?: string; tab?: string };
+  searchParams: { page?: string; tab?: string; cursor?: string };
 }) {
   const address = params.address;
+  const cursor = searchParams.cursor ?? null;
   const page = Math.max(1, Number(searchParams.page ?? '1'));
   const tab = searchParams.tab ?? 'transactions';
 
-  const response = await fetchJsonSafe<ApiAddressDetail>(
-    `/api/address/${address}?page=${page}&limit=${PAGE_SIZE}&tab=${tab}`,
-    { next: { revalidate: 20 } }
-  );
+  const apiQuery = cursor
+    ? `/api/address/${address}?cursor=${encodeURIComponent(cursor)}&limit=${PAGE_SIZE}&tab=${tab}`
+    : `/api/address/${address}?page=${page}&limit=${PAGE_SIZE}&tab=${tab}`;
+
+  const response = await fetchJsonSafe<ApiAddressDetail>(apiQuery, {
+    next: { revalidate: 20 },
+  });
 
   const overview = response?.data.address ?? null;
   const stats = response?.data.stats ?? null;
@@ -47,6 +51,7 @@ export default async function AddressDetailPage({
   const nftHoldings = response?.data.nftHoldings ?? [];
   const transactions = response?.data.transactions ?? [];
   const tokenTransfers = response?.data.tokenTransfers ?? [];
+  const nextCursor = response?.data.next_cursor ?? null;
 
   if (!overview) {
     return (
@@ -115,6 +120,7 @@ export default async function AddressDetailPage({
           contract={contract}
           currentTab={tab}
           page={page}
+          nextCursor={nextCursor}
           txCount={stats ? String(Number(stats.sent) + Number(stats.received)) : '0'}
           tokenTransferCount="0"
         />

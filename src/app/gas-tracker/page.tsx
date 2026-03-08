@@ -63,11 +63,30 @@ export default async function GasTrackerPage() {
   const contractAddrs = topContracts.map((c) => c.address);
   const labels = await resolveAddressLabels(contractAddrs);
 
+  // Compute block gas utilization summary from real block data
+  const blockUtils = blocks.map((b) => gasUtilization(b.gasUsed, b.gasLimit));
+  const avgUtilization = blockUtils.length > 0
+    ? blockUtils.reduce((a, b) => a + b, 0) / blockUtils.length
+    : 0;
+  const totalGasUsed = blocks.reduce((sum, b) => sum + Number(b.gasUsed), 0);
+  const totalTxs = blocks.reduce((sum, b) => sum + b.txCount, 0);
+
+  // Gas price trend: compare first half vs second half of blocks
+  const gasTrend = computeGasTrend(blocks);
+
+  const hasData = prices && prices.sampleSize > 0;
+
   return (
     <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 px-6 py-12">
       <SectionHeader
         title="Gas Tracker"
-        description={prices ? `Based on ${prices.sampleSize} recent transactions` : 'Loading...'}
+        description={
+          hasData
+            ? `Based on ${prices.sampleSize} recent transactions across ${blocks.length} blocks`
+            : data
+              ? 'No recent transactions with gas data'
+              : 'Unable to load gas data'
+        }
         action={
           <Link
             href="/analytics"
@@ -78,8 +97,24 @@ export default async function GasTrackerPage() {
         }
       />
 
+      {/* No data state */}
+      {!data && (
+        <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-12 text-center">
+          <p className="text-slate-400">Gas tracker data is currently unavailable.</p>
+          <p className="mt-2 text-sm text-slate-500">The API may be unreachable or no blocks have been indexed yet.</p>
+        </div>
+      )}
+
+      {/* Empty data state — API returned but no transactions */}
+      {data && !hasData && (
+        <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-12 text-center">
+          <p className="text-slate-400">No gas price data available yet.</p>
+          <p className="mt-2 text-sm text-slate-500">Gas prices will appear once transactions are processed on the network.</p>
+        </div>
+      )}
+
       {/* Gas Price Cards */}
-      {prices && (
+      {hasData && (
         <section className="grid gap-4 sm:grid-cols-4">
           <GasCard title="Low" gwei={formatGwei(prices.low)} color="green" sub="Minimum" />
           <GasCard title="Average" gwei={formatGwei(prices.average)} color="blue" sub="Mean" />
@@ -88,8 +123,39 @@ export default async function GasTrackerPage() {
         </section>
       )}
 
+      {/* Gas Price Trend + Block Summary */}
+      {hasData && blocks.length > 0 && (
+        <section className="grid gap-4 sm:grid-cols-3">
+          <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-5">
+            <p className="text-xs uppercase tracking-wider text-slate-500">Gas Trend</p>
+            <div className="mt-2 flex items-baseline gap-2">
+              <span className={`text-2xl font-semibold ${
+                gasTrend.direction === 'up' ? 'text-red-400' : gasTrend.direction === 'down' ? 'text-green-400' : 'text-slate-300'
+              }`}>
+                {gasTrend.direction === 'up' ? '\u2191' : gasTrend.direction === 'down' ? '\u2193' : '\u2192'}
+                {' '}{gasTrend.pctChange.toFixed(1)}%
+              </span>
+            </div>
+            <p className="mt-1 text-xs text-slate-500">
+              {gasTrend.direction === 'up' ? 'Prices rising' : gasTrend.direction === 'down' ? 'Prices falling' : 'Prices stable'}
+              {' '}(recent vs prior blocks)
+            </p>
+          </div>
+          <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-5">
+            <p className="text-xs uppercase tracking-wider text-slate-500">Avg Block Utilization</p>
+            <p className="mt-2 text-2xl font-semibold text-slate-200">{avgUtilization.toFixed(1)}%</p>
+            <p className="mt-1 text-xs text-slate-500">Across {blocks.length} recent blocks</p>
+          </div>
+          <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-5">
+            <p className="text-xs uppercase tracking-wider text-slate-500">Network Activity</p>
+            <p className="mt-2 text-2xl font-semibold text-slate-200">{formatNumber(totalTxs)} txs</p>
+            <p className="mt-1 text-xs text-slate-500">{formatNumber(totalGasUsed)} gas used</p>
+          </div>
+        </section>
+      )}
+
       {/* Fee Estimates */}
-      {prices && (
+      {hasData && (
         <section className="space-y-4">
           <SectionHeader title="Estimated Transaction Fees" description="Based on current gas prices" />
           <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/40">
@@ -164,7 +230,7 @@ export default async function GasTrackerPage() {
       )}
 
       {/* Top Gas Consumers */}
-      {topContracts.length > 0 && (
+      {topContracts.length > 0 ? (
         <section className="space-y-4">
           <SectionHeader title="Top Gas Consumers" description="Contracts using the most gas in recent transactions" />
           <Table
@@ -197,9 +263,41 @@ export default async function GasTrackerPage() {
             ]}
           />
         </section>
-      )}
+      ) : hasData ? (
+        <section className="space-y-4">
+          <SectionHeader title="Top Gas Consumers" description="Contracts using the most gas in recent transactions" />
+          <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-8 text-center">
+            <p className="text-sm text-slate-400">No contract gas usage data available yet.</p>
+          </div>
+        </section>
+      ) : null}
     </main>
   );
+}
+
+/** Compare average gas price in recent blocks vs older blocks to determine trend */
+function computeGasTrend(blocks: Array<{ gasUsed: string; txCount: number }>) {
+  if (blocks.length < 4) return { direction: 'stable' as const, pctChange: 0 };
+
+  const mid = Math.floor(blocks.length / 2);
+  const older = blocks.slice(0, mid);
+  const newer = blocks.slice(mid);
+
+  const avgGas = (arr: typeof blocks) => {
+    const total = arr.reduce((s, b) => s + Number(b.gasUsed), 0);
+    const count = arr.length || 1;
+    return total / count;
+  };
+
+  const olderAvg = avgGas(older);
+  const newerAvg = avgGas(newer);
+
+  if (olderAvg === 0) return { direction: 'stable' as const, pctChange: 0 };
+
+  const pctChange = ((newerAvg - olderAvg) / olderAvg) * 100;
+  const direction = pctChange > 5 ? 'up' as const : pctChange < -5 ? 'down' as const : 'stable' as const;
+
+  return { direction, pctChange: Math.abs(pctChange) };
 }
 
 function GasCard({
