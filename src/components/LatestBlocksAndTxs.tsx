@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { shortenHash, formatWeiToQfc } from '@/lib/format';
+import { useTranslation } from '@/components/LocaleProvider';
 
 type Block = {
   height: string;
@@ -62,17 +63,18 @@ export default function LatestBlocksAndTxs({
   transactions: Transaction[];
   labels?: LabelMap;
 }) {
+  const { t } = useTranslation();
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       {/* Latest Blocks */}
       <div className="rounded-xl border border-slate-800 bg-slate-900/40">
         <div className="flex items-center justify-between border-b border-slate-800/60 px-5 py-4">
-          <h2 className="text-sm font-semibold text-white">Latest Blocks</h2>
+          <h2 className="text-sm font-semibold text-white">{t('home.latestBlocks')}</h2>
           <Link
             href="/blocks"
             className="rounded-lg bg-slate-800 px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
           >
-            View all
+            {t('home.viewAll')}
           </Link>
         </div>
         <div className="divide-y divide-slate-800/40">
@@ -89,7 +91,7 @@ export default function LatestBlocksAndTxs({
                 <p className="mt-0.5 text-xs text-slate-400">
                   {block.producer ? (
                     <>
-                      Validated by{' '}
+                      {t('common.validatedBy')}{' '}
                       <Link href={`/address/${block.producer}`} className="text-slate-300 hover:text-white">
                         {shortenHash(block.producer)}
                       </Link>
@@ -100,7 +102,7 @@ export default function LatestBlocksAndTxs({
                       )}
                     </>
                   ) : (
-                    'Unknown producer'
+                    t('common.unknownProducer')
                   )}
                 </p>
               </div>
@@ -115,12 +117,12 @@ export default function LatestBlocksAndTxs({
       {/* Latest Transactions */}
       <div className="rounded-xl border border-slate-800 bg-slate-900/40">
         <div className="flex items-center justify-between border-b border-slate-800/60 px-5 py-4">
-          <h2 className="text-sm font-semibold text-white">Latest Transactions</h2>
+          <h2 className="text-sm font-semibold text-white">{t('home.latestTransactions')}</h2>
           <Link
             href="/txs"
             className="rounded-lg bg-slate-800 px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
           >
-            View all
+            {t('home.viewAll')}
           </Link>
         </div>
         <div className="divide-y divide-slate-800/40">
@@ -146,7 +148,7 @@ export default function LatestBlocksAndTxs({
                       {labels[tx.to_address.toLowerCase()]?.label ?? shortenHash(tx.to_address)}
                     </Link>
                   ) : (
-                    <span className="text-emerald-400">Contract Creation</span>
+                    <span className="text-emerald-400">{t('common.contractCreation')}</span>
                   )}
                 </p>
               </div>

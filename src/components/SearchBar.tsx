@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { apiUrl } from '@/lib/client-api';
+import { useTranslation } from '@/components/LocaleProvider';
 
 function isHex(value: string) {
   return /^0x[0-9a-fA-F]+$/.test(value);
@@ -41,6 +42,7 @@ function addHistory(query: string) {
 
 export default function SearchBar({ prominent = false }: { prominent?: boolean }) {
   const router = useRouter();
+  const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState<SuggestionResponse | null>(null);
   const [open, setOpen] = useState(false);
@@ -118,7 +120,7 @@ export default function SearchBar({ prominent = false }: { prominent?: boolean }
         <input
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search by Address / Tx Hash / Block / Token"
+          placeholder={t('search.placeholder')}
           className={`${inputCls} ${prominent ? 'pl-11' : 'pl-9'}`}
           onFocus={() => {
             if (suggestions) setOpen(true);
@@ -129,7 +131,7 @@ export default function SearchBar({ prominent = false }: { prominent?: boolean }
           type="submit"
           className={`absolute right-2 rounded-lg bg-cyan-600 px-4 text-xs font-medium text-white hover:bg-cyan-500 transition-colors ${prominent ? 'py-2' : 'py-1.5'}`}
         >
-          Search
+          {t('search.button')}
         </button>
       </form>
 
@@ -137,16 +139,16 @@ export default function SearchBar({ prominent = false }: { prominent?: boolean }
       {showDropdown ? (
         <div className="absolute z-50 mt-2 w-full rounded-xl border border-slate-800 bg-slate-950/95 py-1 text-sm shadow-xl backdrop-blur-sm">
           {suggestions.data.blockHeights?.map((height) => (
-            <SuggestItem key={`h-${height}`} icon="block" label={`Block ${height}`} onSelect={() => navigate(`/blocks/${height}`, height)} />
+            <SuggestItem key={`h-${height}`} icon="block" label={`${t('search.block')} ${height}`} onSelect={() => navigate(`/blocks/${height}`, height)} />
           ))}
           {suggestions.data.blockHashes?.map((block) => (
-            <SuggestItem key={`bh-${block.hash}`} icon="block" label={`Block ${block.height}`} sub={block.hash.slice(0, 16) + '...'} onSelect={() => navigate(`/blocks/${block.height}`, block.hash)} />
+            <SuggestItem key={`bh-${block.hash}`} icon="block" label={`${t('search.block')} ${block.height}`} sub={block.hash.slice(0, 16) + '...'} onSelect={() => navigate(`/blocks/${block.height}`, block.hash)} />
           ))}
           {suggestions.data.txHashes?.map((tx) => (
-            <SuggestItem key={`tx-${tx.hash}`} icon="tx" label="Transaction" sub={tx.hash.slice(0, 20) + '...'} onSelect={() => navigate(`/txs/${tx.hash}`, tx.hash)} />
+            <SuggestItem key={`tx-${tx.hash}`} icon="tx" label={t('search.transaction')} sub={tx.hash.slice(0, 20) + '...'} onSelect={() => navigate(`/txs/${tx.hash}`, tx.hash)} />
           ))}
           {suggestions.data.addresses?.map((addr) => (
-            <SuggestItem key={`addr-${addr}`} icon="addr" label="Address" sub={addr} onSelect={() => navigate(`/address/${addr}`, addr)} />
+            <SuggestItem key={`addr-${addr}`} icon="addr" label={t('search.address')} sub={addr} onSelect={() => navigate(`/address/${addr}`, addr)} />
           ))}
           {suggestions.data.tokens?.map((token) => (
             <SuggestItem

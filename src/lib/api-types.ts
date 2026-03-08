@@ -325,3 +325,25 @@ export type ApiTaskStatus = ApiOk<{
   minerAddress?: string;
   executionTimeMs?: number;
 }>;
+
+export type ApiTxPool = ApiOk<{
+  pending: Array<{
+    hash: string;
+    from: string;
+    to: string | null;
+    value: string;
+    gasPrice: string;
+    nonce: number;
+    gas: string | null;
+  }>;
+  count: number;
+  queued: number;
+  sort: string;
+  order: string;
+  limit: number;
+}>;
+
+export type ApiTxPoolStatus = ApiOk<{
+  pending: number;
+  queued: number;
+}>;
