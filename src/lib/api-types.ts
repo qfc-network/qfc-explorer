@@ -156,6 +156,19 @@ export type ApiAddressDetail = ApiOk<{
     token_symbol: string | null;
     token_decimals: number | null;
   }>;
+  internalTxs?: Array<{
+    tx_hash: string;
+    block_height: string;
+    trace_index: number;
+    call_type: string;
+    depth: number;
+    from_address: string;
+    to_address: string;
+    value: string;
+    gas: string;
+    gas_used: string;
+    error: string | null;
+  }>;
 }>;
 
 export interface FlowNode {
@@ -655,6 +668,40 @@ export type ApiValidatorDetail = ApiOk<{
     date: string;
     block_count: number;
   }>;
+}>;
+
+// --- Balance History ---
+
+export type BalanceHistoryPoint = {
+  date: string;
+  balance: string;
+};
+
+export type ApiBalanceHistory = ApiOk<{
+  points: BalanceHistoryPoint[];
+  current_balance: string;
+}>;
+
+// --- Rich List ---
+
+export type RichListAccount = {
+  address: string;
+  balance: string;
+  nonce: string;
+  is_contract: boolean;
+  tx_count: number;
+  label: string | null;
+  label_category: string | null;
+};
+
+export type ApiRichList = ApiOk<{
+  page: number;
+  limit: number;
+  type: string;
+  total: number;
+  total_supply: string;
+  top10_balance: string;
+  items: RichListAccount[];
 }>;
 
 export type ApiTokenTransfersList = ApiOk<{

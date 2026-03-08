@@ -172,6 +172,10 @@ const ko: Record<string, string> = {
   'address.tokenId': '토큰 ID',
   'address.gridView': '그리드 보기',
   'address.listView': '리스트 보기',
+  'address.internalTxs': '내부 트랜잭션',
+  'address.internalTxs.noResults': '내부 트랜잭션을 찾을 수 없습니다.',
+  'address.internalTxs.parentTxHash': '상위 트랜잭션 해시',
+  'address.internalTxs.type': '유형',
   'address.exportFrom': '시작',
   'address.exportTo': '종료',
 
@@ -698,6 +702,39 @@ const ko: Record<string, string> = {
   'export.estimatedRows': '예상 행 수: {count}',
   'export.csvFormat': 'CSV',
   'export.exportBtn': '내보내기',
+
+  // Balance History
+  'balance.title': '잔액 내역',
+  'balance.showChart': '잔액 내역 표시',
+  'balance.hideChart': '잔액 내역 숨기기',
+  'balance.noData': '이 주소의 잔액 내역이 없습니다.',
+  'balance.date': '날짜',
+  'balance.balanceLabel': '잔액',
+  'balance.7d': '7일',
+  'balance.30d': '30일',
+  'balance.90d': '90일',
+  'balance.1y': '1년',
+
+  // Rich List
+  'nav.richList': '리치 리스트',
+  'richlist.title': '리치 리스트',
+  'richlist.description': 'QFC 잔액 기준 상위 계정 순위.',
+  'richlist.totalAccounts': '총 계정 수',
+  'richlist.totalSupply': '총 공급량',
+  'richlist.top10Hold': '상위 10 보유',
+  'richlist.filterAll': '전체',
+  'richlist.filterEoa': 'EOA만',
+  'richlist.filterContract': '컨트랙트만',
+  'richlist.rank': '순위',
+  'richlist.address': '주소',
+  'richlist.balance': '잔액 (QFC)',
+  'richlist.percentage': '공급량 %',
+  'richlist.txCount': 'Tx 수',
+  'richlist.type': '유형',
+  'richlist.eoa': 'EOA',
+  'richlist.contract': '컨트랙트',
+  'richlist.noData': '계정을 찾을 수 없습니다.',
+  'richlist.page': '{total}페이지 중 {page}페이지',
 };
 
 export default ko;

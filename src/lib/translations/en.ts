@@ -172,6 +172,10 @@ const en = {
   'address.tokenId': 'Token ID',
   'address.gridView': 'Grid view',
   'address.listView': 'List view',
+  'address.internalTxs': 'Internal Txs',
+  'address.internalTxs.noResults': 'No internal transactions found.',
+  'address.internalTxs.parentTxHash': 'Parent Tx Hash',
+  'address.internalTxs.type': 'Type',
   'address.exportFrom': 'From',
   'address.exportTo': 'To',
 
@@ -698,6 +702,39 @@ const en = {
   'export.estimatedRows': 'Estimated rows: {count}',
   'export.csvFormat': 'CSV',
   'export.exportBtn': 'Export',
+
+  // Balance History
+  'balance.title': 'Balance History',
+  'balance.showChart': 'Show Balance History',
+  'balance.hideChart': 'Hide Balance History',
+  'balance.noData': 'No balance history available for this address.',
+  'balance.date': 'Date',
+  'balance.balanceLabel': 'Balance',
+  'balance.7d': '7D',
+  'balance.30d': '30D',
+  'balance.90d': '90D',
+  'balance.1y': '1Y',
+
+  // Rich List
+  'nav.richList': 'Rich List',
+  'richlist.title': 'Rich List',
+  'richlist.description': 'Top accounts ranked by QFC balance.',
+  'richlist.totalAccounts': 'Total Accounts',
+  'richlist.totalSupply': 'Total Supply',
+  'richlist.top10Hold': 'Top 10 Hold',
+  'richlist.filterAll': 'All',
+  'richlist.filterEoa': 'EOA Only',
+  'richlist.filterContract': 'Contracts Only',
+  'richlist.rank': 'Rank',
+  'richlist.address': 'Address',
+  'richlist.balance': 'Balance (QFC)',
+  'richlist.percentage': '% of Supply',
+  'richlist.txCount': 'Tx Count',
+  'richlist.type': 'Type',
+  'richlist.eoa': 'EOA',
+  'richlist.contract': 'Contract',
+  'richlist.noData': 'No accounts found.',
+  'richlist.page': 'Page {page} of {total}',
 } as const;
 
 export type TranslationKey = keyof typeof en;

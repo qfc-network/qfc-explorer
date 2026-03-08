@@ -48,6 +48,7 @@ const NAV_ITEMS: NavItem[] = [
       { labelKey: 'nav.networkStatus', href: '/network' },
       { labelKey: 'nav.analytics', href: '/analytics' },
       { labelKey: 'nav.leaderboard', href: '/leaderboard' },
+      { labelKey: 'nav.richList', href: '/richlist' },
       { labelKey: 'nav.governance', href: '/governance/models' },
     ],
   },

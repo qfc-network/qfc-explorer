@@ -172,6 +172,10 @@ const ja: Record<string, string> = {
   'address.tokenId': 'トークン ID',
   'address.gridView': 'グリッド表示',
   'address.listView': 'リスト表示',
+  'address.internalTxs': '内部トランザクション',
+  'address.internalTxs.noResults': '内部トランザクションが見つかりません。',
+  'address.internalTxs.parentTxHash': '親トランザクションハッシュ',
+  'address.internalTxs.type': 'タイプ',
   'address.exportFrom': '開始',
   'address.exportTo': '終了',
 
@@ -698,6 +702,39 @@ const ja: Record<string, string> = {
   'export.estimatedRows': '推定行数：{count}',
   'export.csvFormat': 'CSV',
   'export.exportBtn': 'エクスポート',
+
+  // Balance History
+  'balance.title': '残高履歴',
+  'balance.showChart': '残高履歴を表示',
+  'balance.hideChart': '残高履歴を非表示',
+  'balance.noData': 'このアドレスの残高履歴はありません。',
+  'balance.date': '日付',
+  'balance.balanceLabel': '残高',
+  'balance.7d': '7日',
+  'balance.30d': '30日',
+  'balance.90d': '90日',
+  'balance.1y': '1年',
+
+  // Rich List
+  'nav.richList': 'リッチリスト',
+  'richlist.title': 'リッチリスト',
+  'richlist.description': 'QFC残高でランキングされたトップアカウント。',
+  'richlist.totalAccounts': '総アカウント数',
+  'richlist.totalSupply': '総供給量',
+  'richlist.top10Hold': 'トップ10保有',
+  'richlist.filterAll': 'すべて',
+  'richlist.filterEoa': 'EOAのみ',
+  'richlist.filterContract': 'コントラクトのみ',
+  'richlist.rank': 'ランク',
+  'richlist.address': 'アドレス',
+  'richlist.balance': '残高 (QFC)',
+  'richlist.percentage': '供給量の%',
+  'richlist.txCount': 'Tx数',
+  'richlist.type': 'タイプ',
+  'richlist.eoa': 'EOA',
+  'richlist.contract': 'コントラクト',
+  'richlist.noData': 'アカウントが見つかりません。',
+  'richlist.page': '{total}ページ中{page}ページ',
 };
 
 export default ja;

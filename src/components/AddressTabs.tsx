@@ -11,7 +11,7 @@ import AddressExportModal from '@/components/AddressExportModal';
 import { useTranslation } from '@/components/LocaleProvider';
 import type { TranslationKey } from '@/lib/translations/en';
 
-type Tab = 'transactions' | 'token_transfers' | 'token_holdings' | 'nft_holdings' | 'contract';
+type Tab = 'transactions' | 'token_transfers' | 'internal_txs' | 'token_holdings' | 'nft_holdings' | 'contract';
 
 type Transaction = {
   hash: string;
@@ -52,6 +52,20 @@ type NftHolding = {
   balance: string;
 };
 
+type InternalTx = {
+  tx_hash: string;
+  block_height: string;
+  trace_index: number;
+  call_type: string;
+  depth: number;
+  from_address: string;
+  to_address: string;
+  value: string;
+  gas: string;
+  gas_used: string;
+  error: string | null;
+};
+
 type ContractInfo = {
   creator_tx_hash: string | null;
   created_at_block: string | null;
@@ -63,6 +77,7 @@ type Props = {
   address: string;
   transactions: Transaction[];
   tokenTransfers: TokenTransfer[];
+  internalTxs: InternalTx[];
   tokenHoldings: TokenHolding[];
   nftHoldings: NftHolding[];
   contract: ContractInfo | null;
@@ -71,11 +86,13 @@ type Props = {
   nextCursor?: string | null;
   txCount: string;
   tokenTransferCount: string;
+  internalTxCount: string;
 };
 
-const TAB_KEYS: { key: Tab; labelKey: TranslationKey; countKey: keyof Pick<Props, 'txCount' | 'tokenTransferCount'> | null }[] = [
+const TAB_KEYS: { key: Tab; labelKey: TranslationKey; countKey: keyof Pick<Props, 'txCount' | 'tokenTransferCount' | 'internalTxCount'> | null }[] = [
   { key: 'transactions', labelKey: 'address.transactions', countKey: 'txCount' },
   { key: 'token_transfers', labelKey: 'address.tokenTransfers', countKey: 'tokenTransferCount' },
+  { key: 'internal_txs', labelKey: 'address.internalTxs', countKey: 'internalTxCount' },
   { key: 'token_holdings', labelKey: 'address.tokenHoldings', countKey: null },
   { key: 'nft_holdings', labelKey: 'address.nftHoldings', countKey: null },
   { key: 'contract', labelKey: 'contract.title', countKey: null },
@@ -97,7 +114,7 @@ function formatTokenValue(value: string, decimals: number | null): string {
 }
 
 export default function AddressTabs(props: Props) {
-  const { address, transactions, tokenTransfers, tokenHoldings, nftHoldings, contract, currentTab, page, nextCursor } = props;
+  const { address, transactions, tokenTransfers, internalTxs, tokenHoldings, nftHoldings, contract, currentTab, page, nextCursor } = props;
   const activeTab = (currentTab as Tab) || 'transactions';
   const { t } = useTranslation();
 
@@ -152,6 +169,9 @@ export default function AddressTabs(props: Props) {
         )}
         {activeTab === 'token_transfers' && (
           <TokenTransfersTab address={address} transfers={tokenTransfers} page={page} nextCursor={nextCursor} />
+        )}
+        {activeTab === 'internal_txs' && (
+          <InternalTxsTab address={address} internalTxs={internalTxs} page={page} nextCursor={nextCursor} />
         )}
         {activeTab === 'token_holdings' && (
           <TokenHoldingsTab holdings={tokenHoldings} />
@@ -572,6 +592,99 @@ function NftHoldingsTab({ address, holdings }: { address: string; holdings: NftH
         </div>
       )}
     </div>
+  );
+}
+
+const CALL_TYPE_STYLES: Record<string, string> = {
+  CALL: 'bg-blue-500/10 text-blue-400',
+  CREATE: 'bg-emerald-500/10 text-emerald-400',
+  CREATE2: 'bg-emerald-500/10 text-emerald-400',
+  DELEGATECALL: 'bg-purple-500/10 text-purple-400',
+  STATICCALL: 'bg-slate-500/10 text-slate-400',
+  CALLCODE: 'bg-amber-500/10 text-amber-400',
+  SELFDESTRUCT: 'bg-red-500/10 text-red-400',
+};
+
+function InternalTxsTab({ address, internalTxs, page, nextCursor }: { address: string; internalTxs: InternalTx[]; page: number; nextCursor?: string | null }) {
+  const { t } = useTranslation();
+
+  if (internalTxs.length === 0) {
+    return <p className="py-8 text-center text-sm text-slate-500">{t('address.internalTxs.noResults')}</p>;
+  }
+
+  return (
+    <>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-left text-xs uppercase tracking-wider text-slate-500">
+              <th className="px-3 py-2">{t('address.internalTxs.parentTxHash')}</th>
+              <th className="px-3 py-2">{t('address.internalTxs.type')}</th>
+              <th className="px-3 py-2">{t('common.from')}</th>
+              <th className="px-3 py-2">{t('common.to')}</th>
+              <th className="px-3 py-2 text-right">{t('common.value')}</th>
+              <th className="px-3 py-2">{t('common.block')}</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-800/40">
+            {internalTxs.map((itx, i) => {
+              const callType = (itx.call_type ?? '').toUpperCase();
+              const badgeStyle = CALL_TYPE_STYLES[callType] ?? 'bg-slate-500/10 text-slate-400';
+              return (
+                <tr key={`${itx.tx_hash}-${itx.trace_index}-${i}`} className="hover:bg-slate-900/40">
+                  <td className="px-3 py-2.5">
+                    <Link href={`/txs/${itx.tx_hash}`} className="text-cyan-400 hover:text-cyan-300">
+                      {shortenHash(itx.tx_hash)}
+                    </Link>
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <span className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${badgeStyle}`}>
+                      {callType || 'CALL'}
+                    </span>
+                    {itx.error && (
+                      <span className="ml-1 rounded bg-red-500/10 px-1.5 py-0.5 text-[10px] text-red-400">
+                        err
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-3 py-2.5">
+                    {itx.from_address?.toLowerCase() === address.toLowerCase() ? (
+                      <span className="text-slate-500">{shortenHash(itx.from_address)}</span>
+                    ) : (
+                      <Link href={`/address/${itx.from_address}`} className="text-slate-300 hover:text-white">
+                        {shortenHash(itx.from_address)}
+                      </Link>
+                    )}
+                  </td>
+                  <td className="px-3 py-2.5">
+                    {itx.to_address ? (
+                      itx.to_address.toLowerCase() === address.toLowerCase() ? (
+                        <span className="text-slate-500">{shortenHash(itx.to_address)}</span>
+                      ) : (
+                        <Link href={`/address/${itx.to_address}`} className="text-slate-300 hover:text-white">
+                          {shortenHash(itx.to_address)}
+                        </Link>
+                      )
+                    ) : (
+                      <span className="text-emerald-400">{t('common.contractCreation')}</span>
+                    )}
+                  </td>
+                  <td className="px-3 py-2.5 text-right text-slate-300">
+                    {formatWeiToQfc(itx.value)} QFC
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <Link href={`/blocks/${itx.block_height}`} className="text-slate-300 hover:text-white">
+                      {itx.block_height}
+                    </Link>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <Pagination address={address} tab="internal_txs" page={page} hasMore={internalTxs.length === 25} nextCursor={nextCursor} />
+    </>
   );
 }
 

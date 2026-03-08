@@ -10,6 +10,7 @@ import AddressTabs from '@/components/AddressTabs';
 import TranslatedText from '@/components/TranslatedText';
 import AddressOverview from '@/components/AddressOverview';
 import MultisigBadge from '@/components/MultisigBadge';
+import BalanceChartSection from '@/components/BalanceChartSection';
 
 export async function generateMetadata({ params }: { params: { address: string } }): Promise<Metadata> {
   const short = shortenHash(params.address);
@@ -54,6 +55,7 @@ export default async function AddressDetailPage({
   const nftHoldings = response?.data.nftHoldings ?? [];
   const transactions = response?.data.transactions ?? [];
   const tokenTransfers = response?.data.tokenTransfers ?? [];
+  const internalTxs = response?.data.internalTxs ?? [];
   const nextCursor = response?.data.next_cursor ?? null;
 
   if (!overview) {
@@ -121,12 +123,18 @@ export default async function AddressDetailPage({
         </div>
       )}
 
+      {/* Balance History Chart — collapsible, only for addresses with txs */}
+      {totalTxs > 0 && (
+        <BalanceChartSection address={address} />
+      )}
+
       {/* Tabs */}
       <div className="mt-8">
         <AddressTabs
           address={address}
           transactions={transactions}
           tokenTransfers={tokenTransfers}
+          internalTxs={internalTxs}
           tokenHoldings={tokenHoldings}
           nftHoldings={nftHoldings}
           contract={contract}
@@ -135,6 +143,7 @@ export default async function AddressDetailPage({
           nextCursor={nextCursor}
           txCount={stats ? String(Number(stats.sent) + Number(stats.received)) : '0'}
           tokenTransferCount="0"
+          internalTxCount="0"
         />
       </div>
     </main>

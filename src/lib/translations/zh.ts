@@ -172,6 +172,10 @@ const zh: Record<string, string> = {
   'address.tokenId': '代币 ID',
   'address.gridView': '网格视图',
   'address.listView': '列表视图',
+  'address.internalTxs': '内部交易',
+  'address.internalTxs.noResults': '未找到内部交易。',
+  'address.internalTxs.parentTxHash': '父交易哈希',
+  'address.internalTxs.type': '类型',
   'address.exportFrom': '从',
   'address.exportTo': '至',
 
@@ -698,6 +702,39 @@ const zh: Record<string, string> = {
   'export.estimatedRows': '预估行数：{count}',
   'export.csvFormat': 'CSV',
   'export.exportBtn': '导出',
+
+  // Balance History
+  'balance.title': '余额历史',
+  'balance.showChart': '显示余额历史',
+  'balance.hideChart': '隐藏余额历史',
+  'balance.noData': '该地址暂无余额历史数据。',
+  'balance.date': '日期',
+  'balance.balanceLabel': '余额',
+  'balance.7d': '7天',
+  'balance.30d': '30天',
+  'balance.90d': '90天',
+  'balance.1y': '1年',
+
+  // Rich List
+  'nav.richList': '富豪榜',
+  'richlist.title': '富豪榜',
+  'richlist.description': '按 QFC 余额排名的顶级账户。',
+  'richlist.totalAccounts': '总账户数',
+  'richlist.totalSupply': '总供应量',
+  'richlist.top10Hold': '前 10 持有',
+  'richlist.filterAll': '全部',
+  'richlist.filterEoa': '仅 EOA',
+  'richlist.filterContract': '仅合约',
+  'richlist.rank': '排名',
+  'richlist.address': '地址',
+  'richlist.balance': '余额 (QFC)',
+  'richlist.percentage': '占比',
+  'richlist.txCount': '交易数',
+  'richlist.type': '类型',
+  'richlist.eoa': 'EOA',
+  'richlist.contract': '合约',
+  'richlist.noData': '未找到账户。',
+  'richlist.page': '第 {page} 页，共 {total} 页',
 };
 
 export default zh;
