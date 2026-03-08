@@ -65,6 +65,7 @@ export type ApiTransactionsList = ApiOk<{
     value: string;
     status: string;
     defi_label?: DefiLabel;
+    method_id?: string;
   }>;
 }>;
 
@@ -144,6 +145,7 @@ export type ApiAddressDetail = ApiOk<{
     to_address: string | null;
     value: string;
     status: string;
+    method_id?: string;
   }>;
   tokenTransfers: Array<{
     tx_hash: string;
@@ -168,6 +170,22 @@ export type ApiAddressDetail = ApiOk<{
     gas: string;
     gas_used: string;
     error: string | null;
+  }>;
+  events?: Array<{
+    tx_hash: string;
+    block_height: string;
+    log_index: number;
+    contract_address: string;
+    topic0: string | null;
+    topic1: string | null;
+    topic2: string | null;
+    topic3: string | null;
+    data: string | null;
+    event_name: string | null;
+  }>;
+  event_counts?: Array<{
+    event_name: string;
+    count: number;
   }>;
 }>;
 

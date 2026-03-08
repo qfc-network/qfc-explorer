@@ -9,8 +9,10 @@ import CopyButton from '@/components/CopyButton';
 import StatusBadge from '@/components/StatusBadge';
 import TransactionFlowSection from '@/components/TransactionFlowSection';
 import TransactionLabel from '@/components/TransactionLabel';
-import { decodeInput, formatParam, decodeEventTopic } from '@/lib/decode-input';
+import { decodeInput, formatParam, lookupSelector } from '@/lib/decode-input';
 import { resolveAddressLabels } from '@/lib/labels';
+import MethodIdBadge from '@/components/MethodIdBadge';
+import EventLogDecoder from '@/components/EventLogDecoder';
 
 export async function generateMetadata({ params }: { params: { hash: string } }): Promise<Metadata> {
   const short = shortenHash(params.hash);
@@ -60,6 +62,7 @@ export default async function TransactionDetailPage({
   const labels = await resolveAddressLabels(addrList);
 
   const decoded = decodeInput(tx.data);
+  const methodSelector = tx.data && tx.data.length >= 10 ? tx.data.slice(0, 10) : null;
   const gasLimit = Number(tx.gas_limit);
   const gasUsed = tx.gas_used ? Number(tx.gas_used) : null;
   const gasPercent = gasUsed && gasLimit > 0 ? Math.min(100, (gasUsed / gasLimit) * 100) : null;
@@ -71,6 +74,7 @@ export default async function TransactionDetailPage({
         <h1 className="text-lg font-semibold text-white">Transaction Details</h1>
         <StatusBadge status={tx.status} />
         {defiLabel && <TransactionLabel label={defiLabel} />}
+        <MethodIdBadge selector={methodSelector} />
       </div>
 
       {fromRpc && (
@@ -259,7 +263,7 @@ export default async function TransactionDetailPage({
         </div>
       </div>
 
-      {/* Event Logs */}
+      {/* Event Logs — decoded via ABI when contract is verified */}
       <div className="mt-6 rounded-xl border border-slate-800 bg-slate-900/40">
         <div className="border-b border-slate-800/40 px-5 py-3">
           <h2 className="text-sm font-semibold text-white">
@@ -272,52 +276,7 @@ export default async function TransactionDetailPage({
           </h2>
         </div>
         <div className="p-5">
-          {logs.length === 0 ? (
-            <p className="text-sm text-slate-500">No event logs.</p>
-          ) : (
-            <div className="space-y-4">
-              {logs.map((log, index) => {
-                const eventName = decodeEventTopic(log.topic0);
-                return (
-                  <div key={`${log.contract_address}-${index}`} className="rounded-lg border border-slate-800/60 p-4">
-                    <div className="flex items-center gap-3">
-                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-800 text-[10px] font-medium text-slate-400">
-                        {index}
-                      </span>
-                      <Link href={`/address/${log.contract_address}`} className="font-mono text-xs text-cyan-400 hover:text-cyan-300">
-                        {shortenHash(log.contract_address)}
-                      </Link>
-                      {eventName && (
-                        <span className="rounded bg-emerald-500/10 px-2 py-0.5 text-xs text-emerald-400">
-                          {eventName}
-                        </span>
-                      )}
-                    </div>
-                    <div className="mt-3 space-y-1">
-                      {[log.topic0, log.topic1, log.topic2, log.topic3]
-                        .filter(Boolean)
-                        .map((topic, ti) => (
-                          <div key={ti} className="flex items-start gap-2">
-                            <span className="shrink-0 text-[10px] text-slate-600 pt-0.5">
-                              [{ti}]
-                            </span>
-                            <p className="break-all font-mono text-xs text-slate-400">
-                              {topic}
-                            </p>
-                          </div>
-                        ))}
-                    </div>
-                    {log.data && (
-                      <div className="mt-2">
-                        <p className="text-[10px] text-slate-600">data:</p>
-                        <p className="break-all font-mono text-xs text-slate-400">{log.data}</p>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
+          <EventLogDecoder logs={logs} />
         </div>
       </div>
 

@@ -57,6 +57,8 @@ export default async function AddressDetailPage({
   const transactions = response?.data.transactions ?? [];
   const tokenTransfers = response?.data.tokenTransfers ?? [];
   const internalTxs = response?.data.internalTxs ?? [];
+  const events = response?.data.events ?? [];
+  const eventCounts = response?.data.event_counts ?? [];
   const nextCursor = response?.data.next_cursor ?? null;
 
   if (!overview) {
@@ -143,6 +145,8 @@ export default async function AddressDetailPage({
           internalTxs={internalTxs}
           tokenHoldings={tokenHoldings}
           nftHoldings={nftHoldings}
+          events={events}
+          eventCounts={eventCounts}
           contract={contract}
           currentTab={tab}
           page={page}

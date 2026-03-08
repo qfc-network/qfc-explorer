@@ -9,9 +9,10 @@ import ExportButton from '@/components/ExportButton';
 import CsvExport from '@/components/CsvExport';
 import AddressExportModal from '@/components/AddressExportModal';
 import { useTranslation } from '@/components/LocaleProvider';
+import MethodIdBadge from '@/components/MethodIdBadge';
 import type { TranslationKey } from '@/lib/translations/en';
 
-type Tab = 'transactions' | 'token_transfers' | 'internal_txs' | 'token_holdings' | 'nft_holdings' | 'contract';
+type Tab = 'transactions' | 'token_transfers' | 'internal_txs' | 'token_holdings' | 'nft_holdings' | 'events' | 'contract';
 
 type Transaction = {
   hash: string;
@@ -20,6 +21,7 @@ type Transaction = {
   to_address: string | null;
   value: string;
   status: string;
+  method_id?: string;
 };
 
 type TokenTransfer = {
@@ -66,6 +68,24 @@ type InternalTx = {
   error: string | null;
 };
 
+type EventLog = {
+  tx_hash: string;
+  block_height: string;
+  log_index: number;
+  contract_address: string;
+  topic0: string | null;
+  topic1: string | null;
+  topic2: string | null;
+  topic3: string | null;
+  data: string | null;
+  event_name: string | null;
+};
+
+type EventCount = {
+  event_name: string;
+  count: number;
+};
+
 type ContractInfo = {
   creator_tx_hash: string | null;
   created_at_block: string | null;
@@ -80,6 +100,8 @@ type Props = {
   internalTxs: InternalTx[];
   tokenHoldings: TokenHolding[];
   nftHoldings: NftHolding[];
+  events: EventLog[];
+  eventCounts: EventCount[];
   contract: ContractInfo | null;
   currentTab: string;
   page: number;
@@ -95,6 +117,7 @@ const TAB_KEYS: { key: Tab; labelKey: TranslationKey; countKey: keyof Pick<Props
   { key: 'internal_txs', labelKey: 'address.internalTxs', countKey: 'internalTxCount' },
   { key: 'token_holdings', labelKey: 'address.tokenHoldings', countKey: null },
   { key: 'nft_holdings', labelKey: 'address.nftHoldings', countKey: null },
+  { key: 'events', labelKey: 'address.events', countKey: null },
   { key: 'contract', labelKey: 'contract.title', countKey: null },
 ];
 
@@ -114,7 +137,7 @@ function formatTokenValue(value: string, decimals: number | null): string {
 }
 
 export default function AddressTabs(props: Props) {
-  const { address, transactions, tokenTransfers, internalTxs, tokenHoldings, nftHoldings, contract, currentTab, page, nextCursor } = props;
+  const { address, transactions, tokenTransfers, internalTxs, tokenHoldings, nftHoldings, events, eventCounts, contract, currentTab, page, nextCursor } = props;
   const activeTab = (currentTab as Tab) || 'transactions';
   const { t } = useTranslation();
 
@@ -126,6 +149,7 @@ export default function AddressTabs(props: Props) {
           if (tab.key === 'contract' && !contract) return null;
           if (tab.key === 'token_holdings' && tokenHoldings.length === 0) return null;
           if (tab.key === 'nft_holdings' && nftHoldings.length === 0) return null;
+          if (tab.key === 'events' && !contract) return null;
           const isActive = activeTab === tab.key;
           const count = tab.countKey ? props[tab.countKey] : null;
           return (
@@ -179,6 +203,9 @@ export default function AddressTabs(props: Props) {
         {activeTab === 'nft_holdings' && (
           <NftHoldingsTab address={address} holdings={nftHoldings} />
         )}
+        {activeTab === 'events' && (
+          <EventsTab address={address} events={events} eventCounts={eventCounts} page={page} nextCursor={nextCursor} />
+        )}
         {activeTab === 'contract' && contract && (
           <ContractTab address={address} contract={contract} />
         )}
@@ -225,6 +252,7 @@ function TransactionsTab({ address, transactions, page, nextCursor }: { address:
           <thead>
             <tr className="text-left text-xs uppercase tracking-wider text-slate-500">
               <th className="px-3 py-2">{t('txs.txHash')}</th>
+              <th className="px-3 py-2">Method</th>
               <th className="px-3 py-2">{t('common.block')}</th>
               <th className="px-3 py-2">{t('address.direction')}</th>
               <th className="px-3 py-2">{t('common.from')}</th>
@@ -242,6 +270,9 @@ function TransactionsTab({ address, transactions, page, nextCursor }: { address:
                     <Link href={`/txs/${tx.hash}`} className="text-cyan-400 hover:text-cyan-300">
                       {shortenHash(tx.hash)}
                     </Link>
+                  </td>
+                  <td className="px-3 py-2.5">
+                    <MethodIdBadge selector={tx.method_id} />
                   </td>
                   <td className="px-3 py-2.5">
                     <Link href={`/blocks/${tx.block_height}`} className="text-slate-300 hover:text-white">
@@ -684,6 +715,99 @@ function InternalTxsTab({ address, internalTxs, page, nextCursor }: { address: s
         </table>
       </div>
       <Pagination address={address} tab="internal_txs" page={page} hasMore={internalTxs.length === 25} nextCursor={nextCursor} />
+    </>
+  );
+}
+
+function EventsTab({ address, events, eventCounts, page, nextCursor }: { address: string; events: EventLog[]; eventCounts: EventCount[]; page: number; nextCursor?: string | null }) {
+  const searchParams = useSearchParams();
+  const currentEventFilter = searchParams.get('event') || '';
+  const { t } = useTranslation();
+
+  if (events.length === 0 && eventCounts.length === 0) {
+    return <p className="py-8 text-center text-sm text-slate-500">{t('address.events.noResults')}</p>;
+  }
+
+  return (
+    <>
+      {/* Event type filter */}
+      {eventCounts.length > 0 && (
+        <div className="mb-4 flex flex-wrap gap-2">
+          <Link
+            href={`/address/${address}?tab=events&page=1`}
+            className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+              !currentEventFilter
+                ? 'bg-cyan-500/20 text-cyan-400'
+                : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'
+            }`}
+          >
+            {t('address.events.allEvents')}
+          </Link>
+          {eventCounts.map((ec) => (
+            <Link
+              key={ec.event_name}
+              href={`/address/${address}?tab=events&page=1&event=${encodeURIComponent(ec.event_name)}`}
+              className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+                currentEventFilter === ec.event_name
+                  ? 'bg-cyan-500/20 text-cyan-400'
+                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'
+              }`}
+            >
+              {ec.event_name}
+              <span className="ml-1.5 text-[10px] text-slate-500">({ec.count})</span>
+            </Link>
+          ))}
+        </div>
+      )}
+
+      {events.length === 0 ? (
+        <p className="py-8 text-center text-sm text-slate-500">{t('address.events.noResults')}</p>
+      ) : (
+        <div className="space-y-3">
+          {events.map((evt, i) => {
+            const eventName = evt.event_name ?? (evt.topic0 ? evt.topic0.slice(0, 10) + '...' : null);
+            const topics = [evt.topic0, evt.topic1, evt.topic2, evt.topic3].filter(Boolean) as string[];
+
+            return (
+              <div key={`${evt.tx_hash}-${evt.log_index}-${i}`} className="rounded-lg border border-slate-800/60 p-4">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-800 text-[10px] font-medium text-slate-400">
+                    {evt.log_index}
+                  </span>
+                  {eventName && (
+                    <span className="rounded bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-400">
+                      {eventName}
+                    </span>
+                  )}
+                  <Link href={`/txs/${evt.tx_hash}`} className="font-mono text-xs text-cyan-400 hover:text-cyan-300">
+                    {shortenHash(evt.tx_hash)}
+                  </Link>
+                  <span className="text-[10px] text-slate-600">
+                    Block {evt.block_height}
+                  </span>
+                </div>
+                <div className="mt-2 space-y-1">
+                  {topics.map((topic, ti) => (
+                    <div key={ti} className="flex items-start gap-2">
+                      <span className="shrink-0 text-[10px] text-slate-600 pt-0.5">[{ti}]</span>
+                      <p className="break-all font-mono text-xs text-slate-400">{topic}</p>
+                    </div>
+                  ))}
+                </div>
+                {evt.data && evt.data !== '0x' && (
+                  <div className="mt-1.5">
+                    <span className="text-[10px] text-slate-600">data: </span>
+                    <span className="break-all font-mono text-xs text-slate-400">
+                      {evt.data.length > 130 ? evt.data.slice(0, 130) + '...' : evt.data}
+                    </span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+      <Pagination address={address} tab="events" page={page} hasMore={events.length === 25} nextCursor={nextCursor} />
     </>
   );
 }

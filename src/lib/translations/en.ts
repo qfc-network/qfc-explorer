@@ -176,6 +176,12 @@ const en = {
   'address.internalTxs.noResults': 'No internal transactions found.',
   'address.internalTxs.parentTxHash': 'Parent Tx Hash',
   'address.internalTxs.type': 'Type',
+  'address.events': 'Events',
+  'address.events.noResults': 'No event logs found for this contract.',
+  'address.events.filterPlaceholder': 'Filter by event name...',
+  'address.events.allEvents': 'All Events',
+  'address.events.txHash': 'Tx Hash',
+  'address.events.block': 'Block',
   'address.exportFrom': 'From',
   'address.exportTo': 'To',
 

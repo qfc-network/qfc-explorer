@@ -10,6 +10,7 @@ import AddressTag from '@/components/AddressTag';
 import TranslatedPagination from '@/components/TranslatedPagination';
 import TransactionLabel from '@/components/TransactionLabel';
 import CsvExport from '@/components/CsvExport';
+import MethodIdBadge from '@/components/MethodIdBadge';
 import type { DefiLabel } from '@/lib/api-types';
 
 type Transaction = {
@@ -19,6 +20,7 @@ type Transaction = {
   value: string;
   status: string;
   defi_label?: DefiLabel;
+  method_id?: string;
 };
 
 type Props = {
@@ -70,6 +72,11 @@ export default function TxsPageClient({ transactions, labels, page, cursor, next
                 {shortenHash(row.hash)}
               </Link>
             ),
+          },
+          {
+            key: 'method',
+            header: 'Method',
+            render: (row) => <MethodIdBadge selector={row.method_id} />,
           },
           {
             key: 'action',
