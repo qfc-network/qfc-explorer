@@ -14,6 +14,7 @@ const en = {
   'nav.contracts': 'Contracts',
   'nav.verifiedContracts': 'Verified Contracts',
   'nav.abiTools': 'ABI Tools',
+  'nav.apiDocs': 'API Docs',
   'nav.aiInference': 'AI Inference',
   'nav.network': 'Network',
   'nav.validators': 'Validators',
@@ -572,6 +573,12 @@ const en = {
 
   // Locale switcher
   'locale.switchLanguage': 'Switch Language',
+
+  // Live SSE updates
+  'live.connected': 'Live',
+  'live.disconnected': 'Offline',
+  'live.newBlocks': '{count} new blocks',
+  'live.newTxs': 'New transactions available',
 } as const;
 
 export type TranslationKey = keyof typeof en;

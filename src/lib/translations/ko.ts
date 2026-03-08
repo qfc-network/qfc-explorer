@@ -14,6 +14,7 @@ const ko: Record<string, string> = {
   'nav.contracts': '컨트랙트',
   'nav.verifiedContracts': '검증된 컨트랙트',
   'nav.abiTools': 'ABI 도구',
+  'nav.apiDocs': 'API 문서',
   'nav.aiInference': 'AI 추론',
   'nav.network': '네트워크',
   'nav.validators': '검증자',
@@ -572,6 +573,12 @@ const ko: Record<string, string> = {
 
   // Locale switcher
   'locale.switchLanguage': '언어 전환',
+
+  // Live SSE updates
+  'live.connected': '실시간',
+  'live.disconnected': '오프라인',
+  'live.newBlocks': '{count}개의 새 블록',
+  'live.newTxs': '새 트랜잭션이 있습니다',
 };
 
 export default ko;

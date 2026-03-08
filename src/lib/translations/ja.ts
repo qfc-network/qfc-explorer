@@ -14,6 +14,7 @@ const ja: Record<string, string> = {
   'nav.contracts': 'コントラクト',
   'nav.verifiedContracts': '検証済みコントラクト',
   'nav.abiTools': 'ABI ツール',
+  'nav.apiDocs': 'API ドキュメント',
   'nav.aiInference': 'AI 推論',
   'nav.network': 'ネットワーク',
   'nav.validators': 'バリデーター',
@@ -572,6 +573,12 @@ const ja: Record<string, string> = {
 
   // Locale switcher
   'locale.switchLanguage': '言語を切替',
+
+  // Live SSE updates
+  'live.connected': 'ライブ',
+  'live.disconnected': 'オフライン',
+  'live.newBlocks': '{count} 件の新しいブロック',
+  'live.newTxs': '新しいトランザクションがあります',
 };
 
 export default ja;

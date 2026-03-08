@@ -14,6 +14,7 @@ const zh: Record<string, string> = {
   'nav.contracts': '合约',
   'nav.verifiedContracts': '已验证合约',
   'nav.abiTools': 'ABI 工具',
+  'nav.apiDocs': 'API 文档',
   'nav.aiInference': 'AI 推理',
   'nav.network': '网络',
   'nav.validators': '验证者',
@@ -572,6 +573,12 @@ const zh: Record<string, string> = {
 
   // Locale switcher
   'locale.switchLanguage': '切换语言',
+
+  // Live SSE updates
+  'live.connected': '实时',
+  'live.disconnected': '离线',
+  'live.newBlocks': '{count} 个新区块',
+  'live.newTxs': '有新交易',
 };
 
 export default zh;
