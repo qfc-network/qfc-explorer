@@ -1,10 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { apiUrl } from '@/lib/client-api';
+import { useTranslation } from '@/components/LocaleProvider';
+import AbiImport, { getStoredAbi, clearStoredAbi } from '@/components/AbiImport';
 
 type Props = {
   address: string;
+  isVerified?: boolean;
+  verifiedAbi?: unknown[];
 };
 
 type FunctionInput = {
@@ -75,67 +79,136 @@ const ERC20_WRITE_FUNCTIONS: FunctionDefinition[] = [
   },
 ];
 
-export default function ContractInteraction({ address }: Props) {
+export default function ContractInteraction({ address, isVerified, verifiedAbi }: Props) {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'read' | 'write'>('read');
   const [customAbi, setCustomAbi] = useState('');
   const [useCustomAbi, setUseCustomAbi] = useState(false);
 
+  // For unverified contracts: check localStorage for imported ABI
+  const [importedAbi, setImportedAbi] = useState<unknown[] | null>(null);
+  const [checkedStorage, setCheckedStorage] = useState(false);
+
+  useEffect(() => {
+    if (!isVerified) {
+      const stored = getStoredAbi(address);
+      if (stored) {
+        setImportedAbi(stored);
+      }
+    }
+    setCheckedStorage(true);
+  }, [address, isVerified]);
+
+  const handleAbiImported = useCallback((abi: unknown[]) => {
+    setImportedAbi(abi);
+  }, []);
+
+  const handleClearAbi = useCallback(() => {
+    clearStoredAbi(address);
+    setImportedAbi(null);
+  }, [address]);
+
+  // Determine which ABI source to use
+  const effectiveAbi: string | undefined = (() => {
+    // Manual custom ABI checkbox takes highest priority
+    if (useCustomAbi && customAbi) return customAbi;
+    // Verified contract with ABI from server
+    if (isVerified && verifiedAbi) return JSON.stringify(verifiedAbi);
+    // Imported ABI from localStorage (for unverified contracts)
+    if (importedAbi) return JSON.stringify(importedAbi);
+    return undefined;
+  })();
+
+  const usingImportedAbi = !isVerified && importedAbi && !useCustomAbi;
+
+  // If unverified and no imported ABI, show the import component
+  if (!isVerified && !importedAbi && checkedStorage && !useCustomAbi) {
+    return (
+      <section className="space-y-4">
+        <h2 className="text-xl font-semibold text-white">{t('abi.import')}</h2>
+        <AbiImport address={address} onAbiImported={handleAbiImported} />
+      </section>
+    );
+  }
+
   return (
     <section className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-white">Contract Interaction</h2>
-        <div className="flex rounded-lg border border-slate-700 overflow-hidden">
-          <button
-            onClick={() => setActiveTab('read')}
-            className={`px-4 py-2 text-sm transition-colors ${
-              activeTab === 'read'
-                ? 'bg-blue-500 text-white'
-                : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-            }`}
-          >
-            Read Contract
-          </button>
-          <button
-            onClick={() => setActiveTab('write')}
-            className={`px-4 py-2 text-sm transition-colors ${
-              activeTab === 'write'
-                ? 'bg-green-500 text-white'
-                : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-            }`}
-          >
-            Write Contract
-          </button>
+        <div className="flex items-center gap-3">
+          <h2 className="text-xl font-semibold text-white">Contract Interaction</h2>
+          {usingImportedAbi && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/20 px-2.5 py-1 text-xs font-medium text-amber-400 border border-amber-500/30">
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+              </svg>
+              {t('abi.customBadge')}
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          {usingImportedAbi && (
+            <button
+              onClick={handleClearAbi}
+              className="px-3 py-2 text-xs font-medium text-red-400 border border-red-500/30 rounded-lg hover:bg-red-500/10 transition-colors"
+            >
+              {t('abi.clear')}
+            </button>
+          )}
+          <div className="flex rounded-lg border border-slate-700 overflow-hidden">
+            <button
+              onClick={() => setActiveTab('read')}
+              className={`px-4 py-2 text-sm transition-colors ${
+                activeTab === 'read'
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+              }`}
+            >
+              Read Contract
+            </button>
+            <button
+              onClick={() => setActiveTab('write')}
+              className={`px-4 py-2 text-sm transition-colors ${
+                activeTab === 'write'
+                  ? 'bg-green-500 text-white'
+                  : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+              }`}
+            >
+              Write Contract
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Custom ABI input */}
-      <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
-        <div className="flex items-center gap-2 mb-3">
-          <input
-            type="checkbox"
-            id="customAbi"
-            checked={useCustomAbi}
-            onChange={(e) => setUseCustomAbi(e.target.checked)}
-            className="rounded border-slate-600 bg-slate-700 text-blue-500"
-          />
-          <label htmlFor="customAbi" className="text-sm text-slate-300">
-            Use custom ABI (paste JSON array)
-          </label>
+      {/* Custom ABI input - only show when not using imported or verified ABI */}
+      {!usingImportedAbi && !(isVerified && verifiedAbi) && (
+        <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <input
+              type="checkbox"
+              id="customAbi"
+              checked={useCustomAbi}
+              onChange={(e) => setUseCustomAbi(e.target.checked)}
+              className="rounded border-slate-600 bg-slate-700 text-blue-500"
+            />
+            <label htmlFor="customAbi" className="text-sm text-slate-300">
+              Use custom ABI (paste JSON array)
+            </label>
+          </div>
+          {useCustomAbi && (
+            <textarea
+              value={customAbi}
+              onChange={(e) => setCustomAbi(e.target.value)}
+              placeholder='[{"name": "balanceOf", "inputs": [...], "outputs": [...], "stateMutability": "view"}]'
+              className="w-full h-24 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm font-mono text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+            />
+          )}
         </div>
-        {useCustomAbi && (
-          <textarea
-            value={customAbi}
-            onChange={(e) => setCustomAbi(e.target.value)}
-            placeholder='[{"name": "balanceOf", "inputs": [...], "outputs": [...], "stateMutability": "view"}]'
-            className="w-full h-24 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm font-mono text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none"
-          />
-        )}
-      </div>
+      )}
 
       {activeTab === 'read' ? (
-        <ReadContract address={address} customAbi={useCustomAbi ? customAbi : undefined} />
+        <ReadContract address={address} customAbi={effectiveAbi} />
       ) : (
-        <WriteContract address={address} customAbi={useCustomAbi ? customAbi : undefined} />
+        <WriteContract address={address} customAbi={effectiveAbi} />
       )}
     </section>
   );

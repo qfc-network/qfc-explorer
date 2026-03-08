@@ -2,10 +2,16 @@ import './globals.css';
 import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import Navbar from '@/components/Navbar';
 import ClientProviders from '@/components/ClientProviders';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import ServiceWorkerRegister from '@/components/ServiceWorkerRegister';
+
+const KeyboardShortcuts = dynamic(
+  () => import('@/components/KeyboardShortcuts'),
+  { ssr: false }
+);
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://explorer.testnet.qfc.network'),
@@ -61,6 +67,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               </div>
             </footer>
           </div>
+          <KeyboardShortcuts />
           <ServiceWorkerRegister />
         </ClientProviders>
       </body>

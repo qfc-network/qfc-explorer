@@ -604,6 +604,16 @@ const ko: Record<string, string> = {
   'nft.loadMore': '더 보기',
   'nft.loading': '로딩 중...',
 
+  // ABI Import
+  'abi.import': 'ABI 가져오기',
+  'abi.paste': 'ABI JSON 붙여넣기',
+  'abi.upload': 'JSON 업로드',
+  'abi.validate': '가져오기',
+  'abi.clear': 'ABI 지우기',
+  'abi.invalid': '잘못된 ABI 형식입니다. ABI 항목이 포함된 유효한 JSON 배열을 제공해 주세요.',
+  'abi.success': 'ABI를 성공적으로 가져왔습니다! 이제 이 컨트랙트와 상호작용할 수 있습니다.',
+  'abi.customBadge': '사용자 정의 ABI',
+
   // Token Holder Distribution
   'token.distribution.title': '보유자 분포',
   'token.distribution.totalSupply': '총 공급량',

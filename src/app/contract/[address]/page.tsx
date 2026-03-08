@@ -206,7 +206,11 @@ export default async function ContractPage(props: Props) {
 
       {/* Contract Interaction */}
       {isContract && (
-        <ContractInteraction address={address} />
+        <ContractInteraction
+          address={address}
+          isVerified={isVerified}
+          verifiedAbi={isVerified && contractInfo?.data?.abi ? contractInfo.data.abi : undefined}
+        />
       )}
 
       {/* Read/Write as Proxy */}

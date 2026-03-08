@@ -604,6 +604,16 @@ const ja: Record<string, string> = {
   'nft.loadMore': 'もっと見る',
   'nft.loading': '読み込み中...',
 
+  // ABI Import
+  'abi.import': 'ABI インポート',
+  'abi.paste': 'ABI JSON を貼り付け',
+  'abi.upload': 'JSON アップロード',
+  'abi.validate': 'インポート',
+  'abi.clear': 'ABI をクリア',
+  'abi.invalid': '無効なABI形式です。ABI項目を含む有効なJSON配列を入力してください。',
+  'abi.success': 'ABIのインポートに成功しました！このコントラクトと対話できるようになりました。',
+  'abi.customBadge': 'カスタムABI',
+
   // Token Holder Distribution
   'token.distribution.title': '保有者分布',
   'token.distribution.totalSupply': '総供給量',
@@ -614,6 +624,21 @@ const ja: Record<string, string> = {
   'live.disconnected': 'オフライン',
   'live.newBlocks': '{count} 件の新しいブロック',
   'live.newTxs': '新しいトランザクションがあります',
+
+  // Keyboard shortcuts
+  'shortcuts.title': 'キーボードショートカット',
+  'shortcuts.general': '一般',
+  'shortcuts.navigation': 'ナビゲーション',
+  'shortcuts.focusSearch': '検索バーにフォーカス',
+  'shortcuts.showHelp': 'このヘルプを表示',
+  'shortcuts.closeModal': 'モーダルを閉じる / フォーカス解除',
+  'shortcuts.goBlocks': 'ブロックへ移動',
+  'shortcuts.goTransactions': 'トランザクションへ移動',
+  'shortcuts.goTokens': 'トークンへ移動',
+  'shortcuts.goContracts': 'コントラクトへ移動',
+  'shortcuts.goAnalytics': 'アナリティクスへ移動',
+  'shortcuts.goNetwork': 'ネットワークへ移動',
+  'shortcuts.hint': '? を押すとこのダイアログを切り替えます',
 };
 
 export default ja;

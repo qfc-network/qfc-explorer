@@ -603,6 +603,16 @@ const en = {
   'nft.loadMore': 'Load More',
   'nft.loading': 'Loading...',
 
+  // ABI Import
+  'abi.import': 'Import ABI',
+  'abi.paste': 'Paste ABI JSON',
+  'abi.upload': 'Upload JSON',
+  'abi.validate': 'Import',
+  'abi.clear': 'Clear ABI',
+  'abi.invalid': 'Invalid ABI format. Please provide a valid JSON array with ABI entries.',
+  'abi.success': 'ABI imported successfully! You can now interact with this contract.',
+  'abi.customBadge': 'Custom ABI',
+
   // Live SSE updates
   // Token Holder Distribution
   'token.distribution.title': 'Holder Distribution',
@@ -614,6 +624,21 @@ const en = {
   'live.disconnected': 'Offline',
   'live.newBlocks': '{count} new blocks',
   'live.newTxs': 'New transactions available',
+
+  // Keyboard shortcuts
+  'shortcuts.title': 'Keyboard Shortcuts',
+  'shortcuts.general': 'General',
+  'shortcuts.navigation': 'Navigation',
+  'shortcuts.focusSearch': 'Focus search bar',
+  'shortcuts.showHelp': 'Show this help',
+  'shortcuts.closeModal': 'Close modal / blur input',
+  'shortcuts.goBlocks': 'Go to Blocks',
+  'shortcuts.goTransactions': 'Go to Transactions',
+  'shortcuts.goTokens': 'Go to Tokens',
+  'shortcuts.goContracts': 'Go to Contracts',
+  'shortcuts.goAnalytics': 'Go to Analytics',
+  'shortcuts.goNetwork': 'Go to Network',
+  'shortcuts.hint': 'Press ? anywhere to toggle this dialog',
 } as const;
 
 export type TranslationKey = keyof typeof en;

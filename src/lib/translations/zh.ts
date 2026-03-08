@@ -604,6 +604,16 @@ const zh: Record<string, string> = {
   'nft.loadMore': '加载更多',
   'nft.loading': '加载中...',
 
+  // ABI Import
+  'abi.import': '导入 ABI',
+  'abi.paste': '粘贴 ABI JSON',
+  'abi.upload': '上传 JSON',
+  'abi.validate': '导入',
+  'abi.clear': '清除 ABI',
+  'abi.invalid': 'ABI 格式无效。请提供包含 ABI 条目的有效 JSON 数组。',
+  'abi.success': 'ABI 导入成功！现在可以与该合约交互。',
+  'abi.customBadge': '自定义 ABI',
+
   // Token Holder Distribution
   'token.distribution.title': '持有者分布',
   'token.distribution.totalSupply': '总供应量',
@@ -614,6 +624,21 @@ const zh: Record<string, string> = {
   'live.disconnected': '离线',
   'live.newBlocks': '{count} 个新区块',
   'live.newTxs': '有新交易',
+
+  // Keyboard shortcuts
+  'shortcuts.title': '键盘快捷键',
+  'shortcuts.general': '通用',
+  'shortcuts.navigation': '导航',
+  'shortcuts.focusSearch': '聚焦搜索栏',
+  'shortcuts.showHelp': '显示此帮助',
+  'shortcuts.closeModal': '关闭弹窗 / 取消聚焦',
+  'shortcuts.goBlocks': '前往区块',
+  'shortcuts.goTransactions': '前往交易',
+  'shortcuts.goTokens': '前往代币',
+  'shortcuts.goContracts': '前往合约',
+  'shortcuts.goAnalytics': '前往分析',
+  'shortcuts.goNetwork': '前往网络',
+  'shortcuts.hint': '在任何页面按 ? 可切换此对话框',
 };
 
 export default zh;
