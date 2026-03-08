@@ -60,7 +60,7 @@ describe('NftCard', () => {
   it('links to token page', () => {
     render(<NftCard {...baseProps} />);
     const link = screen.getByRole('link');
-    expect(link).toHaveAttribute('href', `/token/${baseProps.tokenAddress}`);
+    expect(link).toHaveAttribute('href', `/nft/${baseProps.tokenAddress}/${baseProps.tokenId}`);
   });
 
   it('shows 721 badge for erc721', () => {
