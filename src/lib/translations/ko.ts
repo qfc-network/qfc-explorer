@@ -108,6 +108,7 @@ const ko: Record<string, string> = {
   'common.incoming': '수신',
   'common.outgoing': '발신',
   'common.unknown': '알 수 없음',
+  'common.exportCsv': 'CSV 내보내기',
 
   // Footer
   'footer.docs': '문서',
@@ -556,6 +557,9 @@ const ko: Record<string, string> = {
   'diff.unchanged': '줄 변경 없음',
   'diff.noDifferences': '차이점이 없습니다. 소스 코드가 동일합니다.',
   'diff.compiler': '컴파일러',
+
+  // Mobile menu
+  'nav.menu': '메뉴',
 
   // Locale switcher
   'locale.switchLanguage': '언어 전환',

@@ -108,6 +108,7 @@ const ja: Record<string, string> = {
   'common.incoming': '受信',
   'common.outgoing': '送信',
   'common.unknown': '不明',
+  'common.exportCsv': 'CSV エクスポート',
 
   // Footer
   'footer.docs': 'ドキュメント',
@@ -556,6 +557,9 @@ const ja: Record<string, string> = {
   'diff.unchanged': '行変更なし',
   'diff.noDifferences': '差分が見つかりません。ソースコードは同一です。',
   'diff.compiler': 'コンパイラ',
+
+  // Mobile menu
+  'nav.menu': 'メニュー',
 
   // Locale switcher
   'locale.switchLanguage': '言語を切替',

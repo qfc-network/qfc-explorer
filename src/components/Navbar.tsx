@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import ThemeToggle from '@/components/ThemeToggle';
 import LocaleSwitcher from '@/components/LocaleSwitcher';
 import { useTranslation } from '@/components/LocaleProvider';
@@ -99,15 +99,104 @@ function Dropdown({ item, active, t }: { item: NavItem; active: boolean; t: (key
   );
 }
 
+/** Mobile accordion section for nav items with children */
+function MobileAccordion({
+  item,
+  active,
+  t,
+  onNavigate,
+}: {
+  item: NavItem;
+  active: boolean;
+  t: (key: TranslationKey) => string;
+  onNavigate: () => void;
+}) {
+  const [expanded, setExpanded] = useState(active);
+
+  return (
+    <div className="border-b border-slate-100 dark:border-slate-800/60 last:border-b-0">
+      <button
+        onClick={() => setExpanded(!expanded)}
+        aria-expanded={expanded}
+        className={`flex w-full items-center justify-between px-4 py-3.5 text-sm font-medium transition-colors ${
+          active ? 'text-cyan-500' : 'text-slate-700 dark:text-slate-200'
+        }`}
+      >
+        {t(item.labelKey)}
+        <svg
+          aria-hidden="true"
+          className={`h-4 w-4 text-slate-400 transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      <div
+        className="overflow-hidden transition-all duration-200 ease-in-out"
+        style={{
+          maxHeight: expanded ? `${(item.children?.length ?? 0) * 48 + 8}px` : '0px',
+          opacity: expanded ? 1 : 0,
+        }}
+      >
+        <div className="pb-2">
+          {item.children?.map((child) => (
+            <Link
+              key={child.href}
+              href={child.href}
+              onClick={onNavigate}
+              className="block px-8 py-2.5 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white active:bg-slate-100 dark:active:bg-slate-800/40 transition-colors"
+            >
+              {t(child.labelKey)}
+            </Link>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { t } = useTranslation();
+  const panelRef = useRef<HTMLDivElement>(null);
 
   function isActive(item: NavItem): boolean {
     if (item.href) return pathname === item.href;
     return item.children?.some((c) => pathname.startsWith(c.href)) ?? false;
   }
+
+  const closeMobile = useCallback(() => setMobileOpen(false), []);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileOpen]);
+
+  // Close on Escape key
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === 'Escape' && mobileOpen) {
+        closeMobile();
+      }
+    }
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [mobileOpen, closeMobile]);
+
+  // Close on route change (pathname change)
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
 
   return (
     <nav aria-label="Main navigation" className="border-b border-slate-200 bg-white/80 dark:border-slate-800/60 dark:bg-slate-950/80 backdrop-blur-sm sticky top-0 z-40">
@@ -146,60 +235,98 @@ export default function Navbar() {
           <ThemeToggle />
         </div>
 
-        {/* Mobile hamburger + theme + locale */}
-        <div className="flex items-center gap-1 md:hidden">
-          <LocaleSwitcher />
-          <ThemeToggle />
+        {/* Mobile hamburger button */}
+        <button
+          className="relative z-50 flex h-10 w-10 items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white md:hidden"
+          onClick={() => setMobileOpen(!mobileOpen)}
+          aria-expanded={mobileOpen}
+          aria-label={t('nav.menu')}
+        >
+          {/* Animated hamburger / X icon */}
+          <div className="flex h-5 w-5 flex-col items-center justify-center">
+            <span
+              className={`block h-0.5 w-5 rounded-full bg-current transition-all duration-300 ease-in-out ${
+                mobileOpen ? 'translate-y-[3px] rotate-45' : ''
+              }`}
+            />
+            <span
+              className={`mt-1 block h-0.5 w-5 rounded-full bg-current transition-all duration-300 ease-in-out ${
+                mobileOpen ? 'opacity-0' : ''
+              }`}
+            />
+            <span
+              className={`mt-1 block h-0.5 w-5 rounded-full bg-current transition-all duration-300 ease-in-out ${
+                mobileOpen ? '-translate-y-[7px] -rotate-45' : ''
+              }`}
+            />
+          </div>
+        </button>
+      </div>
+
+      {/* Mobile overlay backdrop */}
+      <div
+        className={`fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
+          mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={closeMobile}
+        aria-hidden="true"
+      />
+
+      {/* Mobile slide-in panel */}
+      <div
+        ref={panelRef}
+        className={`fixed right-0 top-0 z-40 flex h-full w-[280px] max-w-[85vw] flex-col bg-white dark:bg-slate-950 shadow-2xl transition-transform duration-300 ease-in-out md:hidden ${
+          mobileOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+      >
+        {/* Panel header */}
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800/60 px-4 py-3">
+          <span className="text-sm font-semibold text-slate-900 dark:text-white">{t('nav.menu')}</span>
           <button
-            className="p-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-expanded={mobileOpen}
-            aria-label="Toggle menu"
+            onClick={closeMobile}
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            aria-label="Close menu"
           >
             <svg aria-hidden="true" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              {mobileOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
-      </div>
 
-      {/* Mobile menu */}
-      {mobileOpen && (
-        <div className="border-t border-slate-200 dark:border-slate-800/60 px-4 py-3 md:hidden">
+        {/* Scrollable nav items */}
+        <div className="flex-1 overflow-y-auto overscroll-contain">
           {NAV_ITEMS.map((item) =>
             item.children ? (
-              <div key={item.labelKey} className="py-1">
-                <p className="px-3 py-1.5 text-xs font-medium uppercase tracking-wider text-slate-500">
-                  {t(item.labelKey)}
-                </p>
-                {item.children.map((child) => (
-                  <Link
-                    key={child.href}
-                    href={child.href}
-                    onClick={() => setMobileOpen(false)}
-                    className="block px-6 py-3 text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white active:bg-slate-100 dark:active:bg-slate-800/40"
-                  >
-                    {t(child.labelKey)}
-                  </Link>
-                ))}
-              </div>
+              <MobileAccordion
+                key={item.labelKey}
+                item={item}
+                active={isActive(item)}
+                t={t}
+                onNavigate={closeMobile}
+              />
             ) : (
               <Link
                 key={item.labelKey}
                 href={item.href!}
-                onClick={() => setMobileOpen(false)}
-                className="block px-3 py-3 text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white active:bg-slate-100 dark:active:bg-slate-800/40"
+                onClick={closeMobile}
+                className={`block border-b border-slate-100 dark:border-slate-800/60 px-4 py-3.5 text-sm font-medium transition-colors ${
+                  isActive(item)
+                    ? 'text-cyan-500'
+                    : 'text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white'
+                } active:bg-slate-100 dark:active:bg-slate-800/40`}
               >
                 {t(item.labelKey)}
               </Link>
             )
           )}
         </div>
-      )}
+
+        {/* Panel footer: theme toggle + language */}
+        <div className="border-t border-slate-200 dark:border-slate-800/60 px-4 py-3 flex items-center gap-2">
+          <LocaleSwitcher />
+          <ThemeToggle />
+        </div>
+      </div>
     </nav>
   );
 }

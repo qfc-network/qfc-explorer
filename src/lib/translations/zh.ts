@@ -108,6 +108,7 @@ const zh: Record<string, string> = {
   'common.incoming': '转入',
   'common.outgoing': '转出',
   'common.unknown': '未知',
+  'common.exportCsv': '导出 CSV',
 
   // Footer
   'footer.docs': '文档',
@@ -556,6 +557,9 @@ const zh: Record<string, string> = {
   'diff.unchanged': '行不变',
   'diff.noDifferences': '未发现差异，源代码完全相同。',
   'diff.compiler': '编译器',
+
+  // Mobile menu
+  'nav.menu': '菜单',
 
   // Locale switcher
   'locale.switchLanguage': '切换语言',

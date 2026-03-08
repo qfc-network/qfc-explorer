@@ -108,6 +108,7 @@ const en = {
   'common.incoming': 'Incoming',
   'common.outgoing': 'Outgoing',
   'common.unknown': 'Unknown',
+  'common.exportCsv': 'Export CSV',
 
   // Footer
   'footer.docs': 'Docs',
@@ -556,6 +557,9 @@ const en = {
   'diff.unchanged': 'unchanged',
   'diff.noDifferences': 'No differences found. The source code is identical.',
   'diff.compiler': 'Compiler',
+
+  // Mobile menu
+  'nav.menu': 'Menu',
 
   // Locale switcher
   'locale.switchLanguage': 'Switch Language',
