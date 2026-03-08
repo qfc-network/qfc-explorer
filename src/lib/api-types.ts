@@ -682,6 +682,17 @@ export type ApiBalanceHistory = ApiOk<{
   current_balance: string;
 }>;
 
+// --- Activity Heatmap ---
+
+export type ActivityDay = {
+  date: string;
+  count: number;
+};
+
+export type ApiAddressActivity = ApiOk<{
+  days: ActivityDay[];
+}>;
+
 // --- Rich List ---
 
 export type RichListAccount = {

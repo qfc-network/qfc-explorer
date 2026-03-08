@@ -735,6 +735,19 @@ const ja: Record<string, string> = {
   'richlist.contract': 'コントラクト',
   'richlist.noData': 'アカウントが見つかりません。',
   'richlist.page': '{total}ページ中{page}ページ',
+
+  // Activity Heatmap
+  'activity.title': 'トランザクション活動',
+  'activity.showHeatmap': '活動ヒートマップを表示',
+  'activity.hideHeatmap': '活動ヒートマップを非表示',
+  'activity.noData': 'このアドレスの活動データはありません。',
+  'activity.transactions': 'トランザクション',
+  'activity.totalTransactions': '過去1年間で{count}件のトランザクション',
+  'activity.less': '少',
+  'activity.more': '多',
+  'activity.mon': '月',
+  'activity.wed': '水',
+  'activity.fri': '金',
 };
 
 export default ja;

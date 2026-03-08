@@ -735,6 +735,19 @@ const en = {
   'richlist.contract': 'Contract',
   'richlist.noData': 'No accounts found.',
   'richlist.page': 'Page {page} of {total}',
+
+  // Activity Heatmap
+  'activity.title': 'Transaction Activity',
+  'activity.showHeatmap': 'Show Activity Heatmap',
+  'activity.hideHeatmap': 'Hide Activity Heatmap',
+  'activity.noData': 'No activity data available for this address.',
+  'activity.transactions': 'transactions',
+  'activity.totalTransactions': '{count} transactions in the last year',
+  'activity.less': 'Less',
+  'activity.more': 'More',
+  'activity.mon': 'Mon',
+  'activity.wed': 'Wed',
+  'activity.fri': 'Fri',
 } as const;
 
 export type TranslationKey = keyof typeof en;

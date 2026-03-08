@@ -735,6 +735,19 @@ const zh: Record<string, string> = {
   'richlist.contract': '合约',
   'richlist.noData': '未找到账户。',
   'richlist.page': '第 {page} 页，共 {total} 页',
+
+  // Activity Heatmap
+  'activity.title': '交易活动',
+  'activity.showHeatmap': '显示活动热力图',
+  'activity.hideHeatmap': '隐藏活动热力图',
+  'activity.noData': '该地址暂无活动数据。',
+  'activity.transactions': '笔交易',
+  'activity.totalTransactions': '过去一年共 {count} 笔交易',
+  'activity.less': '少',
+  'activity.more': '多',
+  'activity.mon': '周一',
+  'activity.wed': '周三',
+  'activity.fri': '周五',
 };
 
 export default zh;

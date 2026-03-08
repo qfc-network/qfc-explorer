@@ -11,6 +11,7 @@ import TranslatedText from '@/components/TranslatedText';
 import AddressOverview from '@/components/AddressOverview';
 import MultisigBadge from '@/components/MultisigBadge';
 import BalanceChartSection from '@/components/BalanceChartSection';
+import ActivityHeatmapSection from '@/components/ActivityHeatmapSection';
 
 export async function generateMetadata({ params }: { params: { address: string } }): Promise<Metadata> {
   const short = shortenHash(params.address);
@@ -126,6 +127,11 @@ export default async function AddressDetailPage({
       {/* Balance History Chart — collapsible, only for addresses with txs */}
       {totalTxs > 0 && (
         <BalanceChartSection address={address} />
+      )}
+
+      {/* Activity Heatmap — collapsible, only for addresses with txs */}
+      {totalTxs > 0 && (
+        <ActivityHeatmapSection address={address} />
       )}
 
       {/* Tabs */}

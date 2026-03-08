@@ -735,6 +735,19 @@ const ko: Record<string, string> = {
   'richlist.contract': '컨트랙트',
   'richlist.noData': '계정을 찾을 수 없습니다.',
   'richlist.page': '{total}페이지 중 {page}페이지',
+
+  // Activity Heatmap
+  'activity.title': '거래 활동',
+  'activity.showHeatmap': '활동 히트맵 표시',
+  'activity.hideHeatmap': '활동 히트맵 숨기기',
+  'activity.noData': '이 주소의 활동 데이터가 없습니다.',
+  'activity.transactions': '거래',
+  'activity.totalTransactions': '지난 1년간 {count}건의 거래',
+  'activity.less': '적음',
+  'activity.more': '많음',
+  'activity.mon': '월',
+  'activity.wed': '수',
+  'activity.fri': '금',
 };
 
 export default ko;
