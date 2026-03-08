@@ -171,10 +171,10 @@ ERC-20/721/1155 Token 追踪、Internal Transactions、AI 推理任务查询、
 
 目标：补齐与 Etherscan 的核心功能差距。
 
-### 7.1 Gas Tracker 页 🔴 高优
-- [ ] 实时 Gas Price 展示（Low / Average / High）
-- [ ] 历史 Gas Price 趋势图
-- [ ] Gas 消耗 Top Contracts 排名
+### 7.1 Gas Tracker 页 ✅
+- [x] 实时 Gas Price 展示（Low / Average / Median / High）
+- [x] Block Gas Usage 可视化（进度条 + 利用率百分比）
+- [x] Gas 消耗 Top Contracts 排名
 - [ ] 每笔交易预估费用
 
 ### 7.2 Pending Transactions（Mempool）🔴 高优
@@ -183,19 +183,21 @@ ERC-20/721/1155 Token 追踪、Internal Transactions、AI 推理任务查询、
 - [ ] 按 Gas Price / Nonce / Age 排序
 - [ ] 自动刷新 + 确认后移除
 
-### 7.3 交易列表显示 Name Tags 🔴 高优
-- [ ] 区块详情页交易列表展示 address label
-- [ ] 交易列表页 from/to 旁边显示 label tag
-- [ ] 地址页交易列表显示对手方 label
+### 7.3 交易列表显示 Name Tags ✅
+- [x] 区块详情页交易列表展示 address label
+- [x] 交易列表页 from/to 旁边显示 label tag
+- [x] 交易详情页 from/to 显示 label badge
+- [x] 首页最新交易/区块显示 label（LatestBlocksAndTxs）
+- [x] batch label 解析 API（POST /search/labels）
 
-### 7.4 Token Transfers 独立页
-- [ ] `/token-transfers` — 全链 Token 转账流水
-- [ ] 筛选：ERC-20 / ERC-721 / ERC-1155
-- [ ] 按时间倒序分页
+### 7.4 Token Transfers 独立页 ✅
+- [x] `/token-transfers` — 全链 Token 转账流水
+- [x] 筛选：ERC-20 / ERC-721 / ERC-1155（type filter tabs）
+- [x] 按时间倒序分页 + Name Tags 显示
 
-### 7.5 已验证合约前端页
-- [ ] `/contracts/verified` — 前端页面（API 已有 `GET /contract/verified`）
-- [ ] 显示：合约名、编译器版本、验证时间、交互次数
+### 7.5 已验证合约前端页 ✅
+- [x] `/contracts` 页已包含 Verified Contracts 排行榜（排名、编译器、交互次数）
+- [x] API `GET /contract/verified` 已集成
 
 ### 7.6 NFT Gallery 视图
 - [ ] 地址页 NFT tab 改为网格布局
@@ -287,10 +289,10 @@ ERC-20/721/1155 Token 追踪、Internal Transactions、AI 推理任务查询、
 | 合约验证 | 完整 | 完整（单文件+多文件） | ✅ |
 | 排行榜 | 丰富 | 丰富 | ✅ |
 | 图表中心 | 丰富 | 丰富（含每日统计） | ✅ |
-| Gas Tracker | 有 | **无** | Phase 7 |
-| Pending Txs | 有 | **无** | Phase 7 |
-| Name Tags 显示 | 有 | **DB 有，前端未展示** | Phase 7 |
-| Token Transfers 页 | 有 | **无独立页** | Phase 7 |
+| Gas Tracker | 有 | 有 | ✅ |
+| Pending Txs | 有 | **无** | Phase 7（blocked on RPC） |
+| Name Tags 显示 | 有 | 有 | ✅ |
+| Token Transfers 页 | 有 | 有 | ✅ |
 | Dark Mode | 有 | 仅 Dark | Phase 8 |
 | 多语言 | 无 | 无 | Phase 8 |
 | AI 推理 | 无 | **有（独家）** | ✅ 差异化优势 |

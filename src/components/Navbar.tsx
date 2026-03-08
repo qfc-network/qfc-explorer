@@ -14,13 +14,14 @@ const NAV_ITEMS: NavItem[] = [
     children: [
       { label: 'Blocks', href: '/blocks' },
       { label: 'Transactions', href: '/txs' },
-      { label: 'Accounts', href: '/analytics' },
+      { label: 'Gas Tracker', href: '/gas-tracker' },
     ],
   },
   {
     label: 'Tokens',
     children: [
       { label: 'Token List (ERC-20)', href: '/tokens' },
+      { label: 'Token Transfers', href: '/token-transfers' },
       { label: 'QFC Tokenomics', href: '/token/qfc' },
     ],
   },
