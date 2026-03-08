@@ -2,15 +2,17 @@ export const dynamic = "force-dynamic";
 
 import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'Gas Tracker',
-  description: 'Real-time gas prices and block gas usage on the QFC blockchain.',
-  openGraph: {
-    title: 'Gas Tracker | QFC Explorer',
-    description: 'Real-time gas prices and block gas usage on the QFC blockchain.',
-    type: 'website',
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: 'Gas Tracker & Price Oracle',
+    description: 'Real-time gas prices, oracle recommendations, and block gas usage on the QFC blockchain.',
+    openGraph: {
+      title: 'Gas Tracker & Price Oracle | QFC Explorer',
+      description: 'Real-time gas prices, oracle recommendations, and block gas usage on the QFC blockchain.',
+      type: 'website',
+    },
+  };
+}
 
 import Link from 'next/link';
 import { fetchJsonSafe } from '@/lib/api-client';
@@ -19,7 +21,7 @@ import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
 import AddressTag from '@/components/AddressTag';
 import { resolveAddressLabels } from '@/lib/labels';
-import type { ApiGasTracker } from '@/lib/api-types';
+import type { ApiGasTracker, ApiGasOracle } from '@/lib/api-types';
 
 function formatGwei(wei: string): string {
   const n = Number(wei);
@@ -50,10 +52,18 @@ function gasUtilization(used: string, limit: string): number {
 }
 
 export default async function GasTrackerPage() {
-  const response = await fetchJsonSafe<ApiGasTracker>(
-    '/api/analytics/gas',
-    { next: { revalidate: 15 } }
-  );
+  const [response, oracleResponse] = await Promise.all([
+    fetchJsonSafe<ApiGasTracker>(
+      '/api/analytics/gas',
+      { next: { revalidate: 15 } }
+    ),
+    fetchJsonSafe<ApiGasOracle>(
+      '/api/gas-oracle',
+      { next: { revalidate: 12 } }
+    ),
+  ]);
+
+  const oracle = oracleResponse?.data ?? null;
 
   const data = response?.data ?? null;
   const prices = data?.prices;
@@ -96,6 +106,28 @@ export default async function GasTrackerPage() {
           </Link>
         }
       />
+
+      {/* Gas Price Oracle */}
+      {oracle && oracle.block_number > 0 && !(oracle.slow.gwei === '0' && oracle.standard.gwei === '0' && oracle.fast.gwei === '0') && (
+        <section className="space-y-3">
+          <SectionHeader title="Gas Price Oracle" description="Percentile-based recommendations from recent transactions" />
+          <div className="grid gap-4 sm:grid-cols-3">
+            <OracleCard title="Slow (25th pctl)" gwei={oracle.slow.gwei} waitSec={oracle.slow.wait_sec} color="green" />
+            <OracleCard title="Standard (50th pctl)" gwei={oracle.standard.gwei} waitSec={oracle.standard.wait_sec} color="blue" />
+            <OracleCard title="Fast (75th pctl)" gwei={oracle.fast.gwei} waitSec={oracle.fast.wait_sec} color="orange" />
+          </div>
+          <div className="flex flex-wrap gap-4 text-xs text-slate-500">
+            {oracle.base_fee_gwei && (
+              <span>Base Fee: <span className="text-slate-300">{oracle.base_fee_gwei} Gwei</span></span>
+            )}
+            {oracle.suggested_tip && (
+              <span>Suggested Tip: <span className="text-slate-300">{oracle.suggested_tip} Gwei</span></span>
+            )}
+            <span>Block #{formatNumber(oracle.block_number)}</span>
+            <span>Updated: {new Date(oracle.last_updated).toLocaleTimeString()}</span>
+          </div>
+        </section>
+      )}
 
       {/* No data state */}
       {!data && (
@@ -298,6 +330,45 @@ function computeGasTrend(blocks: Array<{ gasUsed: string; txCount: number }>) {
   const direction = pctChange > 5 ? 'up' as const : pctChange < -5 ? 'down' as const : 'stable' as const;
 
   return { direction, pctChange: Math.abs(pctChange) };
+}
+
+function OracleCard({
+  title,
+  gwei,
+  waitSec,
+  color,
+}: {
+  title: string;
+  gwei: string;
+  waitSec: number;
+  color: 'green' | 'blue' | 'orange';
+}) {
+  const colorClasses = {
+    green: 'border-green-500/30 bg-green-500/10',
+    blue: 'border-blue-500/30 bg-blue-500/10',
+    orange: 'border-orange-500/30 bg-orange-500/10',
+  };
+  const textClasses = {
+    green: 'text-green-400',
+    blue: 'text-blue-400',
+    orange: 'text-orange-400',
+  };
+  const dotClasses = {
+    green: 'bg-green-400',
+    blue: 'bg-blue-400',
+    orange: 'bg-orange-400',
+  };
+
+  return (
+    <div className={`rounded-xl border p-5 ${colorClasses[color]}`}>
+      <div className="flex items-center gap-1.5">
+        <div className={`h-2 w-2 rounded-full ${dotClasses[color]}`} />
+        <p className={`text-xs uppercase tracking-wider ${textClasses[color]} opacity-70`}>{title}</p>
+      </div>
+      <p className={`text-3xl font-semibold mt-2 ${textClasses[color]}`}>{gwei}</p>
+      <p className="text-xs text-slate-500 mt-1">Gwei &middot; ~{waitSec}s wait</p>
+    </div>
+  );
 }
 
 function GasCard({

@@ -400,6 +400,16 @@ export type ApiGasTracker = ApiOk<{
   }>;
 }>;
 
+export type ApiGasOracle = ApiOk<{
+  slow: { gwei: string; wait_sec: number };
+  standard: { gwei: string; wait_sec: number };
+  fast: { gwei: string; wait_sec: number };
+  base_fee_gwei: string | null;
+  suggested_tip?: string;
+  block_number: number;
+  last_updated: string;
+}>;
+
 export type ApiAdminIndexer = ApiOk<{
   items: Array<{ key: string; value: string; updated_at: string }>;
   lastBatch: {
@@ -449,6 +459,19 @@ export type ApiAdminRedis = ApiOk<{
   mode: string;
   nodes: number;
   connected: boolean;
+}>;
+
+export type ApiBatchAddressItem = {
+  address: string;
+  balance: string;
+  nonce: number;
+  tx_count: { sent: number; received: number };
+  label: string | null;
+  is_contract: boolean;
+};
+
+export type ApiBatchAddresses = ApiOk<{
+  addresses: ApiBatchAddressItem[];
 }>;
 
 export type ApiTokenTransfersList = ApiOk<{

@@ -3,12 +3,15 @@ export const dynamic = "force-dynamic";
 import { fetchJsonSafe } from '@/lib/api-client';
 import type { ApiBlocksList, ApiStats, ApiTransactionsList } from '@/lib/api-types';
 import { formatNumber } from '@/lib/format';
+import nextDynamic from 'next/dynamic';
 import AutoRefresh from '@/components/AutoRefresh';
 import LatestBlocksAndTxs from '@/components/LatestBlocksAndTxs';
 import HomeHero from '@/components/HomeHero';
 import HomeStats from '@/components/HomeStats';
 import HomeCharts from '@/components/HomeCharts';
 import { resolveAddressLabels } from '@/lib/labels';
+
+const GasTracker = nextDynamic(() => import('@/components/GasTracker'), { ssr: false });
 
 export default async function Home() {
   const [blocksResponse, transactionsResponse, statsResponse] = await Promise.all([
@@ -62,6 +65,9 @@ export default async function Home() {
 
       {/* Network overview stats */}
       <HomeStats stats={statItems} />
+
+      {/* Gas price oracle widget */}
+      <GasTracker />
 
       {/* Mini charts */}
       {series ? <HomeCharts series={series} /> : null}

@@ -36,6 +36,7 @@ const NAV_ITEMS: NavItem[] = [
     children: [
       { labelKey: 'nav.verifiedContracts', href: '/contracts' },
       { labelKey: 'nav.abiTools', href: '/tools' },
+      { labelKey: 'nav.batchQuery', href: '/batch' },
     ],
   },
   { labelKey: 'nav.aiInference', href: '/inference' },
