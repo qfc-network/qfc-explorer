@@ -387,6 +387,34 @@ export type ApiTaskStatus = ApiOk<{
   executionTimeMs?: number;
 }>;
 
+export type ApiInferenceTasksList = ApiOk<{
+  page: number;
+  limit: number;
+  total: number;
+  status: string | null;
+  stats: {
+    total: number;
+    completed: number;
+    pending: number;
+    failed: number;
+    avgExecutionTimeMs: number;
+  };
+  items: Array<{
+    taskId: string;
+    status: string;
+    submitter: string;
+    taskType: string;
+    modelId: string;
+    createdAt: number;
+    deadline: number;
+    maxFee: string;
+    result?: string;
+    resultSize?: number;
+    minerAddress?: string;
+    executionTimeMs?: number;
+  }>;
+}>;
+
 export type ApiTxPool = ApiOk<{
   pending: Array<{
     hash: string;

@@ -119,6 +119,31 @@ export async function fetchPublicTaskStatus(
   return client.callWithRetry<RpcPublicTaskStatus>('qfc_getPublicTaskStatus', [taskId]);
 }
 
+export type RpcRecentTasksResponse = {
+  tasks: RpcPublicTaskStatus[];
+  total: number;
+  stats: {
+    total: number;
+    completed: number;
+    pending: number;
+    failed: number;
+    avgExecutionTimeMs: number;
+  };
+};
+
+export async function fetchRecentTasks(
+  client: RpcClient,
+  page: number,
+  limit: number,
+  status?: string,
+): Promise<RpcRecentTasksResponse> {
+  const params: Array<unknown> = [{ page, limit }];
+  if (status) {
+    (params[0] as Record<string, unknown>).status = status;
+  }
+  return client.callWithRetry<RpcRecentTasksResponse>('qfc_getRecentTasks', params);
+}
+
 export async function fetchModelProposals(client: RpcClient): Promise<RpcModelProposal[]> {
   return client.callWithRetry<RpcModelProposal[]>('qfc_getModelProposals');
 }
