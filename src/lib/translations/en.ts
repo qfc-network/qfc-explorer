@@ -757,6 +757,20 @@ const en = {
   'activity.wed': 'Wed',
   'activity.fri': 'Fri',
 
+  // Miners list page
+  'nav.miners': 'Miners',
+  'miners.title': 'Inference Miners',
+  'miners.description': 'Registered inference miners on the QFC network.',
+  'miners.totalMiners': 'Total Miners',
+  'miners.byTier': 'By Tier',
+  'miners.topBackend': 'Top Backend',
+  'miners.gpuModel': 'GPU Model',
+  'miners.tier': 'Tier',
+  'miners.vram': 'VRAM',
+  'miners.backend': 'Backend',
+  'miners.score': 'Score',
+  'miners.noMiners': 'No miners registered yet.',
+
   // Miner Revenue Dashboard
   'miner.title': 'Miner',
   'miner.notFound': 'Miner not found',

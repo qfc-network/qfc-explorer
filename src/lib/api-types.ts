@@ -753,6 +753,26 @@ export type ApiTokenTransfersList = ApiOk<{
   }>;
 }>;
 
+// --- Registered Miners List ---
+
+export type ApiRegisteredMiner = {
+  address: string;
+  gpuModel: string;
+  benchmarkScore: number;
+  tier: number;
+  vramMb: number;
+  backend: string;
+  registeredAt: string;
+  contributionScore: string;
+};
+
+export type ApiMinersList = ApiOk<{
+  page: number;
+  limit: number;
+  total: number;
+  items: ApiRegisteredMiner[];
+}>;
+
 // --- Miner Revenue ---
 
 export type ApiMinerDetail = ApiOk<{

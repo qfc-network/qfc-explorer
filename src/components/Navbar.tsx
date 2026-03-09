@@ -45,6 +45,7 @@ const NAV_ITEMS: NavItem[] = [
     labelKey: 'nav.network',
     children: [
       { labelKey: 'nav.validators', href: '/validators' },
+      { labelKey: 'nav.miners', href: '/miners' },
       { labelKey: 'nav.networkStatus', href: '/network' },
       { labelKey: 'nav.analytics', href: '/analytics' },
       { labelKey: 'nav.leaderboard', href: '/leaderboard' },

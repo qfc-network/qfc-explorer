@@ -751,6 +751,20 @@ const ja: Record<string, string> = {
   'activity.wed': '水',
   'activity.fri': '金',
 
+  // Miners list page
+  'nav.miners': 'マイナー',
+  'miners.title': '推論マイナー',
+  'miners.description': 'QFCネットワークに登録された推論マイナー。',
+  'miners.totalMiners': 'マイナー総数',
+  'miners.byTier': 'ティア別',
+  'miners.topBackend': 'トップバックエンド',
+  'miners.gpuModel': 'GPUモデル',
+  'miners.tier': 'ティア',
+  'miners.vram': 'VRAM',
+  'miners.backend': 'バックエンド',
+  'miners.score': 'スコア',
+  'miners.noMiners': '登録済みマイナーはありません。',
+
   // Miner Revenue Dashboard
   'miner.title': 'マイナー',
   'miner.notFound': 'マイナーが見つかりません',

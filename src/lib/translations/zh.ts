@@ -751,6 +751,20 @@ const zh: Record<string, string> = {
   'activity.wed': '周三',
   'activity.fri': '周五',
 
+  // Miners list page
+  'nav.miners': '矿工',
+  'miners.title': '推理矿工',
+  'miners.description': 'QFC 网络上已注册的推理矿工。',
+  'miners.totalMiners': '矿工总数',
+  'miners.byTier': '按等级',
+  'miners.topBackend': '主要后端',
+  'miners.gpuModel': 'GPU 型号',
+  'miners.tier': '等级',
+  'miners.vram': '显存',
+  'miners.backend': '后端',
+  'miners.score': '分数',
+  'miners.noMiners': '暂无注册矿工。',
+
   // Miner Revenue Dashboard
   'miner.title': '矿工',
   'miner.notFound': '未找到矿工',
