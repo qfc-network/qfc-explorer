@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useTranslation } from '@/components/LocaleProvider';
+import { getApiBaseUrl } from '@/lib/api-client';
 import type { ApiGasOracle } from '@/lib/api-types';
 
 type GasData = ApiGasOracle['data'];
@@ -17,8 +18,9 @@ export default function GasTracker() {
 
     async function fetchGas() {
       try {
-        const apiBase = process.env.NEXT_PUBLIC_API_URL || '';
-        const res = await fetch(`${apiBase}/gas-oracle`);
+        const base = getApiBaseUrl();
+        const prefix = base.includes(':3001') || (process.env.NEXT_PUBLIC_API_URL ?? '').length > 0 ? '' : '/api';
+        const res = await fetch(`${base}${prefix}/gas-oracle`);
         if (!res.ok) throw new Error('fetch failed');
         const json = await res.json() as ApiGasOracle;
         if (active && json.ok) {
