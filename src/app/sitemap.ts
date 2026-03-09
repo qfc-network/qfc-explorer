@@ -20,6 +20,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/search',
     '/governance/models',
     '/token/qfc',
+    '/miners',
+    '/pending',
+    '/richlist',
+    '/validators',
+    '/api-docs',
   ];
 
   return staticPages.map((path) => ({
