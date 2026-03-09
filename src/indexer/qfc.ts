@@ -122,3 +122,54 @@ export async function fetchPublicTaskStatus(
 export async function fetchModelProposals(client: RpcClient): Promise<RpcModelProposal[]> {
   return client.callWithRetry<RpcModelProposal[]>('qfc_getModelProposals');
 }
+
+// v2.0: Miner revenue types
+
+export type RpcMinerEarning = {
+  blockHeight: string;
+  reward: string;
+  taskType: string;
+  flops: string;
+  timestamp: string;
+};
+
+export type RpcMinerVesting = {
+  totalEarned: string;
+  locked: string;
+  available: string;
+  activeTranches: number;
+  tranches: Array<{
+    blockHeight: string;
+    amount: string;
+    vested: string;
+    startTime: string;
+    cliffEnd: string;
+    endTime: string;
+    percentVested: number;
+  }>;
+};
+
+export type RpcContributionScore = {
+  score: string;
+};
+
+export async function fetchMinerEarnings(
+  client: RpcClient,
+  address: string,
+): Promise<RpcMinerEarning[]> {
+  return client.callWithRetry<RpcMinerEarning[]>('qfc_getMinerEarnings', [address, 'all']);
+}
+
+export async function fetchMinerVesting(
+  client: RpcClient,
+  address: string,
+): Promise<RpcMinerVesting> {
+  return client.callWithRetry<RpcMinerVesting>('qfc_getMinerVesting', [address]);
+}
+
+export async function fetchContributionScore(
+  client: RpcClient,
+  address: string,
+): Promise<RpcContributionScore> {
+  return client.callWithRetry<RpcContributionScore>('qfc_getContributionScore', [address]);
+}

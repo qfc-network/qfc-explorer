@@ -750,6 +750,26 @@ const zh: Record<string, string> = {
   'activity.mon': '周一',
   'activity.wed': '周三',
   'activity.fri': '周五',
+
+  // Miner Revenue Dashboard
+  'miner.title': '矿工',
+  'miner.notFound': '未找到矿工',
+  'miner.viewDashboard': '矿工仪表板',
+  'miner.viewAccount': '查看账户',
+  'miner.totalEarned': '总收益',
+  'miner.available': '可用余额',
+  'miner.locked': '锁定（归属中）',
+  'miner.contributionScore': '贡献分数',
+  'miner.vestingSchedule': '归属计划',
+  'miner.activeTranches': '个活跃批次',
+  'miner.noTranches': '暂无归属批次。',
+  'miner.recentEarnings': '近期收益',
+  'miner.noEarnings': '暂无收益记录。',
+  'miner.reward': '奖励',
+  'miner.taskType': '任务类型',
+  'miner.progress': '进度',
+  'miner.cliffEnd': '锁定期结束',
+  'miner.endTime': '结束时间',
 };
 
 export default zh;
