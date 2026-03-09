@@ -21,7 +21,7 @@ export default async function MinerDetailPage({
 }) {
   const { address } = params;
   const response = await fetchJsonSafe<ApiMinerDetail>(
-    `/api/miner/${address}`,
+    `/api/miners/${address}`,
     { next: { revalidate: 15 } }
   );
 

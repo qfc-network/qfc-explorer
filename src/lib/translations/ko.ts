@@ -751,6 +751,20 @@ const ko: Record<string, string> = {
   'activity.wed': '수',
   'activity.fri': '금',
 
+  // Miners list page
+  'nav.miners': '마이너',
+  'miners.title': '추론 마이너',
+  'miners.description': 'QFC 네트워크에 등록된 추론 마이너.',
+  'miners.totalMiners': '총 마이너',
+  'miners.byTier': '티어별',
+  'miners.topBackend': '상위 백엔드',
+  'miners.gpuModel': 'GPU 모델',
+  'miners.tier': '티어',
+  'miners.vram': 'VRAM',
+  'miners.backend': '백엔드',
+  'miners.score': '점수',
+  'miners.noMiners': '등록된 마이너가 없습니다.',
+
   // Miner Revenue Dashboard
   'miner.title': '마이너',
   'miner.notFound': '마이너를 찾을 수 없습니다',
