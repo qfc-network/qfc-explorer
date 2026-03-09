@@ -762,6 +762,7 @@ const ja: Record<string, string> = {
   'miners.tier': 'ティア',
   'miners.vram': 'VRAM',
   'miners.backend': 'バックエンド',
+  'miners.platform': 'プラットフォーム',
   'miners.score': 'スコア',
   'miners.noMiners': '登録済みマイナーはありません。',
 
@@ -784,6 +785,7 @@ const ja: Record<string, string> = {
   'miner.progress': '進捗',
   'miner.cliffEnd': 'クリフ終了',
   'miner.endTime': '終了時間',
+  'miner.hardwareProfile': 'ハードウェアプロファイル',
 };
 
 export default ja;

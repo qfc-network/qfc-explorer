@@ -762,6 +762,7 @@ const ko: Record<string, string> = {
   'miners.tier': '티어',
   'miners.vram': 'VRAM',
   'miners.backend': '백엔드',
+  'miners.platform': '플랫폼',
   'miners.score': '점수',
   'miners.noMiners': '등록된 마이너가 없습니다.',
 
@@ -784,6 +785,7 @@ const ko: Record<string, string> = {
   'miner.progress': '진행률',
   'miner.cliffEnd': '클리프 종료',
   'miner.endTime': '종료 시간',
+  'miner.hardwareProfile': '하드웨어 프로필',
 };
 
 export default ko;

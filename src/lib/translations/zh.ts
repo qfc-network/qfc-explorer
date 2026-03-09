@@ -762,6 +762,7 @@ const zh: Record<string, string> = {
   'miners.tier': '等级',
   'miners.vram': '显存',
   'miners.backend': '后端',
+  'miners.platform': '平台',
   'miners.score': '分数',
   'miners.noMiners': '暂无注册矿工。',
 
@@ -784,6 +785,7 @@ const zh: Record<string, string> = {
   'miner.progress': '进度',
   'miner.cliffEnd': '锁定期结束',
   'miner.endTime': '结束时间',
+  'miner.hardwareProfile': '硬件配置',
 };
 
 export default zh;
