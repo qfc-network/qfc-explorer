@@ -52,7 +52,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <footer className="border-t border-slate-200 dark:border-slate-800/40 mt-16">
               <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-10 md:flex-row md:items-center md:justify-between">
                 <div className="flex items-center gap-2.5">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-to-br from-cyan-400 to-blue-600 text-[10px] font-bold text-white">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-to-br from-cyan-400 to-blue-600 text-[10px] font-bold text-slate-900 dark:text-white">
                     Q
                   </div>
                   <span className="text-sm text-slate-500">QFC Explorer</span>

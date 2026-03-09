@@ -54,7 +54,7 @@ export default async function TxPoolPage() {
         action={
           <Link
             href="/"
-            className="rounded-full border border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-200"
+            className="rounded-full border border-slate-300 dark:border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-800 dark:text-slate-200"
           >
             <TranslatedText tKey="common.back" />
           </Link>

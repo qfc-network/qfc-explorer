@@ -10,7 +10,7 @@ type Props = {
 export default function AddressTag({ address, label, shorten = true }: Props) {
   return (
     <span className="inline-flex items-center gap-1.5">
-      <Link href={`/address/${address}`} className="text-slate-200 hover:text-cyan-400">
+      <Link href={`/address/${address}`} className="text-slate-800 dark:text-slate-200 hover:text-cyan-400">
         {shorten ? shortenHash(address) : address}
       </Link>
       {label && (

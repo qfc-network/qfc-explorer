@@ -44,10 +44,10 @@ export default async function TaskDetailPage({
   if (!task) {
     return (
       <main className="mx-auto max-w-7xl px-4 py-12">
-        <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-8 text-center">
-          <p className="text-lg text-white">Task not found</p>
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-8 text-center">
+          <p className="text-lg text-slate-900 dark:text-white">Task not found</p>
           <p className="mt-2 text-sm text-slate-400 font-mono break-all">{taskId}</p>
-          <Link href="/" className="mt-4 inline-block rounded-lg bg-slate-800 px-4 py-2 text-sm text-slate-300 hover:bg-slate-700">
+          <Link href="/" className="mt-4 inline-block rounded-lg bg-slate-100 dark:bg-slate-800 px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700">
             Back to home
           </Link>
         </div>
@@ -70,7 +70,7 @@ export default async function TaskDetailPage({
     <main className="mx-auto max-w-7xl px-4 py-8">
       {/* Header */}
       <div className="flex flex-wrap items-center gap-3">
-        <h1 className="text-lg font-semibold text-white">Inference Task</h1>
+        <h1 className="text-lg font-semibold text-slate-900 dark:text-white">Inference Task</h1>
         <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${statusCfg.color}`}>
           <span className={`h-1.5 w-1.5 rounded-full ${statusCfg.dotColor}`} />
           {statusCfg.label}
@@ -78,7 +78,7 @@ export default async function TaskDetailPage({
       </div>
 
       {/* Status Timeline */}
-      <div className="mt-4 rounded-xl border border-slate-800 bg-slate-900/40 px-5 py-4">
+      <div className="mt-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 px-5 py-4">
         <div className="flex items-center gap-0">
           <TimelineStep label="Submitted" active completed />
           <TimelineConnector completed={task.status !== 'Pending'} />
@@ -98,9 +98,9 @@ export default async function TaskDetailPage({
       </div>
 
       {/* Overview */}
-      <div className="mt-6 rounded-xl border border-slate-800 bg-slate-900/40 divide-y divide-slate-800/40">
+      <div className="mt-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 divide-y divide-slate-200 dark:divide-slate-800/40">
         <Row label="Task ID">
-          <span className="font-mono text-sm text-white break-all">{task.taskId}</span>
+          <span className="font-mono text-sm text-slate-900 dark:text-white break-all">{task.taskId}</span>
           <CopyButton value={task.taskId} label="Copy" />
         </Row>
         <Row label="Status">
@@ -110,10 +110,10 @@ export default async function TaskDetailPage({
           </span>
         </Row>
         <Row label="Task Type">
-          <span className="rounded bg-slate-800 px-2 py-0.5 text-xs text-slate-300 font-mono">{task.taskType}</span>
+          <span className="rounded bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs text-slate-600 dark:text-slate-300 font-mono">{task.taskType}</span>
         </Row>
         <Row label="Model">
-          <span className="text-slate-300 font-mono text-sm">{task.modelId}</span>
+          <span className="text-slate-600 dark:text-slate-300 font-mono text-sm">{task.modelId}</span>
         </Row>
         <Row label="Submitter">
           <Link href={`/address/${task.submitter}`} className="font-mono text-sm text-cyan-400 hover:text-cyan-300">
@@ -122,16 +122,16 @@ export default async function TaskDetailPage({
           <CopyButton value={task.submitter} label="Copy" />
         </Row>
         <Row label="Max Fee">
-          <span className="text-white font-medium">{formatWeiToQfc(task.maxFee)} QFC</span>
+          <span className="text-slate-900 dark:text-white font-medium">{formatWeiToQfc(task.maxFee)} QFC</span>
         </Row>
         {createdAt && (
           <Row label="Created">
-            <span className="text-slate-300">{createdAt.toLocaleString()}</span>
+            <span className="text-slate-600 dark:text-slate-300">{createdAt.toLocaleString()}</span>
           </Row>
         )}
         {deadline && (
           <Row label="Deadline">
-            <span className="text-slate-300">{deadline.toLocaleString()}</span>
+            <span className="text-slate-600 dark:text-slate-300">{deadline.toLocaleString()}</span>
             {!isFinal && deadline.getTime() < Date.now() && (
               <span className="text-xs text-red-400 ml-2">expired</span>
             )}
@@ -147,22 +147,22 @@ export default async function TaskDetailPage({
         )}
         {task.executionTimeMs != null && (
           <Row label="Execution Time">
-            <span className="text-slate-300">{task.executionTimeMs.toLocaleString()} ms</span>
+            <span className="text-slate-600 dark:text-slate-300">{task.executionTimeMs.toLocaleString()} ms</span>
           </Row>
         )}
       </div>
 
       {/* Result */}
       {task.result && (
-        <div className="mt-6 rounded-xl border border-slate-800 bg-slate-900/40">
-          <div className="flex items-center justify-between border-b border-slate-800/40 px-5 py-3">
-            <h2 className="text-sm font-semibold text-white">Result</h2>
+        <div className="mt-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40">
+          <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/40 px-5 py-3">
+            <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Result</h2>
             {task.resultSize != null && (
               <span className="text-xs text-slate-500">{task.resultSize.toLocaleString()} bytes</span>
             )}
           </div>
           <div className="p-5">
-            <pre className="whitespace-pre-wrap break-all font-mono text-xs text-slate-300 bg-slate-800 rounded-lg p-4 max-h-96 overflow-auto">
+            <pre className="whitespace-pre-wrap break-all font-mono text-xs text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 rounded-lg p-4 max-h-96 overflow-auto">
               {tryFormatJson(task.result)}
             </pre>
           </div>
@@ -196,7 +196,7 @@ function TimelineStep({ label, active, completed, failed }: { label: string; act
     ? 'bg-emerald-400 border-emerald-400/30'
     : active
     ? 'bg-cyan-400 border-cyan-400/30'
-    : 'bg-slate-700 border-slate-700';
+    : 'bg-slate-700 border-slate-300 dark:border-slate-700';
   const textColor = failed
     ? 'text-red-400'
     : completed

@@ -133,10 +133,10 @@ export default async function TokenDetailPage({
   if (!token) {
     return (
       <main className="mx-auto max-w-7xl px-4 py-12">
-        <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-8 text-center">
-          <p className="text-lg text-white">Token not found</p>
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-8 text-center">
+          <p className="text-lg text-slate-900 dark:text-white">Token not found</p>
           <p className="mt-2 text-sm text-slate-400 font-mono">{address}</p>
-          <Link href="/tokens" className="mt-4 inline-block rounded-lg bg-slate-800 px-4 py-2 text-sm text-slate-300 hover:bg-slate-700">
+          <Link href="/tokens" className="mt-4 inline-block rounded-lg bg-slate-100 dark:bg-slate-800 px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700">
             Back to tokens
           </Link>
         </div>
@@ -167,7 +167,7 @@ export default async function TokenDetailPage({
     <main className="mx-auto max-w-7xl px-4 py-8">
       {/* Header */}
       <div className="flex flex-wrap items-center gap-3">
-        <h1 className="text-lg font-semibold text-white">
+        <h1 className="text-lg font-semibold text-slate-900 dark:text-white">
           {token.name ?? 'Token'}
           {token.symbol && <span className="ml-2 text-slate-400">({token.symbol})</span>}
         </h1>
@@ -200,7 +200,7 @@ export default async function TokenDetailPage({
       </div>
 
       {/* Tabs */}
-      <div className="mt-8 flex gap-0 border-b border-slate-800">
+      <div className="mt-8 flex gap-0 border-b border-slate-200 dark:border-slate-800">
         <TabLink href={`/token/${address}?tab=transfers&page=1`} active={tab === 'transfers'} label="Transfers" />
         {!isNft && (
           <TabLink href={`/token/${address}?tab=holders&page=1`} active={tab === 'holders'} label="Holders" count={holders.length} />
@@ -213,10 +213,10 @@ export default async function TokenDetailPage({
       {/* Transfers Tab */}
       {tab === 'transfers' && (
         <div className="mt-4">
-          <div className="rounded-xl border border-slate-800 bg-slate-900/40 overflow-x-auto">
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-800/60 text-left text-xs uppercase tracking-wider text-slate-500">
+                <tr className="border-b border-slate-200 dark:border-slate-800/60 text-left text-xs uppercase tracking-wider text-slate-500">
                   <th className="px-4 py-3">Tx Hash</th>
                   <th className="px-4 py-3">Block</th>
                   <th className="px-4 py-3">From</th>
@@ -225,30 +225,30 @@ export default async function TokenDetailPage({
                   <th className="px-4 py-3 text-right">{isNft ? 'Qty' : 'Value'}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/40">
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-800/40">
                 {transfers.length === 0 ? (
                   <tr><td colSpan={isNft ? 6 : 5} className="px-4 py-8 text-center text-slate-500">No transfers indexed.</td></tr>
                 ) : (
                   transfers.map((t, i) => (
-                    <tr key={`${t.tx_hash}-${i}`} className="hover:bg-slate-900/40">
+                    <tr key={`${t.tx_hash}-${i}`} className="hover:bg-slate-50 dark:hover:bg-slate-900/40">
                       <td className="px-4 py-2.5">
                         <Link href={`/txs/${t.tx_hash}`} className="text-cyan-400 hover:text-cyan-300">{shortenHash(t.tx_hash)}</Link>
                       </td>
                       <td className="px-4 py-2.5">
-                        <Link href={`/blocks/${t.block_height}`} className="text-slate-300 hover:text-white">{t.block_height}</Link>
+                        <Link href={`/blocks/${t.block_height}`} className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">{t.block_height}</Link>
                       </td>
                       <td className="px-4 py-2.5">
-                        <Link href={`/address/${t.from_address}`} className="font-mono text-xs text-slate-300 hover:text-white">{shortenHash(t.from_address)}</Link>
+                        <Link href={`/address/${t.from_address}`} className="font-mono text-xs text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">{shortenHash(t.from_address)}</Link>
                       </td>
                       <td className="px-4 py-2.5">
-                        <Link href={`/address/${t.to_address}`} className="font-mono text-xs text-slate-300 hover:text-white">{shortenHash(t.to_address)}</Link>
+                        <Link href={`/address/${t.to_address}`} className="font-mono text-xs text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">{shortenHash(t.to_address)}</Link>
                       </td>
                       {isNft && (
                         <td className="px-4 py-2.5">
                           {t.token_id ? <span className="font-mono text-xs text-purple-400">#{t.token_id}</span> : '—'}
                         </td>
                       )}
-                      <td className="px-4 py-2.5 text-right text-slate-300">
+                      <td className="px-4 py-2.5 text-right text-slate-600 dark:text-slate-300">
                         {isNft ? t.value : `${formatTokenValue(t.value, token.decimals)} ${token.symbol ?? ''}`}
                       </td>
                     </tr>
@@ -269,10 +269,10 @@ export default async function TokenDetailPage({
               <TokenHoldersCsvExport holders={holders} tokenDecimals={token.decimals} tokenSymbol={token.symbol} />
             </div>
           )}
-          <div className="rounded-xl border border-slate-800 bg-slate-900/40 overflow-x-auto">
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-800/60 text-left text-xs uppercase tracking-wider text-slate-500">
+                <tr className="border-b border-slate-200 dark:border-slate-800/60 text-left text-xs uppercase tracking-wider text-slate-500">
                   <th className="px-4 py-3">Rank</th>
                   <th className="px-4 py-3">Address</th>
                   <th className="px-4 py-3 text-right">Balance</th>
@@ -280,7 +280,7 @@ export default async function TokenDetailPage({
                   <th className="px-4 py-3">Distribution</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/40">
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-800/40">
                 {holders.length === 0 ? (
                   <tr><td colSpan={5} className="px-4 py-8 text-center text-slate-500">No holders indexed.</td></tr>
                 ) : (
@@ -288,19 +288,19 @@ export default async function TokenDetailPage({
                     const pct = holderPercent(h.balance);
                     const pctNum = parseFloat(pct) || 0;
                     return (
-                      <tr key={h.address} className="hover:bg-slate-900/40">
+                      <tr key={h.address} className="hover:bg-slate-50 dark:hover:bg-slate-900/40">
                         <td className="px-4 py-2.5 text-slate-500">{i + 1}</td>
                         <td className="px-4 py-2.5">
                           <Link href={`/address/${h.address}`} className="font-mono text-xs text-cyan-400 hover:text-cyan-300">
                             {shortenHash(h.address, 8, 6)}
                           </Link>
                         </td>
-                        <td className="px-4 py-2.5 text-right text-slate-300">
+                        <td className="px-4 py-2.5 text-right text-slate-600 dark:text-slate-300">
                           {formatTokenValue(h.balance, token.decimals)} {token.symbol ?? ''}
                         </td>
-                        <td className="px-4 py-2.5 text-right text-slate-300">{pct}</td>
+                        <td className="px-4 py-2.5 text-right text-slate-600 dark:text-slate-300">{pct}</td>
                         <td className="px-4 py-2.5">
-                          <div className="h-2 w-24 rounded-full bg-slate-800 overflow-hidden">
+                          <div className="h-2 w-24 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
                             <div className="h-full rounded-full bg-cyan-400/60" style={{ width: `${Math.min(100, pctNum)}%` }} />
                           </div>
                         </td>
@@ -372,9 +372,9 @@ export default async function TokenDetailPage({
 
 function OverviewCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
+    <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-4">
       <p className="text-[11px] uppercase tracking-wider text-slate-500">{label}</p>
-      <p className="mt-1.5 text-sm font-medium text-white">
+      <p className="mt-1.5 text-sm font-medium text-slate-900 dark:text-white">
         {value}
         {sub && <span className="ml-1 text-xs text-slate-400">{sub}</span>}
       </p>
@@ -387,12 +387,12 @@ function TabLink({ href, active, label, count }: { href: string; active: boolean
     <Link
       href={href}
       className={`px-5 py-3 text-sm font-medium transition-colors border-b-2 -mb-px ${
-        active ? 'border-cyan-400 text-white' : 'border-transparent text-slate-400 hover:text-white hover:border-slate-600'
+        active ? 'border-cyan-400 text-slate-900 dark:text-white' : 'border-transparent text-slate-400 hover:text-slate-900 dark:hover:text-white hover:border-slate-600'
       }`}
     >
       {label}
       {count != null && count > 0 && (
-        <span className="ml-1.5 rounded-full bg-slate-800 px-2 py-0.5 text-xs text-slate-400">{count}</span>
+        <span className="ml-1.5 rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs text-slate-400">{count}</span>
       )}
     </Link>
   );
@@ -402,15 +402,15 @@ function Pagination({ base, page, hasMore }: { base: string; page: number; hasMo
   return (
     <div className="mt-4 flex items-center justify-between text-sm text-slate-400">
       {page > 1 ? (
-        <Link href={`${base}&page=${page - 1}`} className="rounded-lg border border-slate-800 px-4 py-2 hover:bg-slate-900">Previous</Link>
+        <Link href={`${base}&page=${page - 1}`} className="rounded-lg border border-slate-200 dark:border-slate-800 px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-900">Previous</Link>
       ) : (
-        <span className="rounded-lg border border-slate-800/40 px-4 py-2 text-slate-600">Previous</span>
+        <span className="rounded-lg border border-slate-100 dark:border-slate-800/40 px-4 py-2 text-slate-600">Previous</span>
       )}
       <span>Page {page}</span>
       {hasMore ? (
-        <Link href={`${base}&page=${page + 1}`} className="rounded-lg border border-slate-800 px-4 py-2 hover:bg-slate-900">Next</Link>
+        <Link href={`${base}&page=${page + 1}`} className="rounded-lg border border-slate-200 dark:border-slate-800 px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-900">Next</Link>
       ) : (
-        <span className="rounded-lg border border-slate-800/40 px-4 py-2 text-slate-600">Next</span>
+        <span className="rounded-lg border border-slate-100 dark:border-slate-800/40 px-4 py-2 text-slate-600">Next</span>
       )}
     </div>
   );

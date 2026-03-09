@@ -50,35 +50,35 @@ export default function ArchiveDashboard({ threshold, tables, recentOperations }
     <div className="space-y-4">
       {/* Stats */}
       <div className="grid gap-3 sm:grid-cols-3">
-        <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-4">
+        <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-4">
           <p className="text-xs text-slate-500 uppercase tracking-wider">Archive Threshold</p>
-          <p className="text-lg font-mono text-slate-200 mt-1">{threshold || '—'}</p>
+          <p className="text-lg font-mono text-slate-800 dark:text-slate-200 mt-1">{threshold || '—'}</p>
         </div>
-        <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-4">
+        <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-4">
           <p className="text-xs text-slate-500 uppercase tracking-wider">Tables Tracked</p>
-          <p className="text-lg font-mono text-slate-200 mt-1">{tables.length}</p>
+          <p className="text-lg font-mono text-slate-800 dark:text-slate-200 mt-1">{tables.length}</p>
         </div>
-        <div className="rounded-lg border border-slate-800 bg-slate-900/50 p-4">
+        <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-4">
           <p className="text-xs text-slate-500 uppercase tracking-wider">Recent Operations</p>
-          <p className="text-lg font-mono text-slate-200 mt-1">{recentOperations.length}</p>
+          <p className="text-lg font-mono text-slate-800 dark:text-slate-200 mt-1">{recentOperations.length}</p>
         </div>
       </div>
 
       {/* Trigger */}
-      <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-5">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-5">
         <p className="text-xs uppercase tracking-[0.2em] text-slate-500 mb-3">Archive Data</p>
         <div className="flex flex-wrap items-center gap-3">
           <input
             value={height}
             onChange={(e) => setHeight(e.target.value)}
-            className="w-48 rounded-full border border-slate-800 bg-slate-950/70 px-4 py-2 text-sm text-slate-200"
+            className="w-48 rounded-full border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/70 px-4 py-2 text-sm text-slate-800 dark:text-slate-200"
             placeholder="Archive below height"
           />
           <button
             type="button"
             onClick={triggerArchive}
             disabled={loading}
-            className="rounded-full border border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-200 disabled:opacity-50"
+            className="rounded-full border border-slate-300 dark:border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-800 dark:text-slate-200 disabled:opacity-50"
           >
             {loading ? 'Archiving...' : 'Archive'}
           </button>
@@ -88,10 +88,10 @@ export default function ArchiveDashboard({ threshold, tables, recentOperations }
 
       {/* Recent operations */}
       {recentOperations.length > 0 && (
-        <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/50">
+        <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-slate-500 border-b border-slate-800">
+              <tr className="text-left text-slate-500 border-b border-slate-200 dark:border-slate-800">
                 <th className="px-4 py-3 font-medium">Table</th>
                 <th className="px-4 py-3 font-medium">Partition</th>
                 <th className="px-4 py-3 font-medium text-right">Rows</th>
@@ -100,10 +100,10 @@ export default function ArchiveDashboard({ threshold, tables, recentOperations }
             </thead>
             <tbody>
               {recentOperations.map((op, i) => (
-                <tr key={i} className="border-t border-slate-800">
-                  <td className="px-4 py-2 font-mono text-slate-300">{op.table_name}</td>
+                <tr key={i} className="border-t border-slate-200 dark:border-slate-800">
+                  <td className="px-4 py-2 font-mono text-slate-600 dark:text-slate-300">{op.table_name}</td>
                   <td className="px-4 py-2 font-mono text-slate-400">{op.partition_key}</td>
-                  <td className="px-4 py-2 font-mono text-slate-300 text-right">{op.rows_archived.toLocaleString()}</td>
+                  <td className="px-4 py-2 font-mono text-slate-600 dark:text-slate-300 text-right">{op.rows_archived.toLocaleString()}</td>
                   <td className="px-4 py-2 text-slate-400 text-right text-xs">{new Date(op.archived_at).toLocaleString()}</td>
                 </tr>
               ))}

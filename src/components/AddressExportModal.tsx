@@ -131,15 +131,15 @@ export default function AddressExportModal({ address, type, onClose }: Props) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="w-full max-w-md rounded-2xl border border-slate-700 bg-slate-900 p-6 shadow-2xl"
+        className="w-full max-w-md rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="mb-5 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-white">{t('export.title')}</h2>
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">{t('export.title')}</h2>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
+            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
             <svg aria-hidden="true" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -159,7 +159,7 @@ export default function AddressExportModal({ address, type, onClose }: Props) {
                 type="date"
                 value={fromDate}
                 onChange={(e) => setFromDate(e.target.value)}
-                className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500/30"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500/30"
               />
             </div>
             <div className="flex-1">
@@ -168,7 +168,7 @@ export default function AddressExportModal({ address, type, onClose }: Props) {
                 type="date"
                 value={toDate}
                 onChange={(e) => setToDate(e.target.value)}
-                className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500/30"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500/30"
               />
             </div>
           </div>
@@ -196,7 +196,7 @@ export default function AddressExportModal({ address, type, onClose }: Props) {
                   className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
                     isActive
                       ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
-                      : 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700 hover:text-white'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
                   {preset.label}
@@ -219,7 +219,7 @@ export default function AddressExportModal({ address, type, onClose }: Props) {
                 className={`flex-1 rounded-lg py-2 text-sm font-medium transition-colors ${
                   maxRows === opt
                     ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'
-                    : 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700 hover:text-white'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 {opt.toLocaleString()}
@@ -242,7 +242,7 @@ export default function AddressExportModal({ address, type, onClose }: Props) {
 
         {/* Estimated rows */}
         {estimatedRows !== null && (
-          <div className="mb-4 rounded-lg bg-slate-800/60 px-3 py-2 text-xs text-slate-400">
+          <div className="mb-4 rounded-lg bg-slate-100 dark:bg-slate-800/60 px-3 py-2 text-xs text-slate-400">
             {t('export.estimatedRows').replace('{count}', estimatedRows.toLocaleString())}
           </div>
         )}
@@ -251,14 +251,14 @@ export default function AddressExportModal({ address, type, onClose }: Props) {
         <div className="flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 rounded-lg border border-slate-700 py-2.5 text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
+            className="flex-1 rounded-lg border border-slate-300 dark:border-slate-700 py-2.5 text-sm font-medium text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
             {t('export.cancel')}
           </button>
           <button
             onClick={handleDownload}
             disabled={downloading}
-            className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-cyan-600 py-2.5 text-sm font-medium text-white hover:bg-cyan-500 disabled:opacity-50 transition-colors"
+            className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-cyan-600 py-2.5 text-sm font-medium text-slate-900 dark:text-white hover:bg-cyan-500 disabled:opacity-50 transition-colors"
           >
             {downloading ? (
               <>

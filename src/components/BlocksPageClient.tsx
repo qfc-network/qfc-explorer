@@ -60,7 +60,7 @@ export default function BlocksPageClient({ blocks, page, cursor, nextCursor, pag
             key: 'height',
             header: t('common.height'),
             render: (row) => (
-              <Link href={`/blocks/${row.height}`} className="text-slate-200">
+              <Link href={`/blocks/${row.height}`} className="text-slate-800 dark:text-slate-200">
                 {formatNumber(row.height)}
               </Link>
             ),
@@ -69,7 +69,7 @@ export default function BlocksPageClient({ blocks, page, cursor, nextCursor, pag
             key: 'hash',
             header: t('common.hash'),
             render: (row) => (
-              <Link href={`/blocks/${row.height}`} className="text-slate-200">
+              <Link href={`/blocks/${row.height}`} className="text-slate-800 dark:text-slate-200">
                 {shortenHash(row.hash)}
               </Link>
             ),
@@ -79,7 +79,7 @@ export default function BlocksPageClient({ blocks, page, cursor, nextCursor, pag
             header: t('common.producer'),
             render: (row) =>
               row.producer ? (
-                <Link href={`/address/${row.producer}`} className="text-slate-200">
+                <Link href={`/address/${row.producer}`} className="text-slate-800 dark:text-slate-200">
                   {shortenHash(row.producer)}
                 </Link>
               ) : (

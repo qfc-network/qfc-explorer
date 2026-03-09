@@ -108,8 +108,8 @@ export default function SearchBar({ prominent = false }: { prominent?: boolean }
   const showHistory = !open && !query && history.length > 0;
 
   const inputCls = prominent
-    ? 'w-full rounded-xl border border-slate-700 bg-slate-900/80 px-5 py-3.5 text-sm text-slate-200 outline-none placeholder:text-slate-500 focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/30 transition-colors'
-    : 'w-full rounded-lg border border-slate-800 bg-slate-950/70 px-4 py-2 text-sm text-slate-200 outline-none placeholder:text-slate-600 focus:border-cyan-500/50 transition-colors';
+    ? 'w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white/90 dark:bg-slate-900/80 px-5 py-3.5 text-sm text-slate-800 dark:text-slate-200 outline-none placeholder:text-slate-500 focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/30 transition-colors'
+    : 'w-full rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/70 px-4 py-2 text-sm text-slate-800 dark:text-slate-200 outline-none placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:border-cyan-500/50 transition-colors';
 
   return (
     <div className="relative w-full">
@@ -131,7 +131,7 @@ export default function SearchBar({ prominent = false }: { prominent?: boolean }
         />
         <button
           type="submit"
-          className={`absolute right-2 rounded-lg bg-cyan-600 px-4 text-xs font-medium text-white hover:bg-cyan-500 transition-colors ${prominent ? 'py-2' : 'py-1.5'}`}
+          className={`absolute right-2 rounded-lg bg-cyan-600 px-4 text-xs font-medium text-slate-900 dark:text-white hover:bg-cyan-500 transition-colors ${prominent ? 'py-2' : 'py-1.5'}`}
         >
           {t('search.button')}
         </button>
@@ -139,7 +139,7 @@ export default function SearchBar({ prominent = false }: { prominent?: boolean }
 
       {/* Suggestions dropdown */}
       {showDropdown ? (
-        <div className="absolute z-50 mt-2 w-full rounded-xl border border-slate-800 bg-slate-950/95 py-1 text-sm shadow-xl backdrop-blur-sm">
+        <div className="absolute z-50 mt-2 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950/95 py-1 text-sm shadow-xl backdrop-blur-sm">
           {suggestions.data.blockHeights?.map((height) => (
             <SuggestItem key={`h-${height}`} icon="block" label={`${t('search.block')} ${height}`} onSelect={() => navigate(`/blocks/${height}`, height)} />
           ))}
@@ -172,12 +172,12 @@ function SuggestItem({ icon, label, sub, onSelect }: { icon: string; label: stri
     <button
       type="button"
       onMouseDown={onSelect}
-      className="flex w-full items-center gap-3 px-4 py-2.5 text-left hover:bg-slate-900/80 transition-colors"
+      className="flex w-full items-center gap-3 px-4 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-900/80 transition-colors"
     >
       <span className="text-xs text-slate-500">
         {icon === 'block' ? '□' : icon === 'tx' ? '⇄' : icon === 'token' ? '●' : '◎'}
       </span>
-      <span className="text-slate-200">{label}</span>
+      <span className="text-slate-800 dark:text-slate-200">{label}</span>
       {sub && <span className="text-xs text-slate-500 truncate">{sub}</span>}
     </button>
   );

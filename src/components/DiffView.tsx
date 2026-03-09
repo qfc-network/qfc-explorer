@@ -27,7 +27,7 @@ export default function DiffView({ hunks, stats }: DiffViewProps) {
 
   if (hunks.length === 0) {
     return (
-      <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-8 text-center">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-8 text-center">
         <p className="text-slate-400">No differences found. The source code is identical.</p>
         <div className="mt-2 text-sm text-slate-500">
           {stats.unchanged} unchanged lines
@@ -67,7 +67,7 @@ export default function DiffView({ hunks, stats }: DiffViewProps) {
   }
 
   const bgClass = (type: PanelLine['type'], side: 'left' | 'right') => {
-    if (type === 'hunk-header') return 'bg-slate-800/50';
+    if (type === 'hunk-header') return 'bg-slate-100 dark:bg-slate-800/50';
     if (type === 'removed') return side === 'left' ? 'bg-red-500/15' : 'bg-red-500/5';
     if (type === 'added') return side === 'right' ? 'bg-green-500/15' : 'bg-green-500/5';
     return '';
@@ -77,7 +77,7 @@ export default function DiffView({ hunks, stats }: DiffViewProps) {
     if (type === 'hunk-header') return 'text-slate-600 italic';
     if (type === 'removed' && side === 'left') return 'text-red-300';
     if (type === 'added' && side === 'right') return 'text-green-300';
-    return 'text-slate-300';
+    return 'text-slate-600 dark:text-slate-300';
   };
 
   const renderPanel = (
@@ -87,14 +87,14 @@ export default function DiffView({ hunks, stats }: DiffViewProps) {
   ) => (
     <div
       ref={ref as React.RefObject<HTMLDivElement>}
-      className="flex-1 min-w-0 overflow-auto max-h-[600px] border border-slate-800 rounded-lg"
+      className="flex-1 min-w-0 overflow-auto max-h-[600px] border border-slate-200 dark:border-slate-800 rounded-lg"
       onScroll={() => handleScroll(side)}
     >
       <table className="w-full text-xs font-mono">
         <tbody>
           {lines.map((line, idx) => (
             <tr key={idx} className={bgClass(line.type, side)}>
-              <td className="select-none w-12 px-2 py-0.5 text-right text-slate-600 border-r border-slate-800/50">
+              <td className="select-none w-12 px-2 py-0.5 text-right text-slate-600 border-r border-slate-200 dark:border-slate-800/50">
                 {line.lineNum ?? ''}
               </td>
               <td className={`px-3 py-0.5 whitespace-pre ${textClass(line.type, side)}`}>

@@ -16,7 +16,7 @@ export default function StatChart({ title, points, suffix = '' }: StatChartProps
   const max = useMemo(() => Math.max(...displayPoints.map((p) => p.value), 1), [displayPoints]);
 
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+    <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5">
       <p className="text-xs uppercase tracking-[0.2em] text-slate-500">{title}</p>
       <div className="mt-4 flex items-end gap-1">
         {displayPoints.map((point, idx) => (

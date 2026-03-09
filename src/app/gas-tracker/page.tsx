@@ -100,7 +100,7 @@ export default async function GasTrackerPage() {
         action={
           <Link
             href="/analytics"
-            className="rounded-full border border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-200"
+            className="rounded-full border border-slate-300 dark:border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-800 dark:text-slate-200"
           >
             Analytics
           </Link>
@@ -118,10 +118,10 @@ export default async function GasTrackerPage() {
           </div>
           <div className="flex flex-wrap gap-4 text-xs text-slate-500">
             {oracle.base_fee_gwei && (
-              <span>Base Fee: <span className="text-slate-300">{oracle.base_fee_gwei} Gwei</span></span>
+              <span>Base Fee: <span className="text-slate-600 dark:text-slate-300">{oracle.base_fee_gwei} Gwei</span></span>
             )}
             {oracle.suggested_tip && (
-              <span>Suggested Tip: <span className="text-slate-300">{oracle.suggested_tip} Gwei</span></span>
+              <span>Suggested Tip: <span className="text-slate-600 dark:text-slate-300">{oracle.suggested_tip} Gwei</span></span>
             )}
             <span>Block #{formatNumber(oracle.block_number)}</span>
             <span>Updated: {new Date(oracle.last_updated).toLocaleTimeString()}</span>
@@ -131,7 +131,7 @@ export default async function GasTrackerPage() {
 
       {/* No data state */}
       {!data && (
-        <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-12 text-center">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-12 text-center">
           <p className="text-slate-400">Gas tracker data is currently unavailable.</p>
           <p className="mt-2 text-sm text-slate-500">The API may be unreachable or no blocks have been indexed yet.</p>
         </div>
@@ -139,7 +139,7 @@ export default async function GasTrackerPage() {
 
       {/* Empty data state — API returned but no transactions */}
       {data && !hasData && (
-        <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-12 text-center">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-12 text-center">
           <p className="text-slate-400">No gas price data available yet.</p>
           <p className="mt-2 text-sm text-slate-500">Gas prices will appear once transactions are processed on the network.</p>
         </div>
@@ -158,11 +158,11 @@ export default async function GasTrackerPage() {
       {/* Gas Price Trend + Block Summary */}
       {hasData && blocks.length > 0 && (
         <section className="grid gap-4 sm:grid-cols-3">
-          <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-5">
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-5">
             <p className="text-xs uppercase tracking-wider text-slate-500">Gas Trend</p>
             <div className="mt-2 flex items-baseline gap-2">
               <span className={`text-2xl font-semibold ${
-                gasTrend.direction === 'up' ? 'text-red-400' : gasTrend.direction === 'down' ? 'text-green-400' : 'text-slate-300'
+                gasTrend.direction === 'up' ? 'text-red-400' : gasTrend.direction === 'down' ? 'text-green-400' : 'text-slate-600 dark:text-slate-300'
               }`}>
                 {gasTrend.direction === 'up' ? '\u2191' : gasTrend.direction === 'down' ? '\u2193' : '\u2192'}
                 {' '}{gasTrend.pctChange.toFixed(1)}%
@@ -173,14 +173,14 @@ export default async function GasTrackerPage() {
               {' '}(recent vs prior blocks)
             </p>
           </div>
-          <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-5">
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-5">
             <p className="text-xs uppercase tracking-wider text-slate-500">Avg Block Utilization</p>
-            <p className="mt-2 text-2xl font-semibold text-slate-200">{avgUtilization.toFixed(1)}%</p>
+            <p className="mt-2 text-2xl font-semibold text-slate-800 dark:text-slate-200">{avgUtilization.toFixed(1)}%</p>
             <p className="mt-1 text-xs text-slate-500">Across {blocks.length} recent blocks</p>
           </div>
-          <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-5">
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-5">
             <p className="text-xs uppercase tracking-wider text-slate-500">Network Activity</p>
-            <p className="mt-2 text-2xl font-semibold text-slate-200">{formatNumber(totalTxs)} txs</p>
+            <p className="mt-2 text-2xl font-semibold text-slate-800 dark:text-slate-200">{formatNumber(totalTxs)} txs</p>
             <p className="mt-1 text-xs text-slate-500">{formatNumber(totalGasUsed)} gas used</p>
           </div>
         </section>
@@ -190,10 +190,10 @@ export default async function GasTrackerPage() {
       {hasData && (
         <section className="space-y-4">
           <SectionHeader title="Estimated Transaction Fees" description="Based on current gas prices" />
-          <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/40">
+          <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-800 text-left text-xs uppercase tracking-wider text-slate-500">
+                <tr className="border-b border-slate-200 dark:border-slate-800 text-left text-xs uppercase tracking-wider text-slate-500">
                   <th className="px-4 py-3">Operation</th>
                   <th className="px-4 py-3 text-right">Gas Units</th>
                   <th className="px-4 py-3 text-right">Low</th>
@@ -201,7 +201,7 @@ export default async function GasTrackerPage() {
                   <th className="px-4 py-3 text-right">High</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/40">
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-800/40">
                 {[
                   { op: 'QFC Transfer', gas: 21000 },
                   { op: 'ERC-20 Transfer', gas: 65000 },
@@ -210,8 +210,8 @@ export default async function GasTrackerPage() {
                   { op: 'Swap (DEX)', gas: 150000 },
                   { op: 'Contract Deploy (small)', gas: 250000 },
                 ].map(({ op, gas }) => (
-                  <tr key={op} className="hover:bg-slate-900/60">
-                    <td className="px-4 py-2.5 text-slate-300">{op}</td>
+                  <tr key={op} className="hover:bg-slate-50 dark:hover:bg-slate-900/60">
+                    <td className="px-4 py-2.5 text-slate-600 dark:text-slate-300">{op}</td>
                     <td className="px-4 py-2.5 text-right font-mono text-slate-400">{formatNumber(gas)}</td>
                     <td className="px-4 py-2.5 text-right font-mono text-green-400">
                       {formatFee(prices.low, gas)}
@@ -234,7 +234,7 @@ export default async function GasTrackerPage() {
       {blocks.length > 0 && (
         <section className="space-y-4">
           <SectionHeader title="Block Gas Usage" description="Gas utilization per recent block" />
-          <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-5">
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-5">
             <div className="space-y-2">
               {blocks.slice(-20).map((block) => {
                 const pct = gasUtilization(block.gasUsed, block.gasLimit);
@@ -243,7 +243,7 @@ export default async function GasTrackerPage() {
                     <Link href={`/blocks/${block.height}`} className="w-20 shrink-0 text-cyan-400 hover:text-cyan-300 font-mono text-xs">
                       {formatNumber(block.height)}
                     </Link>
-                    <div className="flex-1 h-4 bg-slate-800 rounded-full overflow-hidden">
+                    <div className="flex-1 h-4 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all ${
                           pct > 90 ? 'bg-red-400' : pct > 70 ? 'bg-amber-400' : pct > 40 ? 'bg-cyan-400' : 'bg-emerald-400'
@@ -285,12 +285,12 @@ export default async function GasTrackerPage() {
               {
                 key: 'gas',
                 header: 'Total Gas Used',
-                render: (row) => <span className="font-mono text-slate-300">{formatNumber(row.totalGas)}</span>,
+                render: (row) => <span className="font-mono text-slate-600 dark:text-slate-300">{formatNumber(row.totalGas)}</span>,
               },
               {
                 key: 'txs',
                 header: 'Transactions',
-                render: (row) => <span className="text-slate-300">{formatNumber(row.txCount)}</span>,
+                render: (row) => <span className="text-slate-600 dark:text-slate-300">{formatNumber(row.txCount)}</span>,
               },
             ]}
           />
@@ -298,7 +298,7 @@ export default async function GasTrackerPage() {
       ) : hasData ? (
         <section className="space-y-4">
           <SectionHeader title="Top Gas Consumers" description="Contracts using the most gas in recent transactions" />
-          <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-8 text-center">
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-8 text-center">
             <p className="text-sm text-slate-400">No contract gas usage data available yet.</p>
           </div>
         </section>

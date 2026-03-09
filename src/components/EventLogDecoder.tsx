@@ -89,10 +89,10 @@ export default function EventLogDecoder({ logs }: Props) {
         const topics = [log.topic0, log.topic1, log.topic2, log.topic3].filter(Boolean) as string[];
 
         return (
-          <div key={`${log.contract_address}-${index}`} className="rounded-lg border border-slate-800/60 p-4">
+          <div key={`${log.contract_address}-${index}`} className="rounded-lg border border-slate-200 dark:border-slate-800/60 p-4">
             {/* Header: index, contract, event name */}
             <div className="flex items-center gap-3 flex-wrap">
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-800 text-[10px] font-medium text-slate-400">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-medium text-slate-400">
                 {index}
               </span>
               <Link
@@ -127,7 +127,7 @@ export default function EventLogDecoder({ logs }: Props) {
                       <th className="py-1">Value</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/20">
+                  <tbody className="divide-y divide-slate-200 dark:divide-slate-800/20">
                     {decoded.params.map((param, pi) => (
                       <DecodedParamRow key={pi} param={param} index={pi} />
                     ))}
@@ -202,7 +202,7 @@ function DecodedParamRow({ param, index }: { param: DecodedEventParam; index: nu
       <td className="py-1.5 pr-3">
         <span className="text-slate-400 text-xs">{param.name || `param${index}`}</span>
         {param.indexed && (
-          <span className="ml-1.5 rounded bg-slate-800 px-1 py-0.5 text-[9px] text-slate-500">
+          <span className="ml-1.5 rounded bg-slate-100 dark:bg-slate-800 px-1 py-0.5 text-[9px] text-slate-500">
             indexed
           </span>
         )}
@@ -219,14 +219,14 @@ function DecodedParamRow({ param, index }: { param: DecodedEventParam; index: nu
             {param.value}
           </Link>
         ) : showWeiConversion ? (
-          <span className="text-slate-300">
+          <span className="text-slate-600 dark:text-slate-300">
             {param.value}
             <span className="ml-2 text-[10px] text-slate-500">
               ({formatWeiToQfc(param.value)} QFC)
             </span>
           </span>
         ) : (
-          <span className="text-slate-300 break-all">{param.value}</span>
+          <span className="text-slate-600 dark:text-slate-300 break-all">{param.value}</span>
         )}
       </td>
     </tr>

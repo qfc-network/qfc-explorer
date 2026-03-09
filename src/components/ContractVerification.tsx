@@ -265,7 +265,7 @@ export default function ContractVerification({
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <h2 className="text-xl font-semibold text-white">{t('verify.sourceCode')}</h2>
+            <h2 className="text-xl font-semibold text-slate-900 dark:text-white">{t('verify.sourceCode')}</h2>
             <span className="inline-flex items-center gap-1 rounded-full bg-green-500/20 px-2.5 py-0.5 text-xs font-medium text-green-400 border border-green-500/30">
               <svg aria-hidden="true" className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -276,25 +276,25 @@ export default function ContractVerification({
         </div>
 
         {/* Compiler info */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-4">
           <div className="grid gap-3 sm:grid-cols-4 text-sm">
             <div>
               <p className="text-xs text-slate-500 uppercase tracking-wider">{t('verify.compiler')}</p>
-              <p className="text-slate-200 font-mono">{existingCompiler}</p>
+              <p className="text-slate-800 dark:text-slate-200 font-mono">{existingCompiler}</p>
             </div>
             <div>
               <p className="text-xs text-slate-500 uppercase tracking-wider">{t('verify.evmVersion')}</p>
-              <p className="text-slate-200 font-mono">{existingEvm}</p>
+              <p className="text-slate-800 dark:text-slate-200 font-mono">{existingEvm}</p>
             </div>
             <div>
               <p className="text-xs text-slate-500 uppercase tracking-wider">{t('verify.optimization')}</p>
-              <p className="text-slate-200 font-mono">
+              <p className="text-slate-800 dark:text-slate-200 font-mono">
                 {existingOptRuns != null ? `${t('common.yes')} (${existingOptRuns} runs)` : t('common.no')}
               </p>
             </div>
             <div>
               <p className="text-xs text-slate-500 uppercase tracking-wider">{t('verify.verifiedAt')}</p>
-              <p className="text-slate-200 text-xs">
+              <p className="text-slate-800 dark:text-slate-200 text-xs">
                 {verifiedAt ? new Date(verifiedAt).toLocaleString() : '-'}
               </p>
             </div>
@@ -302,8 +302,8 @@ export default function ContractVerification({
         </div>
 
         {/* Source code */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900/50 overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-2 border-b border-slate-800 bg-slate-800/50">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-2 border-b border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-800/50">
             <span className="text-sm text-slate-400 font-mono">
               {existingCompiler?.startsWith('vyper:') ? 'Contract.vy' : 'Contract.sol'}
             </span>
@@ -314,7 +314,7 @@ export default function ContractVerification({
               {t('common.copy')}
             </button>
           </div>
-          <pre className="p-4 text-sm text-slate-300 font-mono overflow-x-auto whitespace-pre max-h-[600px] overflow-y-auto leading-relaxed">
+          <pre className="p-4 text-sm text-slate-600 dark:text-slate-300 font-mono overflow-x-auto whitespace-pre max-h-[600px] overflow-y-auto leading-relaxed">
             {existingSource}
           </pre>
         </div>
@@ -326,11 +326,11 @@ export default function ContractVerification({
   return (
     <section className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-white">{t('verify.title')}</h2>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-white">{t('verify.title')}</h2>
         {!showForm && (
           <button
             onClick={() => setShowForm(true)}
-            className="rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 transition-colors"
+            className="rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-slate-900 dark:text-white hover:bg-blue-600 transition-colors"
           >
             {t('verify.verifyPublish')}
           </button>
@@ -338,9 +338,9 @@ export default function ContractVerification({
       </div>
 
       {showForm && (
-        <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6 space-y-4">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-6 space-y-4">
           {/* Tab selector */}
-          <div className="flex border-b border-slate-700">
+          <div className="flex border-b border-slate-300 dark:border-slate-700">
             <button
               onClick={() => setActiveTab('single')}
               className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 -mb-px ${
@@ -385,7 +385,7 @@ export default function ContractVerification({
                   <select
                     value={compilerVersion}
                     onChange={(e) => setCompilerVersion(e.target.value)}
-                    className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200 focus:border-blue-500 focus:outline-none"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:border-blue-500 focus:outline-none"
                   >
                     {COMPILER_VERSIONS.map((v) => (
                       <option key={v} value={v}>{v}</option>
@@ -399,7 +399,7 @@ export default function ContractVerification({
                   <select
                     value={evmVersion}
                     onChange={(e) => setEvmVersion(e.target.value)}
-                    className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200 focus:border-blue-500 focus:outline-none"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:border-blue-500 focus:outline-none"
                   >
                     {EVM_VERSIONS.map((v) => (
                       <option key={v} value={v}>{v}</option>
@@ -418,7 +418,7 @@ export default function ContractVerification({
                     onChange={(e) => setOptimize(e.target.checked)}
                     className="rounded border-slate-600 bg-slate-700 text-blue-500"
                   />
-                  <label htmlFor="optimize" className="text-sm text-slate-300">
+                  <label htmlFor="optimize" className="text-sm text-slate-600 dark:text-slate-300">
                     {t('verify.optimizationEnabled')}
                   </label>
                 </div>
@@ -428,7 +428,7 @@ export default function ContractVerification({
                     value={optimizationRuns}
                     onChange={(e) => setOptimizationRuns(e.target.value)}
                     placeholder="200"
-                    className="w-24 rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 text-sm font-mono text-slate-200 focus:border-blue-500 focus:outline-none"
+                    className="w-24 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 text-sm font-mono text-slate-800 dark:text-slate-200 focus:border-blue-500 focus:outline-none"
                   />
                 )}
               </div>
@@ -443,7 +443,7 @@ export default function ContractVerification({
                   onChange={(e) => setSourceCode(e.target.value)}
                   placeholder="// SPDX-License-Identifier: MIT&#10;pragma solidity ^0.8.20;&#10;&#10;contract MyToken {&#10;  ...&#10;}"
                   rows={16}
-                  className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 text-sm font-mono text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none leading-relaxed"
+                  className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-4 py-3 text-sm font-mono text-slate-800 dark:text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none leading-relaxed"
                 />
               </div>
 
@@ -457,7 +457,7 @@ export default function ContractVerification({
                   value={constructorArgs}
                   onChange={(e) => setConstructorArgs(e.target.value)}
                   placeholder="0x000000000000..."
-                  className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm font-mono text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-2 text-sm font-mono text-slate-800 dark:text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none"
                 />
               </div>
 
@@ -466,13 +466,13 @@ export default function ContractVerification({
                 <button
                   onClick={handleVerify}
                   disabled={loading || !sourceCode.trim()}
-                  className="rounded-lg bg-blue-500 px-6 py-2.5 text-sm font-medium text-white hover:bg-blue-600 transition-colors disabled:opacity-50"
+                  className="rounded-lg bg-blue-500 px-6 py-2.5 text-sm font-medium text-slate-900 dark:text-white hover:bg-blue-600 transition-colors disabled:opacity-50"
                 >
                   {loading ? t('verify.verifying') : t('verify.verifyPublish')}
                 </button>
                 <button
                   onClick={() => { setShowForm(false); setResult(null); }}
-                  className="rounded-lg border border-slate-700 px-4 py-2.5 text-sm text-slate-400 hover:text-slate-200 transition-colors"
+                  className="rounded-lg border border-slate-300 dark:border-slate-700 px-4 py-2.5 text-sm text-slate-400 hover:text-slate-200 transition-colors"
                 >
                   {t('verify.cancel')}
                 </button>
@@ -505,7 +505,7 @@ export default function ContractVerification({
                   <select
                     value={multiCompilerVersion}
                     onChange={(e) => setMultiCompilerVersion(e.target.value)}
-                    className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200 focus:border-blue-500 focus:outline-none"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:border-blue-500 focus:outline-none"
                   >
                     {COMPILER_VERSIONS.map((v) => (
                       <option key={v} value={v}>{v}</option>
@@ -519,7 +519,7 @@ export default function ContractVerification({
                   <select
                     value={multiEvmVersion}
                     onChange={(e) => setMultiEvmVersion(e.target.value)}
-                    className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200 focus:border-blue-500 focus:outline-none"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:border-blue-500 focus:outline-none"
                   >
                     {EVM_VERSIONS.map((v) => (
                       <option key={v} value={v}>{v}</option>
@@ -538,7 +538,7 @@ export default function ContractVerification({
                     onChange={(e) => setMultiOptimize(e.target.checked)}
                     className="rounded border-slate-600 bg-slate-700 text-blue-500"
                   />
-                  <label htmlFor="multi-optimize" className="text-sm text-slate-300">
+                  <label htmlFor="multi-optimize" className="text-sm text-slate-600 dark:text-slate-300">
                     {t('verify.optimizationEnabled')}
                   </label>
                 </div>
@@ -548,7 +548,7 @@ export default function ContractVerification({
                     value={multiOptimizationRuns}
                     onChange={(e) => setMultiOptimizationRuns(e.target.value)}
                     placeholder="200"
-                    className="w-24 rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 text-sm font-mono text-slate-200 focus:border-blue-500 focus:outline-none"
+                    className="w-24 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 text-sm font-mono text-slate-800 dark:text-slate-200 focus:border-blue-500 focus:outline-none"
                   />
                 )}
               </div>
@@ -562,7 +562,7 @@ export default function ContractVerification({
                 className={`rounded-xl border-2 border-dashed p-6 text-center cursor-pointer transition-colors ${
                   dragOver
                     ? 'border-blue-400 bg-blue-500/10'
-                    : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
+                    : 'border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/50 hover:border-slate-600'
                 }`}
               >
                 <input
@@ -595,14 +595,14 @@ export default function ContractVerification({
                 </div>
 
                 {multiFiles.map((file) => (
-                  <div key={file.id} className="rounded-lg border border-slate-700 bg-slate-800/50 overflow-hidden">
-                    <div className="flex items-center gap-2 px-3 py-2 border-b border-slate-700 bg-slate-800">
+                  <div key={file.id} className="rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/50 overflow-hidden">
+                    <div className="flex items-center gap-2 px-3 py-2 border-b border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800">
                       <input
                         type="text"
                         value={file.filename}
                         onChange={(e) => updateFile(file.id, 'filename', e.target.value)}
                         placeholder={t('verify.filenamePlaceholder')}
-                        className="flex-1 bg-transparent text-sm font-mono text-slate-200 placeholder-slate-500 focus:outline-none"
+                        className="flex-1 bg-transparent text-sm font-mono text-slate-800 dark:text-slate-200 placeholder-slate-500 focus:outline-none"
                       />
                       {multiFiles.length > 1 && (
                         <button
@@ -621,7 +621,7 @@ export default function ContractVerification({
                       onChange={(e) => updateFile(file.id, 'content', e.target.value)}
                       placeholder={t('verify.pasteSourceCode')}
                       rows={8}
-                      className="w-full px-3 py-2 text-sm font-mono text-slate-200 placeholder-slate-500 bg-transparent focus:outline-none leading-relaxed resize-y"
+                      className="w-full px-3 py-2 text-sm font-mono text-slate-800 dark:text-slate-200 placeholder-slate-500 bg-transparent focus:outline-none leading-relaxed resize-y"
                     />
                   </div>
                 ))}
@@ -636,7 +636,7 @@ export default function ContractVerification({
                   <select
                     value={entryContract}
                     onChange={(e) => setEntryContract(e.target.value)}
-                    className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200 focus:border-blue-500 focus:outline-none"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:border-blue-500 focus:outline-none"
                   >
                     <option value="">{t('verify.selectEntryContract')}</option>
                     {entryOptions.map((opt) => (
@@ -649,7 +649,7 @@ export default function ContractVerification({
                     value={entryContract}
                     onChange={(e) => setEntryContract(e.target.value)}
                     placeholder="contracts/Token.sol:MyToken"
-                    className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm font-mono text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-2 text-sm font-mono text-slate-800 dark:text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none"
                   />
                 )}
                 <p className="text-xs text-slate-500 mt-1">{t('verify.entryContractHint')}</p>
@@ -665,7 +665,7 @@ export default function ContractVerification({
                   value={multiConstructorArgs}
                   onChange={(e) => setMultiConstructorArgs(e.target.value)}
                   placeholder="0x000000000000..."
-                  className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm font-mono text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-2 text-sm font-mono text-slate-800 dark:text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none"
                 />
               </div>
 
@@ -674,13 +674,13 @@ export default function ContractVerification({
                 <button
                   onClick={handleMultiVerify}
                   disabled={multiLoading || multiFiles.every(f => !f.content.trim()) || !entryContract}
-                  className="rounded-lg bg-blue-500 px-6 py-2.5 text-sm font-medium text-white hover:bg-blue-600 transition-colors disabled:opacity-50"
+                  className="rounded-lg bg-blue-500 px-6 py-2.5 text-sm font-medium text-slate-900 dark:text-white hover:bg-blue-600 transition-colors disabled:opacity-50"
                 >
                   {multiLoading ? t('verify.verifying') : t('verify.verifyPublish')}
                 </button>
                 <button
                   onClick={() => { setShowForm(false); setMultiResult(null); }}
-                  className="rounded-lg border border-slate-700 px-4 py-2.5 text-sm text-slate-400 hover:text-slate-200 transition-colors"
+                  className="rounded-lg border border-slate-300 dark:border-slate-700 px-4 py-2.5 text-sm text-slate-400 hover:text-slate-200 transition-colors"
                 >
                   {t('verify.cancel')}
                 </button>
@@ -713,7 +713,7 @@ export default function ContractVerification({
                   <select
                     value={vyperCompilerVersion}
                     onChange={(e) => setVyperCompilerVersion(e.target.value)}
-                    className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200 focus:border-blue-500 focus:outline-none"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:border-blue-500 focus:outline-none"
                   >
                     {VYPER_COMPILER_VERSIONS.map((v) => (
                       <option key={v} value={v}>{v}</option>
@@ -727,7 +727,7 @@ export default function ContractVerification({
                   <select
                     value={vyperEvmVersion}
                     onChange={(e) => setVyperEvmVersion(e.target.value)}
-                    className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-200 focus:border-blue-500 focus:outline-none"
+                    className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:border-blue-500 focus:outline-none"
                   >
                     {EVM_VERSIONS.map((v) => (
                       <option key={v} value={v}>{v}</option>
@@ -746,7 +746,7 @@ export default function ContractVerification({
                   value={vyperContractName}
                   onChange={(e) => setVyperContractName(e.target.value)}
                   placeholder={t('verify.vyperContractNamePlaceholder')}
-                  className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm font-mono text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-2 text-sm font-mono text-slate-800 dark:text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none"
                 />
               </div>
 
@@ -760,7 +760,7 @@ export default function ContractVerification({
                   onChange={(e) => setVyperSource(e.target.value)}
                   placeholder={t('verify.vyperSourcePlaceholder')}
                   rows={16}
-                  className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3 text-sm font-mono text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none leading-relaxed"
+                  className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-4 py-3 text-sm font-mono text-slate-800 dark:text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none leading-relaxed"
                 />
               </div>
 
@@ -774,7 +774,7 @@ export default function ContractVerification({
                   value={vyperConstructorArgs}
                   onChange={(e) => setVyperConstructorArgs(e.target.value)}
                   placeholder="0x000000000000..."
-                  className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm font-mono text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-2 text-sm font-mono text-slate-800 dark:text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none"
                 />
               </div>
 
@@ -783,13 +783,13 @@ export default function ContractVerification({
                 <button
                   onClick={handleVyperVerify}
                   disabled={vyperLoading || !vyperSource.trim()}
-                  className="rounded-lg bg-blue-500 px-6 py-2.5 text-sm font-medium text-white hover:bg-blue-600 transition-colors disabled:opacity-50"
+                  className="rounded-lg bg-blue-500 px-6 py-2.5 text-sm font-medium text-slate-900 dark:text-white hover:bg-blue-600 transition-colors disabled:opacity-50"
                 >
                   {vyperLoading ? t('verify.verifying') : t('verify.verifyPublish')}
                 </button>
                 <button
                   onClick={() => { setShowForm(false); setVyperResult(null); }}
-                  className="rounded-lg border border-slate-700 px-4 py-2.5 text-sm text-slate-400 hover:text-slate-200 transition-colors"
+                  className="rounded-lg border border-slate-300 dark:border-slate-700 px-4 py-2.5 text-sm text-slate-400 hover:text-slate-200 transition-colors"
                 >
                   {t('verify.cancel')}
                 </button>

@@ -39,7 +39,7 @@ export default function NftCard({
   return (
     <Link
       href={`/nft/${tokenAddress}/${tokenId}`}
-      className="group rounded-xl border border-slate-800 bg-slate-900/40 overflow-hidden hover:border-slate-600 transition-colors"
+      className="group rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 overflow-hidden hover:border-slate-600 transition-colors"
     >
       {/* Image or placeholder */}
       <div className="relative aspect-square bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center overflow-hidden">
@@ -61,7 +61,7 @@ export default function NftCard({
 
       {/* Info */}
       <div className="p-3">
-        <p className="text-xs font-medium text-white truncate group-hover:text-cyan-300">
+        <p className="text-xs font-medium text-slate-900 dark:text-white truncate group-hover:text-cyan-300">
           {displayName}
         </p>
         <p className="mt-0.5 text-[10px] text-slate-400">

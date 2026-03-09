@@ -113,7 +113,7 @@ export default async function InferenceAnalyticsPage() {
           <div className="h-10 w-full rounded-lg overflow-hidden flex bg-slate-100 dark:bg-slate-800">
             {passRate > 0 && (
               <div
-                className="h-full bg-emerald-400 flex items-center justify-center text-xs font-semibold text-white transition-all"
+                className="h-full bg-emerald-400 flex items-center justify-center text-xs font-semibold text-slate-900 dark:text-white transition-all"
                 style={{ width: `${passRate}%` }}
               >
                 {passRate >= 10 ? `${passRate.toFixed(1)}%` : ''}
@@ -121,7 +121,7 @@ export default async function InferenceAnalyticsPage() {
             )}
             {failRate > 0 && (
               <div
-                className="h-full bg-red-400 flex items-center justify-center text-xs font-semibold text-white transition-all"
+                className="h-full bg-red-400 flex items-center justify-center text-xs font-semibold text-slate-900 dark:text-white transition-all"
                 style={{ width: `${failRate}%` }}
               >
                 {failRate >= 10 ? `${failRate.toFixed(1)}%` : ''}
@@ -160,7 +160,7 @@ export default async function InferenceAnalyticsPage() {
                         style={{ width: `${Math.max(pct, 2)}%` }}
                       >
                         {pct >= 15 && (
-                          <span className="text-[10px] font-semibold text-white">{tasks}</span>
+                          <span className="text-[10px] font-semibold text-slate-900 dark:text-white">{tasks}</span>
                         )}
                       </div>
                     </div>

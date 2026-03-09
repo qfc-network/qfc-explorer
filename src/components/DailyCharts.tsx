@@ -84,8 +84,8 @@ export default function DailyCharts() {
     <div className="space-y-8">
       {/* Period selector */}
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-white">Daily Trends</h2>
-        <div className="flex gap-1 rounded-lg border border-slate-700 bg-slate-800/50 p-0.5">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Daily Trends</h2>
+        <div className="flex gap-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/50 p-0.5">
           {PERIODS.map((p) => (
             <button
               key={p.days}
@@ -93,7 +93,7 @@ export default function DailyCharts() {
               className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
                 days === p.days
                   ? 'bg-cyan-500/20 text-cyan-400'
-                  : 'text-slate-400 hover:text-white'
+                  : 'text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               {p.label}
@@ -105,11 +105,11 @@ export default function DailyCharts() {
       {loading ? (
         <div aria-live="polite" aria-busy="true" className="grid gap-6 lg:grid-cols-2">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} role="status" aria-label="Loading" className="h-64 animate-pulse rounded-xl border border-slate-800 bg-slate-900/50" />
+            <div key={i} role="status" aria-label="Loading" className="h-64 animate-pulse rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50" />
           ))}
         </div>
       ) : data.length === 0 ? (
-        <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-12 text-center text-slate-500">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-12 text-center text-slate-500">
           No daily data available yet. Run migration 005 and wait for the indexer to populate daily stats.
         </div>
       ) : (
@@ -154,14 +154,14 @@ function DailyChart({ chart, data }: { chart: ChartConfig; data: DailyStat[] }) 
     : '';
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-5">
+    <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-5">
       <div className="mb-4 flex items-start justify-between">
         <div>
-          <h3 className="text-sm font-medium text-white">{chart.title}</h3>
+          <h3 className="text-sm font-medium text-slate-900 dark:text-white">{chart.title}</h3>
           <p className="text-xs text-slate-500">{chart.description}</p>
         </div>
         <div className="text-right">
-          <p className="text-sm font-medium text-white">{chart.formatValue(latest)}</p>
+          <p className="text-sm font-medium text-slate-900 dark:text-white">{chart.formatValue(latest)}</p>
           <p className="text-[10px] text-slate-500">avg: {chart.formatValue(avg)}</p>
         </div>
       </div>

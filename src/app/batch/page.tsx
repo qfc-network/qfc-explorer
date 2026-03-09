@@ -92,12 +92,12 @@ export default function BatchPage() {
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-8">
-      <h1 className="text-lg font-semibold text-white">{t('batch.title')}</h1>
+      <h1 className="text-lg font-semibold text-slate-900 dark:text-white">{t('batch.title')}</h1>
       <p className="mt-1 text-sm text-slate-400">{t('batch.description')}</p>
 
       {/* Input form */}
-      <section className="mt-6 rounded-xl border border-slate-800 bg-slate-900/40 p-5">
-        <label className="block text-sm font-medium text-slate-300">
+      <section className="mt-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-5">
+        <label className="block text-sm font-medium text-slate-600 dark:text-slate-300">
           {t('batch.inputLabel')}
         </label>
         <textarea
@@ -105,7 +105,7 @@ export default function BatchPage() {
           onChange={(e) => setInput(e.target.value)}
           placeholder={t('batch.inputPlaceholder')}
           rows={6}
-          className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 text-sm font-mono text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none resize-none"
+          className="mt-2 w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-4 py-2.5 text-sm font-mono text-slate-900 dark:text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none resize-none"
         />
         {error && (
           <p className="mt-2 text-sm text-red-400">{error}</p>
@@ -114,14 +114,14 @@ export default function BatchPage() {
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="rounded-lg bg-cyan-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-cyan-500 disabled:opacity-50 transition-colors"
+            className="rounded-lg bg-cyan-600 px-5 py-2.5 text-sm font-medium text-slate-900 dark:text-white hover:bg-cyan-500 disabled:opacity-50 transition-colors"
           >
             {loading ? t('batch.querying') : t('batch.submit')}
           </button>
           {results && results.length > 0 && (
             <button
               onClick={() => exportCsv(results, t)}
-              className="rounded-lg border border-slate-700 bg-slate-800 px-5 py-2.5 text-sm font-medium text-slate-300 hover:bg-slate-700 transition-colors"
+              className="rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-5 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
             >
               {t('batch.exportCsv')}
             </button>
@@ -131,16 +131,16 @@ export default function BatchPage() {
 
       {/* Results table */}
       {results && results.length > 0 && (
-        <section className="mt-6 rounded-xl border border-slate-800 bg-slate-900/40 overflow-hidden">
-          <div className="px-5 py-3 border-b border-slate-800">
-            <h2 className="text-sm font-medium text-white">
+        <section className="mt-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 overflow-hidden">
+          <div className="px-5 py-3 border-b border-slate-200 dark:border-slate-800">
+            <h2 className="text-sm font-medium text-slate-900 dark:text-white">
               {t('batch.results')} ({results.length})
             </h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-left text-xs text-slate-500 border-b border-slate-800/50">
+                <tr className="text-left text-xs text-slate-500 border-b border-slate-200 dark:border-slate-800/50">
                   <th className="px-4 py-3 font-medium">{t('batch.address')}</th>
                   <th className="px-4 py-3 font-medium text-right">{t('batch.balance')}</th>
                   <th className="px-4 py-3 font-medium text-right">{t('batch.nonce')}</th>
@@ -149,9 +149,9 @@ export default function BatchPage() {
                   <th className="px-4 py-3 font-medium">{t('batch.type')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/40">
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-800/40">
                 {results.map((item) => (
-                  <tr key={item.address} className="hover:bg-slate-800/30 transition-colors">
+                  <tr key={item.address} className="hover:bg-slate-100 dark:hover:bg-slate-800/30 transition-colors">
                     <td className="px-4 py-3">
                       <Link
                         href={`/address/${item.address}`}
@@ -160,13 +160,13 @@ export default function BatchPage() {
                         {item.address}
                       </Link>
                     </td>
-                    <td className="px-4 py-3 text-right font-mono text-xs text-white">
+                    <td className="px-4 py-3 text-right font-mono text-xs text-slate-900 dark:text-white">
                       {formatQfcAmount(item.balance)}
                     </td>
-                    <td className="px-4 py-3 text-right font-mono text-xs text-slate-300">
+                    <td className="px-4 py-3 text-right font-mono text-xs text-slate-600 dark:text-slate-300">
                       {item.nonce}
                     </td>
-                    <td className="px-4 py-3 text-right text-xs text-slate-300">
+                    <td className="px-4 py-3 text-right text-xs text-slate-600 dark:text-slate-300">
                       <span className="text-emerald-400">{item.tx_count.sent}</span>
                       {' / '}
                       <span className="text-blue-400">{item.tx_count.received}</span>

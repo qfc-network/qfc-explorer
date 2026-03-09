@@ -68,7 +68,7 @@ export default function TxsPageClient({ transactions, labels, page, cursor, next
             key: 'hash',
             header: t('common.hash'),
             render: (row) => (
-              <Link href={`/txs/${row.hash}`} className="text-slate-200">
+              <Link href={`/txs/${row.hash}`} className="text-slate-800 dark:text-slate-200">
                 {shortenHash(row.hash)}
               </Link>
             ),

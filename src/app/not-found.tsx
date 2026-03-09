@@ -10,7 +10,7 @@ export default function NotFound() {
   return (
     <main className="mx-auto flex min-h-[70vh] max-w-6xl flex-col items-center justify-center gap-6 px-6 py-12 text-center">
       <div className="space-y-4">
-        <p className="text-6xl font-bold text-slate-300 dark:text-slate-700">404</p>
+        <p className="text-6xl font-bold text-slate-600 dark:text-slate-300 dark:text-slate-700">404</p>
         <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">
           {t('error.notFound')}
         </h1>

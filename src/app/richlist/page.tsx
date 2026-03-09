@@ -63,7 +63,7 @@ export default async function RichListPage({
     <main className="mx-auto max-w-7xl px-4 py-8">
       {/* Header */}
       <div>
-        <h1 className="text-lg font-semibold text-white">
+        <h1 className="text-lg font-semibold text-slate-900 dark:text-white">
           <TranslatedText tKey="richlist.title" />
         </h1>
         <p className="mt-1 text-sm text-slate-400">
@@ -73,27 +73,27 @@ export default async function RichListPage({
 
       {/* Summary Stats */}
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-4">
           <div className="text-xs uppercase tracking-wider text-slate-500">
             <TranslatedText tKey="richlist.totalAccounts" />
           </div>
-          <div className="mt-1 text-xl font-semibold text-white">
+          <div className="mt-1 text-xl font-semibold text-slate-900 dark:text-white">
             {formatNumber(data.total)}
           </div>
         </div>
-        <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-4">
           <div className="text-xs uppercase tracking-wider text-slate-500">
             <TranslatedText tKey="richlist.totalSupply" />
           </div>
-          <div className="mt-1 text-xl font-semibold text-white">
+          <div className="mt-1 text-xl font-semibold text-slate-900 dark:text-white">
             {formatWeiToQfc(data.total_supply)} QFC
           </div>
         </div>
-        <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-4">
           <div className="text-xs uppercase tracking-wider text-slate-500">
             <TranslatedText tKey="richlist.top10Hold" />
           </div>
-          <div className="mt-1 text-xl font-semibold text-white">
+          <div className="mt-1 text-xl font-semibold text-slate-900 dark:text-white">
             {top10Pct}%
           </div>
         </div>

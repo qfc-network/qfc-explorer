@@ -8,7 +8,7 @@ export default function HomeHero() {
 
   return (
     <section className="py-10 md:py-14">
-      <h1 className="text-2xl font-semibold text-white sm:text-3xl">
+      <h1 className="text-2xl font-semibold text-slate-900 dark:text-white sm:text-3xl">
         {t('home.title')}
       </h1>
       <p className="mt-2 text-sm text-slate-400">

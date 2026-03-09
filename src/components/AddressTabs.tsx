@@ -144,7 +144,7 @@ export default function AddressTabs(props: Props) {
   return (
     <div>
       {/* Tab bar */}
-      <div className="flex gap-0 border-b border-slate-800">
+      <div className="flex gap-0 border-b border-slate-200 dark:border-slate-800">
         {TAB_KEYS.map((tab) => {
           if (tab.key === 'contract' && !contract) return null;
           if (tab.key === 'token_holdings' && tokenHoldings.length === 0) return null;
@@ -158,21 +158,21 @@ export default function AddressTabs(props: Props) {
               href={`/address/${address}?tab=${tab.key}&page=1`}
               className={`px-5 py-3 text-sm font-medium transition-colors border-b-2 -mb-px ${
                 isActive
-                  ? 'border-cyan-400 text-white'
-                  : 'border-transparent text-slate-400 hover:text-white hover:border-slate-600'
+                  ? 'border-cyan-400 text-slate-900 dark:text-white'
+                  : 'border-transparent text-slate-400 hover:text-slate-900 dark:hover:text-white hover:border-slate-600'
               }`}
             >
               {t(tab.labelKey)}
               {count && Number(count) > 0 ? (
-                <span className="ml-1.5 rounded-full bg-slate-800 px-2 py-0.5 text-xs text-slate-400">
+                <span className="ml-1.5 rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs text-slate-400">
                   {count}
                 </span>
               ) : tab.key === 'token_holdings' && tokenHoldings.length > 0 ? (
-                <span className="ml-1.5 rounded-full bg-slate-800 px-2 py-0.5 text-xs text-slate-400">
+                <span className="ml-1.5 rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs text-slate-400">
                   {tokenHoldings.length}
                 </span>
               ) : tab.key === 'nft_holdings' && nftHoldings.length > 0 ? (
-                <span className="ml-1.5 rounded-full bg-slate-800 px-2 py-0.5 text-xs text-slate-400">
+                <span className="ml-1.5 rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs text-slate-400">
                   {nftHoldings.length}
                 </span>
               ) : null}
@@ -261,11 +261,11 @@ function TransactionsTab({ address, transactions, page, nextCursor }: { address:
               <th className="px-3 py-2">{t('common.status')}</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800/40">
+          <tbody className="divide-y divide-slate-200 dark:divide-slate-800/40">
             {transactions.map((tx) => {
               const isOut = tx.from_address.toLowerCase() === address.toLowerCase();
               return (
-                <tr key={tx.hash} className="hover:bg-slate-900/40">
+                <tr key={tx.hash} className="hover:bg-slate-50 dark:hover:bg-slate-900/40">
                   <td className="px-3 py-2.5">
                     <Link href={`/txs/${tx.hash}`} className="text-cyan-400 hover:text-cyan-300">
                       {shortenHash(tx.hash)}
@@ -275,7 +275,7 @@ function TransactionsTab({ address, transactions, page, nextCursor }: { address:
                     <MethodIdBadge selector={tx.method_id} />
                   </td>
                   <td className="px-3 py-2.5">
-                    <Link href={`/blocks/${tx.block_height}`} className="text-slate-300 hover:text-white">
+                    <Link href={`/blocks/${tx.block_height}`} className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
                       {tx.block_height}
                     </Link>
                   </td>
@@ -290,7 +290,7 @@ function TransactionsTab({ address, transactions, page, nextCursor }: { address:
                     {tx.from_address.toLowerCase() === address.toLowerCase() ? (
                       <span className="text-slate-500">{shortenHash(tx.from_address)}</span>
                     ) : (
-                      <Link href={`/address/${tx.from_address}`} className="text-slate-300 hover:text-white">
+                      <Link href={`/address/${tx.from_address}`} className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
                         {shortenHash(tx.from_address)}
                       </Link>
                     )}
@@ -300,7 +300,7 @@ function TransactionsTab({ address, transactions, page, nextCursor }: { address:
                       tx.to_address.toLowerCase() === address.toLowerCase() ? (
                         <span className="text-slate-500">{shortenHash(tx.to_address)}</span>
                       ) : (
-                        <Link href={`/address/${tx.to_address}`} className="text-slate-300 hover:text-white">
+                        <Link href={`/address/${tx.to_address}`} className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
                           {shortenHash(tx.to_address)}
                         </Link>
                       )
@@ -308,7 +308,7 @@ function TransactionsTab({ address, transactions, page, nextCursor }: { address:
                       <span className="text-emerald-400">{t('common.contractCreation')}</span>
                     )}
                   </td>
-                  <td className="px-3 py-2.5 text-right text-slate-300">
+                  <td className="px-3 py-2.5 text-right text-slate-600 dark:text-slate-300">
                     {formatWeiToQfc(tx.value)} QFC
                   </td>
                   <td className="px-3 py-2.5">
@@ -351,7 +351,7 @@ function TokenTransfersTab({ address, transfers, page, nextCursor }: { address: 
             className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
               filter === f
                 ? 'bg-cyan-500/20 text-cyan-400'
-                : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'
+                : 'bg-slate-100 dark:bg-slate-800 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             {f === 'all' ? t('common.all') : f === 'in' ? t('common.incoming') : t('common.outgoing')}
@@ -378,30 +378,30 @@ function TokenTransfersTab({ address, transfers, page, nextCursor }: { address: 
               <th className="px-3 py-2">{t('address.token')}</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800/40">
+          <tbody className="divide-y divide-slate-200 dark:divide-slate-800/40">
             {filtered.map((t, i) => (
-              <tr key={`${t.tx_hash}-${i}`} className="hover:bg-slate-900/40">
+              <tr key={`${t.tx_hash}-${i}`} className="hover:bg-slate-50 dark:hover:bg-slate-900/40">
                 <td className="px-3 py-2.5">
                   <Link href={`/txs/${t.tx_hash}`} className="text-cyan-400 hover:text-cyan-300">
                     {shortenHash(t.tx_hash)}
                   </Link>
                 </td>
                 <td className="px-3 py-2.5">
-                  <Link href={`/blocks/${t.block_height}`} className="text-slate-300 hover:text-white">
+                  <Link href={`/blocks/${t.block_height}`} className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
                     {t.block_height}
                   </Link>
                 </td>
                 <td className="px-3 py-2.5">
-                  <Link href={`/address/${t.from_address}`} className={`${t.from_address.toLowerCase() === address.toLowerCase() ? 'text-slate-500' : 'text-slate-300 hover:text-white'}`}>
+                  <Link href={`/address/${t.from_address}`} className={`${t.from_address.toLowerCase() === address.toLowerCase() ? 'text-slate-500' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'}`}>
                     {shortenHash(t.from_address)}
                   </Link>
                 </td>
                 <td className="px-3 py-2.5">
-                  <Link href={`/address/${t.to_address}`} className={`${t.to_address.toLowerCase() === address.toLowerCase() ? 'text-slate-500' : 'text-slate-300 hover:text-white'}`}>
+                  <Link href={`/address/${t.to_address}`} className={`${t.to_address.toLowerCase() === address.toLowerCase() ? 'text-slate-500' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'}`}>
                     {shortenHash(t.to_address)}
                   </Link>
                 </td>
-                <td className="px-3 py-2.5 text-right text-slate-300">
+                <td className="px-3 py-2.5 text-right text-slate-600 dark:text-slate-300">
                   {formatTokenValue(t.value, t.token_decimals)}
                 </td>
                 <td className="px-3 py-2.5">
@@ -437,13 +437,13 @@ function TokenHoldingsTab({ holdings }: { holdings: TokenHolding[] }) {
             <th className="px-3 py-2 text-right">{t('common.balance')}</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-800/40">
+        <tbody className="divide-y divide-slate-200 dark:divide-slate-800/40">
           {holdings.map((h, i) => (
-            <tr key={h.token_address} className="hover:bg-slate-900/40">
+            <tr key={h.token_address} className="hover:bg-slate-50 dark:hover:bg-slate-900/40">
               <td className="px-3 py-2.5 text-slate-500">{i + 1}</td>
               <td className="px-3 py-2.5">
                 <Link href={`/token/${h.token_address}`} className="group">
-                  <span className="font-medium text-white group-hover:text-cyan-300">
+                  <span className="font-medium text-slate-900 dark:text-white group-hover:text-cyan-300">
                     {h.token_name ?? t('common.unknown')}
                   </span>
                   {h.token_symbol && (
@@ -456,7 +456,7 @@ function TokenHoldingsTab({ holdings }: { holdings: TokenHolding[] }) {
                   {shortenHash(h.token_address)}
                 </Link>
               </td>
-              <td className="px-3 py-2.5 text-right text-slate-300">
+              <td className="px-3 py-2.5 text-right text-slate-600 dark:text-slate-300">
                 {formatTokenValue(h.balance, h.token_decimals)}
                 {h.token_symbol && <span className="ml-1 text-xs text-slate-400">{h.token_symbol}</span>}
               </td>
@@ -505,7 +505,7 @@ function NftHoldingsTab({ address, holdings }: { address: string; holdings: NftH
       <div className="mb-4 flex justify-end gap-1">
         <button
           onClick={() => setView('grid')}
-          className={`rounded-lg p-2 transition-colors ${view === 'grid' ? 'bg-slate-800 text-white' : 'text-slate-500 hover:text-white'}`}
+          className={`rounded-lg p-2 transition-colors ${view === 'grid' ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}
           title={t('address.gridView')}
         >
           <svg aria-hidden="true" className="h-4 w-4" fill="currentColor" viewBox="0 0 16 16">
@@ -514,7 +514,7 @@ function NftHoldingsTab({ address, holdings }: { address: string; holdings: NftH
         </button>
         <button
           onClick={() => setView('list')}
-          className={`rounded-lg p-2 transition-colors ${view === 'list' ? 'bg-slate-800 text-white' : 'text-slate-500 hover:text-white'}`}
+          className={`rounded-lg p-2 transition-colors ${view === 'list' ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}
           title={t('address.listView')}
         >
           <svg aria-hidden="true" className="h-4 w-4" fill="currentColor" viewBox="0 0 16 16">
@@ -533,7 +533,7 @@ function NftHoldingsTab({ address, holdings }: { address: string; holdings: NftH
               <Link
                 key={`${h.token_address}-${h.token_id}`}
                 href={`/token/${h.token_address}`}
-                className="group rounded-xl border border-slate-800 bg-slate-900/40 overflow-hidden hover:border-slate-600 transition-colors"
+                className="group rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 overflow-hidden hover:border-slate-600 transition-colors"
               >
                 {/* Image or placeholder */}
                 <div className="aspect-square bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center overflow-hidden">
@@ -556,7 +556,7 @@ function NftHoldingsTab({ address, holdings }: { address: string; holdings: NftH
                   )}
                 </div>
                 <div className="p-3">
-                  <p className="text-xs font-medium text-white truncate group-hover:text-cyan-300">
+                  <p className="text-xs font-medium text-slate-900 dark:text-white truncate group-hover:text-cyan-300">
                     {nftName ?? h.token_name ?? shortenHash(h.token_address)}
                   </p>
                   <p className="mt-0.5 text-[10px] text-slate-400">
@@ -589,13 +589,13 @@ function NftHoldingsTab({ address, holdings }: { address: string; holdings: NftH
                 <th className="px-3 py-2 text-right">{t('common.balance')}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/40">
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-800/40">
               {holdings.map((h, i) => (
-                <tr key={`${h.token_address}-${h.token_id}`} className="hover:bg-slate-900/40">
+                <tr key={`${h.token_address}-${h.token_id}`} className="hover:bg-slate-50 dark:hover:bg-slate-900/40">
                   <td className="px-3 py-2.5 text-slate-500">{i + 1}</td>
                   <td className="px-3 py-2.5">
                     <Link href={`/token/${h.token_address}`} className="group">
-                      <span className="font-medium text-white group-hover:text-cyan-300">
+                      <span className="font-medium text-slate-900 dark:text-white group-hover:text-cyan-300">
                         {h.token_name ?? shortenHash(h.token_address)}
                       </span>
                       {h.token_symbol && (
@@ -613,7 +613,7 @@ function NftHoldingsTab({ address, holdings }: { address: string; holdings: NftH
                       {h.token_type === 'erc721' ? 'ERC-721' : 'ERC-1155'}
                     </span>
                   </td>
-                  <td className="px-3 py-2.5 text-right text-slate-300">
+                  <td className="px-3 py-2.5 text-right text-slate-600 dark:text-slate-300">
                     {h.token_type === 'erc721' ? '1' : h.balance}
                   </td>
                 </tr>
@@ -657,12 +657,12 @@ function InternalTxsTab({ address, internalTxs, page, nextCursor }: { address: s
               <th className="px-3 py-2">{t('common.block')}</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800/40">
+          <tbody className="divide-y divide-slate-200 dark:divide-slate-800/40">
             {internalTxs.map((itx, i) => {
               const callType = (itx.call_type ?? '').toUpperCase();
               const badgeStyle = CALL_TYPE_STYLES[callType] ?? 'bg-slate-500/10 text-slate-400';
               return (
-                <tr key={`${itx.tx_hash}-${itx.trace_index}-${i}`} className="hover:bg-slate-900/40">
+                <tr key={`${itx.tx_hash}-${itx.trace_index}-${i}`} className="hover:bg-slate-50 dark:hover:bg-slate-900/40">
                   <td className="px-3 py-2.5">
                     <Link href={`/txs/${itx.tx_hash}`} className="text-cyan-400 hover:text-cyan-300">
                       {shortenHash(itx.tx_hash)}
@@ -682,7 +682,7 @@ function InternalTxsTab({ address, internalTxs, page, nextCursor }: { address: s
                     {itx.from_address?.toLowerCase() === address.toLowerCase() ? (
                       <span className="text-slate-500">{shortenHash(itx.from_address)}</span>
                     ) : (
-                      <Link href={`/address/${itx.from_address}`} className="text-slate-300 hover:text-white">
+                      <Link href={`/address/${itx.from_address}`} className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
                         {shortenHash(itx.from_address)}
                       </Link>
                     )}
@@ -692,7 +692,7 @@ function InternalTxsTab({ address, internalTxs, page, nextCursor }: { address: s
                       itx.to_address.toLowerCase() === address.toLowerCase() ? (
                         <span className="text-slate-500">{shortenHash(itx.to_address)}</span>
                       ) : (
-                        <Link href={`/address/${itx.to_address}`} className="text-slate-300 hover:text-white">
+                        <Link href={`/address/${itx.to_address}`} className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
                           {shortenHash(itx.to_address)}
                         </Link>
                       )
@@ -700,11 +700,11 @@ function InternalTxsTab({ address, internalTxs, page, nextCursor }: { address: s
                       <span className="text-emerald-400">{t('common.contractCreation')}</span>
                     )}
                   </td>
-                  <td className="px-3 py-2.5 text-right text-slate-300">
+                  <td className="px-3 py-2.5 text-right text-slate-600 dark:text-slate-300">
                     {formatWeiToQfc(itx.value)} QFC
                   </td>
                   <td className="px-3 py-2.5">
-                    <Link href={`/blocks/${itx.block_height}`} className="text-slate-300 hover:text-white">
+                    <Link href={`/blocks/${itx.block_height}`} className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
                       {itx.block_height}
                     </Link>
                   </td>
@@ -738,7 +738,7 @@ function EventsTab({ address, events, eventCounts, page, nextCursor }: { address
             className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
               !currentEventFilter
                 ? 'bg-cyan-500/20 text-cyan-400'
-                : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'
+                : 'bg-slate-100 dark:bg-slate-800 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             {t('address.events.allEvents')}
@@ -750,7 +750,7 @@ function EventsTab({ address, events, eventCounts, page, nextCursor }: { address
               className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
                 currentEventFilter === ec.event_name
                   ? 'bg-cyan-500/20 text-cyan-400'
-                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               {ec.event_name}
@@ -769,9 +769,9 @@ function EventsTab({ address, events, eventCounts, page, nextCursor }: { address
             const topics = [evt.topic0, evt.topic1, evt.topic2, evt.topic3].filter(Boolean) as string[];
 
             return (
-              <div key={`${evt.tx_hash}-${evt.log_index}-${i}`} className="rounded-lg border border-slate-800/60 p-4">
+              <div key={`${evt.tx_hash}-${evt.log_index}-${i}`} className="rounded-lg border border-slate-200 dark:border-slate-800/60 p-4">
                 <div className="flex items-center gap-3 flex-wrap">
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-800 text-[10px] font-medium text-slate-400">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-medium text-slate-400">
                     {evt.log_index}
                   </span>
                   {eventName && (
@@ -817,7 +817,7 @@ function ContractTab({ address, contract }: { address: string; contract: Contrac
 
   return (
     <div className="space-y-4">
-      <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-5">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-5">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <p className="text-xs uppercase tracking-wider text-slate-500">{t('common.verified')}</p>
@@ -843,7 +843,7 @@ function ContractTab({ address, contract }: { address: string; contract: Contrac
             <div>
               <p className="text-xs uppercase tracking-wider text-slate-500">{t('contract.createdAtBlock')}</p>
               <p className="mt-1 text-sm">
-                <Link href={`/blocks/${contract.created_at_block}`} className="text-slate-300 hover:text-white">
+                <Link href={`/blocks/${contract.created_at_block}`} className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
                   {contract.created_at_block}
                 </Link>
               </p>
@@ -860,7 +860,7 @@ function ContractTab({ address, contract }: { address: string; contract: Contrac
       <div className="text-center">
         <Link
           href={`/contract/${address}`}
-          className="inline-block rounded-lg bg-cyan-600 px-4 py-2 text-sm font-medium text-white hover:bg-cyan-500 transition-colors"
+          className="inline-block rounded-lg bg-cyan-600 px-4 py-2 text-sm font-medium text-slate-900 dark:text-white hover:bg-cyan-500 transition-colors"
         >
           {t('contract.viewFullPage')}
         </Link>
@@ -877,7 +877,7 @@ function ExportModalTrigger({ address, type }: { address: string; type: 'transac
     <div className="mt-3 flex justify-end">
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 rounded-full border border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-200 hover:bg-slate-800 transition-colors"
+        className="flex items-center gap-2 rounded-full border border-slate-300 dark:border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
       >
         <svg aria-hidden="true" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -903,30 +903,30 @@ function Pagination({ address, tab, page, hasMore, nextCursor }: { address: stri
       {page > 1 ? (
         <Link
           href={`/address/${address}?tab=${tab}&page=${page - 1}`}
-          className="rounded-lg border border-slate-800 px-4 py-2 hover:bg-slate-900 transition-colors"
+          className="rounded-lg border border-slate-200 dark:border-slate-800 px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
         >
           {t('common.previous')}
         </Link>
       ) : (
-        <span className="rounded-lg border border-slate-800/40 px-4 py-2 text-slate-600">{t('common.previous')}</span>
+        <span className="rounded-lg border border-slate-100 dark:border-slate-800/40 px-4 py-2 text-slate-600">{t('common.previous')}</span>
       )}
       <span>{t('common.page')} {page}</span>
       {nextCursor ? (
         <Link
           href={`/address/${address}?tab=${tab}&cursor=${encodeURIComponent(nextCursor)}`}
-          className="rounded-lg border border-slate-800 px-4 py-2 hover:bg-slate-900 transition-colors"
+          className="rounded-lg border border-slate-200 dark:border-slate-800 px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
         >
           {t('common.next')}
         </Link>
       ) : hasMore ? (
         <Link
           href={`/address/${address}?tab=${tab}&page=${page + 1}`}
-          className="rounded-lg border border-slate-800 px-4 py-2 hover:bg-slate-900 transition-colors"
+          className="rounded-lg border border-slate-200 dark:border-slate-800 px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
         >
           {t('common.next')}
         </Link>
       ) : (
-        <span className="rounded-lg border border-slate-800/40 px-4 py-2 text-slate-600">{t('common.next')}</span>
+        <span className="rounded-lg border border-slate-100 dark:border-slate-800/40 px-4 py-2 text-slate-600">{t('common.next')}</span>
       )}
     </div>
   );

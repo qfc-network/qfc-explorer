@@ -57,14 +57,14 @@ export default async function NftDetailPage({
   if (!response) {
     return (
       <main className="mx-auto max-w-7xl px-4 py-12">
-        <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-8 text-center">
-          <p className="text-lg text-white">NFT not found</p>
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-8 text-center">
+          <p className="text-lg text-slate-900 dark:text-white">NFT not found</p>
           <p className="mt-2 text-sm text-slate-400 font-mono">
             {address} #{tokenId}
           </p>
           <Link
             href={`/token/${address}`}
-            className="mt-4 inline-block rounded-lg bg-slate-800 px-4 py-2 text-sm text-slate-300 hover:bg-slate-700"
+            className="mt-4 inline-block rounded-lg bg-slate-100 dark:bg-slate-800 px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
           >
             Back to collection
           </Link>
@@ -92,23 +92,23 @@ export default async function NftDetailPage({
     <main className="mx-auto max-w-7xl px-4 py-8">
       {/* Breadcrumb */}
       <div className="mb-6 flex items-center gap-2 text-sm text-slate-400">
-        <Link href="/tokens" className="hover:text-white">
+        <Link href="/tokens" className="hover:text-slate-900 dark:hover:text-white">
           Tokens
         </Link>
         <span>/</span>
         <Link
           href={`/token/${address}`}
-          className="hover:text-white"
+          className="hover:text-slate-900 dark:hover:text-white"
         >
           {token.name ?? shortenHash(address)}
         </Link>
         <span>/</span>
-        <span className="text-white">#{tokenId}</span>
+        <span className="text-slate-900 dark:text-white">#{tokenId}</span>
       </div>
 
       <div className="grid gap-8 lg:grid-cols-2">
         {/* Left: Image */}
-        <div className="rounded-xl border border-slate-800 bg-slate-900/40 overflow-hidden">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 overflow-hidden">
           <div className="relative aspect-square bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
             {meta.image ? (
               <Image
@@ -132,7 +132,7 @@ export default async function NftDetailPage({
           {/* Header */}
           <div>
             <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-2xl font-semibold text-white">
+              <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">
                 {displayName}
               </h1>
               <span
@@ -151,18 +151,18 @@ export default async function NftDetailPage({
 
           {/* Description */}
           {meta.description && (
-            <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-4">
               <p className="text-[11px] uppercase tracking-wider text-slate-500 mb-2">
                 Description
               </p>
-              <p className="text-sm text-slate-300 whitespace-pre-line">
+              <p className="text-sm text-slate-600 dark:text-slate-300 whitespace-pre-line">
                 {meta.description}
               </p>
             </div>
           )}
 
           {/* Details */}
-          <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-4 space-y-3">
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-4 space-y-3">
             <p className="text-[11px] uppercase tracking-wider text-slate-500">
               Details
             </p>
@@ -181,7 +181,7 @@ export default async function NftDetailPage({
             <div className="flex items-center justify-between text-sm">
               <span className="text-slate-400">Token ID</span>
               <div className="flex items-center gap-2">
-                <span className="font-mono text-xs text-white">
+                <span className="font-mono text-xs text-slate-900 dark:text-white">
                   {tokenId.length > 20
                     ? `${tokenId.slice(0, 10)}...${tokenId.slice(-10)}`
                     : tokenId}
@@ -191,7 +191,7 @@ export default async function NftDetailPage({
             </div>
             <div className="flex items-center justify-between text-sm">
               <span className="text-slate-400">Standard</span>
-              <span className="text-white">{standardLabel}</span>
+              <span className="text-slate-900 dark:text-white">{standardLabel}</span>
             </div>
             {nft.owner && (
               <div className="flex items-center justify-between text-sm">
@@ -208,7 +208,7 @@ export default async function NftDetailPage({
 
           {/* Attributes */}
           {meta.attributes && meta.attributes.length > 0 && (
-            <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-4">
               <p className="text-[11px] uppercase tracking-wider text-slate-500 mb-3">
                 Attributes
               </p>
@@ -223,7 +223,7 @@ export default async function NftDetailPage({
                         {attr.trait_type}
                       </p>
                     )}
-                    <p className="text-sm font-medium text-white">
+                    <p className="text-sm font-medium text-slate-900 dark:text-white">
                       {attr.value != null ? String(attr.value) : '—'}
                     </p>
                   </div>
@@ -235,7 +235,7 @@ export default async function NftDetailPage({
           {/* View Collection link */}
           <Link
             href={`/token/${address}?tab=inventory`}
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 text-sm font-medium text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+            className="inline-flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
             View Collection
           </Link>
@@ -244,20 +244,20 @@ export default async function NftDetailPage({
 
       {/* Transfer History */}
       <div className="mt-10">
-        <h2 className="text-lg font-semibold text-white mb-4">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
           Transfer History
         </h2>
-        <div className="rounded-xl border border-slate-800 bg-slate-900/40 overflow-x-auto">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-800/60 text-left text-xs uppercase tracking-wider text-slate-500">
+              <tr className="border-b border-slate-200 dark:border-slate-800/60 text-left text-xs uppercase tracking-wider text-slate-500">
                 <th className="px-4 py-3">Tx Hash</th>
                 <th className="px-4 py-3">Block</th>
                 <th className="px-4 py-3">From</th>
                 <th className="px-4 py-3">To</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/40">
+            <tbody className="divide-y divide-slate-200 dark:divide-slate-800/40">
               {nft.transfers.length === 0 ? (
                 <tr>
                   <td
@@ -271,7 +271,7 @@ export default async function NftDetailPage({
                 nft.transfers.map((t, i) => (
                   <tr
                     key={`${t.tx_hash}-${i}`}
-                    className="hover:bg-slate-900/40"
+                    className="hover:bg-slate-50 dark:hover:bg-slate-900/40"
                   >
                     <td className="px-4 py-2.5">
                       <Link
@@ -284,7 +284,7 @@ export default async function NftDetailPage({
                     <td className="px-4 py-2.5">
                       <Link
                         href={`/blocks/${t.block_height}`}
-                        className="text-slate-300 hover:text-white"
+                        className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
                       >
                         {t.block_height}
                       </Link>
@@ -292,7 +292,7 @@ export default async function NftDetailPage({
                     <td className="px-4 py-2.5">
                       <Link
                         href={`/address/${t.from_address}`}
-                        className="font-mono text-xs text-slate-300 hover:text-white"
+                        className="font-mono text-xs text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
                       >
                         {shortenHash(t.from_address)}
                       </Link>
@@ -300,7 +300,7 @@ export default async function NftDetailPage({
                     <td className="px-4 py-2.5">
                       <Link
                         href={`/address/${t.to_address}`}
-                        className="font-mono text-xs text-slate-300 hover:text-white"
+                        className="font-mono text-xs text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
                       >
                         {shortenHash(t.to_address)}
                       </Link>

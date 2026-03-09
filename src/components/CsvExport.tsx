@@ -51,7 +51,7 @@ export default function CsvExport({ data, filename, columns }: Props) {
   return (
     <button
       onClick={handleExport}
-      className="flex items-center gap-1.5 rounded-full border border-slate-700 px-3 py-1.5 text-xs uppercase tracking-[0.15em] text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+      className="flex items-center gap-1.5 rounded-full border border-slate-300 dark:border-slate-700 px-3 py-1.5 text-xs uppercase tracking-[0.15em] text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
       title={t('common.exportCsv')}
     >
       <svg

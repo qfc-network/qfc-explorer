@@ -443,7 +443,7 @@ export default function TransactionFlow({ txHash }: { txHash: string }) {
       {/* Tooltip */}
       {tooltip && (
         <div
-          className="pointer-events-none absolute z-50 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-xs shadow-lg"
+          className="pointer-events-none absolute z-50 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-2 text-xs shadow-lg"
           style={{
             left: tooltip.x,
             top: tooltip.y,
@@ -455,7 +455,7 @@ export default function TransactionFlow({ txHash }: { txHash: string }) {
               className="inline-block h-2 w-2 rounded-full"
               style={{ background: LINK_COLORS[tooltip.type] }}
             />
-            <span className="text-slate-300">
+            <span className="text-slate-600 dark:text-slate-300">
               {tooltip.type === 'native'
                 ? 'Native Transfer'
                 : tooltip.type === 'erc20'
@@ -463,7 +463,7 @@ export default function TransactionFlow({ txHash }: { txHash: string }) {
                 : 'Internal Call'}
             </span>
           </div>
-          <div className="mt-1 text-white">
+          <div className="mt-1 text-slate-900 dark:text-white">
             {tooltip.type === 'erc20' && tooltip.token
               ? `${formatWeiToQfc(tooltip.value)} ${tooltip.token}`
               : `${formatWeiToQfc(tooltip.value)} QFC`}

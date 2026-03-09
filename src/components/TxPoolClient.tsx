@@ -47,7 +47,7 @@ function hexToGwei(hex: string): number {
 
 /** Return a color class based on gas price relative to the average. */
 function gasPriceColor(hex: string, avg: number): string {
-  if (avg === 0) return 'text-slate-300 dark:text-slate-300';
+  if (avg === 0) return 'text-slate-600 dark:text-slate-300 dark:text-slate-300';
   const gwei = hexToGwei(hex);
   const ratio = gwei / (avg / 1e9);
   if (ratio <= 0.8) return 'text-emerald-400';
@@ -182,7 +182,7 @@ export default function TxPoolClient({ initialData }: Props) {
             onClick={() => setTab('pending')}
             className={`px-4 py-2 text-sm font-medium transition-colors ${
               tab === 'pending'
-                ? 'bg-cyan-500 text-white'
+                ? 'bg-cyan-500 text-slate-900 dark:text-white'
                 : 'bg-white text-slate-600 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800'
             }`}
           >
@@ -192,7 +192,7 @@ export default function TxPoolClient({ initialData }: Props) {
             onClick={() => setTab('queued')}
             className={`px-4 py-2 text-sm font-medium transition-colors ${
               tab === 'queued'
-                ? 'bg-cyan-500 text-white'
+                ? 'bg-cyan-500 text-slate-900 dark:text-white'
                 : 'bg-white text-slate-600 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800'
             }`}
           >
@@ -246,7 +246,7 @@ export default function TxPoolClient({ initialData }: Props) {
               key: 'from',
               header: t('common.from'),
               render: (row: TxPoolTx) => (
-                <Link href={`/address/${row.from}`} className="text-slate-300 dark:text-slate-300 hover:underline">
+                <Link href={`/address/${row.from}`} className="text-slate-600 dark:text-slate-300 dark:text-slate-300 hover:underline">
                   {shortenHash(row.from)}
                 </Link>
               ),
@@ -256,7 +256,7 @@ export default function TxPoolClient({ initialData }: Props) {
               header: t('common.to'),
               render: (row: TxPoolTx) =>
                 row.to ? (
-                  <Link href={`/address/${row.to}`} className="text-slate-300 dark:text-slate-300 hover:underline">
+                  <Link href={`/address/${row.to}`} className="text-slate-600 dark:text-slate-300 dark:text-slate-300 hover:underline">
                     {shortenHash(row.to)}
                   </Link>
                 ) : (
@@ -267,7 +267,7 @@ export default function TxPoolClient({ initialData }: Props) {
               key: 'value',
               header: t('common.value'),
               render: (row: TxPoolTx) => (
-                <span className="text-slate-300 dark:text-slate-300">
+                <span className="text-slate-600 dark:text-slate-300 dark:text-slate-300">
                   {formatWeiToQfc(row.value)} QFC
                 </span>
               ),

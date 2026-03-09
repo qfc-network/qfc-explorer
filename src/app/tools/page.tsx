@@ -150,13 +150,13 @@ export default function ToolsPage() {
 
   return (
     <main className="mx-auto max-w-4xl px-4 py-8">
-      <h1 className="text-lg font-semibold text-white">ABI Tools</h1>
+      <h1 className="text-lg font-semibold text-slate-900 dark:text-white">ABI Tools</h1>
       <p className="mt-1 text-sm text-slate-400">Decode function selectors, event topics, encode values, and compute hashes</p>
 
       <div className="mt-8 space-y-8">
         {/* Event Signature → Topic Hash */}
-        <section className="rounded-xl border border-slate-800 bg-slate-900/40 p-5">
-          <h2 className="text-sm font-medium text-white">Signature → Hash</h2>
+        <section className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-5">
+          <h2 className="text-sm font-medium text-slate-900 dark:text-white">Signature → Hash</h2>
           <p className="mt-1 text-xs text-slate-400">Compute keccak256 of a function or event signature to get its selector/topic</p>
           <div className="mt-3 flex gap-2">
             <input
@@ -165,23 +165,23 @@ export default function ToolsPage() {
               onChange={(e) => setSigInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSigHash()}
               placeholder="Transfer(address,address,uint256)"
-              className="flex-1 rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 text-sm font-mono text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none"
+              className="flex-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-4 py-2.5 text-sm font-mono text-slate-900 dark:text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none"
             />
             <button
               onClick={handleSigHash}
               disabled={sigLoading}
-              className="rounded-lg bg-cyan-600 px-4 py-2.5 text-xs font-medium text-white hover:bg-cyan-500 disabled:opacity-50 transition-colors"
+              className="rounded-lg bg-cyan-600 px-4 py-2.5 text-xs font-medium text-slate-900 dark:text-white hover:bg-cyan-500 disabled:opacity-50 transition-colors"
             >
               {sigLoading ? '...' : 'Hash'}
             </button>
           </div>
           {sigResult && (
             <div className="mt-3 space-y-2">
-              <div className="rounded-lg bg-slate-800/50 p-3">
+              <div className="rounded-lg bg-slate-100 dark:bg-slate-800/50 p-3">
                 <p className="text-xs text-slate-500">Event Topic (keccak256)</p>
                 <p className="mt-1 font-mono text-xs text-emerald-400 break-all">{sigResult.topic}</p>
               </div>
-              <div className="rounded-lg bg-slate-800/50 p-3">
+              <div className="rounded-lg bg-slate-100 dark:bg-slate-800/50 p-3">
                 <p className="text-xs text-slate-500">Function Selector (first 4 bytes)</p>
                 <p className="mt-1 font-mono text-sm text-cyan-400">{sigResult.selector}</p>
               </div>
@@ -190,14 +190,14 @@ export default function ToolsPage() {
         </section>
 
         {/* ABI Encoder */}
-        <section className="rounded-xl border border-slate-800 bg-slate-900/40 p-5">
-          <h2 className="text-sm font-medium text-white">ABI Encoder</h2>
+        <section className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-5">
+          <h2 className="text-sm font-medium text-slate-900 dark:text-white">ABI Encoder</h2>
           <p className="mt-1 text-xs text-slate-400">Encode a value to ABI-packed 32-byte format</p>
           <div className="mt-3 flex gap-2">
             <select
               value={encodeType}
               onChange={(e) => setEncodeType(e.target.value)}
-              className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white focus:border-cyan-500 focus:outline-none"
+              className="rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-2.5 text-sm text-slate-900 dark:text-white focus:border-cyan-500 focus:outline-none"
             >
               <option value="address">address</option>
               <option value="uint256">uint256</option>
@@ -209,11 +209,11 @@ export default function ToolsPage() {
               value={encodeValue}
               onChange={(e) => setEncodeValue(e.target.value)}
               placeholder={encodeType === 'address' ? '0x1234...' : encodeType === 'uint256' ? '1000000' : encodeType === 'bool' ? 'true' : '0xabcd...'}
-              className="flex-1 rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 text-sm font-mono text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none"
+              className="flex-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-4 py-2.5 text-sm font-mono text-slate-900 dark:text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none"
             />
           </div>
           {encodedValue && (
-            <div className="mt-3 rounded-lg bg-slate-800/50 p-3">
+            <div className="mt-3 rounded-lg bg-slate-100 dark:bg-slate-800/50 p-3">
               <p className="text-xs text-slate-500">Encoded ({encodeType})</p>
               <p className="mt-1 font-mono text-xs text-emerald-400 break-all">{encodedValue}</p>
             </div>
@@ -221,18 +221,18 @@ export default function ToolsPage() {
         </section>
 
         {/* Function Selector Lookup */}
-        <section className="rounded-xl border border-slate-800 bg-slate-900/40 p-5">
-          <h2 className="text-sm font-medium text-white">Function Selector Lookup</h2>
+        <section className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-5">
+          <h2 className="text-sm font-medium text-slate-900 dark:text-white">Function Selector Lookup</h2>
           <p className="mt-1 text-xs text-slate-400">Enter a 4-byte function selector (e.g. a9059cbb)</p>
           <input
             type="text"
             value={selectorInput}
             onChange={(e) => setSelectorInput(e.target.value)}
             placeholder="0xa9059cbb"
-            className="mt-3 w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 text-sm font-mono text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none"
+            className="mt-3 w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-4 py-2.5 text-sm font-mono text-slate-900 dark:text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none"
           />
           {selectorClean.length === 8 && (
-            <div className="mt-3 rounded-lg bg-slate-800/50 p-3">
+            <div className="mt-3 rounded-lg bg-slate-100 dark:bg-slate-800/50 p-3">
               <p className="text-xs text-slate-500">Result</p>
               {selectorMatch ? (
                 <p className="mt-1 font-mono text-sm text-emerald-400">{selectorMatch}</p>
@@ -244,18 +244,18 @@ export default function ToolsPage() {
         </section>
 
         {/* Event Topic Lookup */}
-        <section className="rounded-xl border border-slate-800 bg-slate-900/40 p-5">
-          <h2 className="text-sm font-medium text-white">Event Topic Lookup</h2>
+        <section className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-5">
+          <h2 className="text-sm font-medium text-slate-900 dark:text-white">Event Topic Lookup</h2>
           <p className="mt-1 text-xs text-slate-400">Enter a 32-byte event topic0 hash</p>
           <input
             type="text"
             value={topicInput}
             onChange={(e) => setTopicInput(e.target.value)}
             placeholder="0xddf252ad..."
-            className="mt-3 w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 text-sm font-mono text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none"
+            className="mt-3 w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-4 py-2.5 text-sm font-mono text-slate-900 dark:text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none"
           />
           {topicClean.length === 64 && (
-            <div className="mt-3 rounded-lg bg-slate-800/50 p-3">
+            <div className="mt-3 rounded-lg bg-slate-100 dark:bg-slate-800/50 p-3">
               <p className="text-xs text-slate-500">Result</p>
               {topicMatch ? (
                 <p className="mt-1 font-mono text-sm text-emerald-400">{topicMatch}</p>
@@ -267,19 +267,19 @@ export default function ToolsPage() {
         </section>
 
         {/* Calldata Decoder */}
-        <section className="rounded-xl border border-slate-800 bg-slate-900/40 p-5">
-          <h2 className="text-sm font-medium text-white">Calldata Decoder</h2>
+        <section className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-5">
+          <h2 className="text-sm font-medium text-slate-900 dark:text-white">Calldata Decoder</h2>
           <p className="mt-1 text-xs text-slate-400">Paste transaction input data to decode</p>
           <textarea
             value={calldataInput}
             onChange={(e) => setCalldataInput(e.target.value)}
             placeholder="0xa9059cbb000000000000000000000000..."
             rows={3}
-            className="mt-3 w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 text-sm font-mono text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none resize-none"
+            className="mt-3 w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-4 py-2.5 text-sm font-mono text-slate-900 dark:text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none resize-none"
           />
           {calldataSelector && (
             <div className="mt-3 space-y-3">
-              <div className="rounded-lg bg-slate-800/50 p-3">
+              <div className="rounded-lg bg-slate-100 dark:bg-slate-800/50 p-3">
                 <p className="text-xs text-slate-500">Function</p>
                 <p className="mt-1 font-mono text-sm">
                   <span className="text-cyan-400">0x{calldataSelector}</span>
@@ -291,7 +291,7 @@ export default function ToolsPage() {
                 </p>
               </div>
               {calldataParams.length > 0 && (
-                <div className="rounded-lg bg-slate-800/50 p-3">
+                <div className="rounded-lg bg-slate-100 dark:bg-slate-800/50 p-3">
                   <p className="text-xs text-slate-500">Parameters ({calldataParams.length})</p>
                   <div className="mt-2 space-y-1.5">
                     {calldataParams.map((param, i) => {
@@ -309,7 +309,7 @@ export default function ToolsPage() {
                               {decoded}
                             </Link>
                           ) : (
-                            <span className="font-mono text-white shrink-0">{decoded}</span>
+                            <span className="font-mono text-slate-900 dark:text-white shrink-0">{decoded}</span>
                           )}
                         </div>
                       );
@@ -322,8 +322,8 @@ export default function ToolsPage() {
         </section>
 
         {/* Reference Tables */}
-        <section className="rounded-xl border border-slate-800 bg-slate-900/40 p-5">
-          <h2 className="text-sm font-medium text-white">Known Selectors ({Object.keys(KNOWN_SELECTORS).length})</h2>
+        <section className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-5">
+          <h2 className="text-sm font-medium text-slate-900 dark:text-white">Known Selectors ({Object.keys(KNOWN_SELECTORS).length})</h2>
           <div className="mt-3 max-h-64 overflow-y-auto">
             <table className="w-full text-xs">
               <thead>
@@ -332,11 +332,11 @@ export default function ToolsPage() {
                   <th className="pb-2">Function</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/40">
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-800/40">
                 {Object.entries(KNOWN_SELECTORS).map(([sel, fn]) => (
-                  <tr key={sel} className="hover:bg-slate-800/30">
+                  <tr key={sel} className="hover:bg-slate-100 dark:hover:bg-slate-800/30">
                     <td className="py-1.5 pr-4 font-mono text-cyan-400">0x{sel}</td>
-                    <td className="py-1.5 font-mono text-slate-300">{fn}</td>
+                    <td className="py-1.5 font-mono text-slate-600 dark:text-slate-300">{fn}</td>
                   </tr>
                 ))}
               </tbody>
@@ -344,8 +344,8 @@ export default function ToolsPage() {
           </div>
         </section>
 
-        <section className="rounded-xl border border-slate-800 bg-slate-900/40 p-5">
-          <h2 className="text-sm font-medium text-white">Known Event Topics ({Object.keys(KNOWN_TOPICS).length})</h2>
+        <section className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-5">
+          <h2 className="text-sm font-medium text-slate-900 dark:text-white">Known Event Topics ({Object.keys(KNOWN_TOPICS).length})</h2>
           <div className="mt-3 max-h-64 overflow-y-auto">
             <table className="w-full text-xs">
               <thead>
@@ -354,11 +354,11 @@ export default function ToolsPage() {
                   <th className="pb-2">Event</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/40">
+              <tbody className="divide-y divide-slate-200 dark:divide-slate-800/40">
                 {Object.entries(KNOWN_TOPICS).map(([topic, event]) => (
-                  <tr key={topic} className="hover:bg-slate-800/30">
+                  <tr key={topic} className="hover:bg-slate-100 dark:hover:bg-slate-800/30">
                     <td className="py-1.5 pr-4 font-mono text-cyan-400 break-all">0x{topic.slice(0, 16)}...</td>
-                    <td className="py-1.5 font-mono text-slate-300">{event}</td>
+                    <td className="py-1.5 font-mono text-slate-600 dark:text-slate-300">{event}</td>
                   </tr>
                 ))}
               </tbody>

@@ -203,8 +203,8 @@ export default function HolderDistribution({
   const supplyDisplay = formatSupplyCenter(totalSupply, tokenDecimals);
 
   return (
-    <div className="mt-6 rounded-xl border border-slate-800 bg-slate-900/40 p-5">
-      <h3 className="text-sm font-semibold text-white mb-4">
+    <div className="mt-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-5">
+      <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4">
         {t('token.distribution.title')}
       </h3>
 
@@ -265,9 +265,9 @@ export default function HolderDistribution({
 
           {/* Tooltip */}
           {hoveredIndex !== null && (
-            <div className="absolute pointer-events-none z-10 left-1/2 -translate-x-1/2 -top-2 -translate-y-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-xs shadow-lg whitespace-nowrap">
+            <div className="absolute pointer-events-none z-10 left-1/2 -translate-x-1/2 -top-2 -translate-y-full rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-2 text-xs shadow-lg whitespace-nowrap">
               <p className="font-mono text-cyan-400">{slices[hoveredIndex].label}</p>
-              <p className="text-slate-300 mt-0.5">
+              <p className="text-slate-600 dark:text-slate-300 mt-0.5">
                 {formatTokenValue(slices[hoveredIndex].balance, tokenDecimals)}
                 {tokenSymbol ? ` ${tokenSymbol}` : ''}
               </p>
@@ -283,7 +283,7 @@ export default function HolderDistribution({
               key={i}
               type="button"
               className={`flex items-center gap-2 text-left text-xs rounded px-1.5 py-1 transition-colors ${
-                hoveredIndex === i ? 'bg-slate-800' : 'hover:bg-slate-800/50'
+                hoveredIndex === i ? 'bg-slate-100 dark:bg-slate-800' : 'hover:bg-slate-100 dark:hover:bg-slate-800/50'
               } ${slice.address ? 'cursor-pointer' : 'cursor-default'}`}
               onMouseEnter={() => setHoveredIndex(i)}
               onMouseLeave={() => setHoveredIndex(null)}
@@ -295,7 +295,7 @@ export default function HolderDistribution({
                 className="inline-block w-2.5 h-2.5 rounded-sm shrink-0"
                 style={{ backgroundColor: slice.color }}
               />
-              <span className="font-mono text-slate-300 truncate">
+              <span className="font-mono text-slate-600 dark:text-slate-300 truncate">
                 {slice.label}
               </span>
               <span className="ml-auto text-slate-500 shrink-0">

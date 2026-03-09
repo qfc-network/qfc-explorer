@@ -75,7 +75,7 @@ export default async function ValidatorsPage({
           className={`rounded-full border px-3 py-1 text-xs transition-colors ${
             sort === 'blocks_produced'
               ? 'border-cyan-500 text-cyan-400 bg-cyan-500/10'
-              : 'border-slate-700 text-slate-400 hover:text-white'
+              : 'border-slate-300 dark:border-slate-700 text-slate-400 hover:text-slate-900 dark:hover:text-white'
           }`}
         >
           <TranslatedText tKey="validators.blocksProduced" />
@@ -85,7 +85,7 @@ export default async function ValidatorsPage({
           className={`rounded-full border px-3 py-1 text-xs transition-colors ${
             sort === 'last_active'
               ? 'border-cyan-500 text-cyan-400 bg-cyan-500/10'
-              : 'border-slate-700 text-slate-400 hover:text-white'
+              : 'border-slate-300 dark:border-slate-700 text-slate-400 hover:text-slate-900 dark:hover:text-white'
           }`}
         >
           <TranslatedText tKey="validators.lastActive" />
@@ -121,7 +121,7 @@ export default async function ValidatorsPage({
             key: 'blocks_produced',
             header: 'Blocks Produced',
             render: (row) => (
-              <span className="font-mono text-slate-300">
+              <span className="font-mono text-slate-600 dark:text-slate-300">
                 {formatNumber(row.blocks_produced as number)}
               </span>
             ),
@@ -135,7 +135,7 @@ export default async function ValidatorsPage({
                 : '0.00';
               return (
                 <div className="flex items-center gap-2">
-                  <span className="text-slate-300 text-xs w-12 text-right">{pct}%</span>
+                  <span className="text-slate-600 dark:text-slate-300 text-xs w-12 text-right">{pct}%</span>
                   <div className="w-16 h-2 bg-slate-700 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-cyan-500 rounded-full"
@@ -183,7 +183,7 @@ export default async function ValidatorsPage({
       <div className="flex items-center justify-between text-sm text-slate-400">
         <Link
           href={`/validators?page=${Math.max(1, page - 1)}&sort=${sort}`}
-          className={`rounded-full border border-slate-700 px-4 py-2 transition-colors hover:text-white ${
+          className={`rounded-full border border-slate-300 dark:border-slate-700 px-4 py-2 transition-colors hover:text-slate-900 dark:hover:text-white ${
             page <= 1 ? 'pointer-events-none opacity-40' : ''
           }`}
         >
@@ -194,7 +194,7 @@ export default async function ValidatorsPage({
         </span>
         <Link
           href={`/validators?page=${page + 1}&sort=${sort}`}
-          className={`rounded-full border border-slate-700 px-4 py-2 transition-colors hover:text-white ${
+          className={`rounded-full border border-slate-300 dark:border-slate-700 px-4 py-2 transition-colors hover:text-slate-900 dark:hover:text-white ${
             validators.length < PAGE_SIZE ? 'pointer-events-none opacity-40' : ''
           }`}
         >

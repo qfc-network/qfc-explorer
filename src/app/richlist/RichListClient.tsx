@@ -58,7 +58,7 @@ export default function RichListClient({
             className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
               type === f.key
                 ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/40'
-                : 'bg-slate-800/60 text-slate-400 border border-slate-700/40 hover:text-white hover:border-slate-600'
+                : 'bg-slate-100 dark:bg-slate-800/60 text-slate-400 border border-slate-300 dark:border-slate-700/40 hover:text-slate-900 dark:hover:text-white hover:border-slate-600'
             }`}
           >
             {t(f.labelKey)}
@@ -67,10 +67,10 @@ export default function RichListClient({
       </div>
 
       {/* Table */}
-      <div className="mt-4 rounded-xl border border-slate-800 bg-slate-900/40 overflow-x-auto">
+      <div className="mt-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-slate-800/60 text-left text-xs uppercase tracking-wider text-slate-500">
+            <tr className="border-b border-slate-200 dark:border-slate-800/60 text-left text-xs uppercase tracking-wider text-slate-500">
               <th className="px-4 py-3 w-16">{t('richlist.rank')}</th>
               <th className="px-4 py-3">{t('richlist.address')}</th>
               <th className="px-4 py-3 text-right">{t('richlist.balance')}</th>
@@ -79,7 +79,7 @@ export default function RichListClient({
               <th className="px-4 py-3 w-24">{t('richlist.type')}</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800/40">
+          <tbody className="divide-y divide-slate-200 dark:divide-slate-800/40">
             {items.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-4 py-8 text-center text-slate-500">
@@ -102,7 +102,7 @@ export default function RichListClient({
                   : 0;
 
                 return (
-                  <tr key={account.address} className="hover:bg-slate-800/30 transition-colors">
+                  <tr key={account.address} className="hover:bg-slate-100 dark:hover:bg-slate-800/30 transition-colors">
                     <td className="px-4 py-2.5 text-slate-500 font-medium">{rank}</td>
                     <td className="px-4 py-2.5">
                       <div className="flex items-center gap-2">
@@ -113,18 +113,18 @@ export default function RichListClient({
                           {shortenHash(account.address, 8, 6)}
                         </Link>
                         {account.label && (
-                          <span className="rounded bg-slate-700/60 px-1.5 py-0.5 text-[10px] font-medium text-slate-300">
+                          <span className="rounded bg-slate-700/60 px-1.5 py-0.5 text-[10px] font-medium text-slate-600 dark:text-slate-300">
                             {account.label}
                           </span>
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-2.5 text-right text-slate-300">
+                    <td className="px-4 py-2.5 text-right text-slate-600 dark:text-slate-300">
                       {formatWeiToQfc(account.balance)}
                     </td>
                     <td className="px-4 py-2.5">
                       <div className="flex items-center gap-2">
-                        <div className="h-2 w-28 rounded-full bg-slate-800 overflow-hidden">
+                        <div className="h-2 w-28 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
                           <div
                             className="h-full rounded-full bg-cyan-400/60"
                             style={{ width: `${Math.min(100, barPct)}%` }}
@@ -135,7 +135,7 @@ export default function RichListClient({
                         </span>
                       </div>
                     </td>
-                    <td className="px-4 py-2.5 text-right text-slate-300">
+                    <td className="px-4 py-2.5 text-right text-slate-600 dark:text-slate-300">
                       {formatNumber(account.tx_count)}
                     </td>
                     <td className="px-4 py-2.5">
@@ -163,12 +163,12 @@ export default function RichListClient({
           {page > 1 ? (
             <Link
               href={buildHref(type, page - 1)}
-              className="rounded-full border border-slate-800 px-4 py-2 hover:bg-slate-900 transition-colors"
+              className="rounded-full border border-slate-200 dark:border-slate-800 px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
             >
               {t('common.previous')}
             </Link>
           ) : (
-            <span className="rounded-full border border-slate-800/40 px-4 py-2 text-slate-600">
+            <span className="rounded-full border border-slate-100 dark:border-slate-800/40 px-4 py-2 text-slate-600">
               {t('common.previous')}
             </span>
           )}
@@ -178,12 +178,12 @@ export default function RichListClient({
           {page < totalPages ? (
             <Link
               href={buildHref(type, page + 1)}
-              className="rounded-full border border-slate-800 px-4 py-2 hover:bg-slate-900 transition-colors"
+              className="rounded-full border border-slate-200 dark:border-slate-800 px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
             >
               {t('common.next')}
             </Link>
           ) : (
-            <span className="rounded-full border border-slate-800/40 px-4 py-2 text-slate-600">
+            <span className="rounded-full border border-slate-100 dark:border-slate-800/40 px-4 py-2 text-slate-600">
               {t('common.next')}
             </span>
           )}

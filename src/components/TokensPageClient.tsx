@@ -67,16 +67,16 @@ export default function TokensPageClient({ tokens, page, pageSize }: Props) {
     <>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-semibold text-white">{t('tokens.title')}</h1>
+          <h1 className="text-lg font-semibold text-slate-900 dark:text-white">{t('tokens.title')}</h1>
           <p className="mt-1 text-sm text-slate-400">{t('tokens.description')}</p>
         </div>
         <CsvExport data={csvData} filename="qfc_tokens" columns={csvColumns} />
       </div>
 
-      <div className="mt-6 rounded-xl border border-slate-800 bg-slate-900/40 overflow-x-auto">
+      <div className="mt-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-slate-800/60 text-left text-xs uppercase tracking-wider text-slate-500">
+            <tr className="border-b border-slate-200 dark:border-slate-800/60 text-left text-xs uppercase tracking-wider text-slate-500">
               <th className="px-4 py-3">#</th>
               <th className="px-4 py-3">{t('tokens.token')}</th>
               <th className="px-4 py-3">{t('tokens.type')}</th>
@@ -85,7 +85,7 @@ export default function TokensPageClient({ tokens, page, pageSize }: Props) {
               <th className="px-4 py-3 text-right">{t('tokens.totalSupply')}</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800/40">
+          <tbody className="divide-y divide-slate-200 dark:divide-slate-800/40">
             {tokens.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-4 py-8 text-center text-slate-500">
@@ -94,11 +94,11 @@ export default function TokensPageClient({ tokens, page, pageSize }: Props) {
               </tr>
             ) : (
               tokens.map((token, i) => (
-                <tr key={token.address} className="hover:bg-slate-900/40">
+                <tr key={token.address} className="hover:bg-slate-50 dark:hover:bg-slate-900/40">
                   <td className="px-4 py-3 text-slate-500">{(page - 1) * pageSize + i + 1}</td>
                   <td className="px-4 py-3">
                     <Link href={`/token/${token.address}`} className="group">
-                      <span className="font-medium text-white group-hover:text-cyan-300">{token.name ?? t('common.unknown')}</span>
+                      <span className="font-medium text-slate-900 dark:text-white group-hover:text-cyan-300">{token.name ?? t('common.unknown')}</span>
                       {token.symbol && (
                         <span className="ml-2 text-xs text-slate-400">({token.symbol})</span>
                       )}
@@ -112,8 +112,8 @@ export default function TokensPageClient({ tokens, page, pageSize }: Props) {
                       {shortenHash(token.address)}
                     </Link>
                   </td>
-                  <td className="px-4 py-3 text-slate-300">{token.decimals ?? '—'}</td>
-                  <td className="px-4 py-3 text-right text-slate-300">
+                  <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{token.decimals ?? '—'}</td>
+                  <td className="px-4 py-3 text-right text-slate-600 dark:text-slate-300">
                     {formatSupply(token.total_supply, token.decimals)}
                   </td>
                 </tr>

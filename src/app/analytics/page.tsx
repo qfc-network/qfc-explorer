@@ -29,7 +29,7 @@ const AnalyticsChart = dynamic_import(
   {
     ssr: false,
     loading: () => (
-      <div className="h-[300px] animate-pulse rounded-lg bg-slate-800/50" />
+      <div className="h-[300px] animate-pulse rounded-lg bg-slate-100 dark:bg-slate-800/50" />
     ),
   }
 );
@@ -41,7 +41,7 @@ const DailyCharts = dynamic_import(
     loading: () => (
       <div className="grid gap-6 lg:grid-cols-2">
         {[0, 1, 2, 3].map((i) => (
-          <div key={i} className="h-64 animate-pulse rounded-xl border border-slate-800 bg-slate-900/50" />
+          <div key={i} className="h-64 animate-pulse rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50" />
         ))}
       </div>
     ),
@@ -116,10 +116,10 @@ export default async function AnalyticsPage() {
         <div className="flex items-center gap-2">
           <Link href="/" className="text-slate-500 hover:text-slate-300">Home</Link>
           <span className="text-slate-600">/</span>
-          <span className="text-slate-300">Analytics</span>
+          <span className="text-slate-600 dark:text-slate-300">Analytics</span>
         </div>
-        <h1 className="text-4xl font-semibold text-white"><TranslatedText tKey="analytics.title" /></h1>
-        <p className="max-w-2xl text-base text-slate-300">
+        <h1 className="text-4xl font-semibold text-slate-900 dark:text-white"><TranslatedText tKey="analytics.title" /></h1>
+        <p className="max-w-2xl text-base text-slate-600 dark:text-slate-300">
           <TranslatedText tKey="analytics.description" />
         </p>
       </header>
@@ -162,7 +162,7 @@ export default async function AnalyticsPage() {
             />
           }
         />
-        <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-6">
           <AnalyticsChart
             data={series.tps}
             color="#22c55e"
@@ -184,7 +184,7 @@ export default async function AnalyticsPage() {
             />
           }
         />
-        <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-6">
           <AnalyticsChart
             data={series.gas_used}
             color="#3b82f6"
@@ -206,7 +206,7 @@ export default async function AnalyticsPage() {
             />
           }
         />
-        <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-6">
           <AnalyticsChart
             data={series.block_time}
             color="#f59e0b"
@@ -240,7 +240,7 @@ export default async function AnalyticsPage() {
           title={<TranslatedText tKey="analytics.txVolume" />}
           description={<TranslatedText tKey="analytics.txVolumeDesc" />}
         />
-        <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-6">
           <AnalyticsChart
             data={series.tx_count}
             color="#a855f7"

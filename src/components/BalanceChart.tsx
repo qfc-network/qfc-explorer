@@ -184,7 +184,7 @@ export default function BalanceChart({ address }: { address: string }) {
             className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
               days === btn.value
                 ? 'bg-cyan-500/20 text-cyan-300 ring-1 ring-cyan-500/40'
-                : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-300'
+                : 'bg-slate-100 dark:bg-slate-800 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-300'
             }`}
           >
             {btn.label}

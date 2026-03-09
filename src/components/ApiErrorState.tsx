@@ -35,7 +35,7 @@ export default function ApiErrorState({ onRetry, message }: ApiErrorStateProps) 
       </p>
       <button
         onClick={onRetry}
-        className="rounded-lg bg-cyan-500 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-cyan-600"
+        className="rounded-lg bg-cyan-500 px-4 py-1.5 text-sm font-medium text-slate-900 dark:text-white transition-colors hover:bg-cyan-600"
       >
         {t('error.retry')}
       </button>

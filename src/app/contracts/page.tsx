@@ -106,9 +106,9 @@ export default async function ContractsPage({ searchParams }: Props) {
         <div className="flex items-center gap-2 text-sm">
           <Link href="/" className="text-slate-500 hover:text-slate-300">Home</Link>
           <span className="text-slate-600">/</span>
-          <span className="text-slate-300">Contracts</span>
+          <span className="text-slate-600 dark:text-slate-300">Contracts</span>
         </div>
-        <h1 className="text-3xl font-semibold text-white">Smart Contracts</h1>
+        <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">Smart Contracts</h1>
         <p className="text-slate-400">
           {total > 0 ? `${total} contracts deployed` : 'No contracts deployed yet'}
         </p>
@@ -117,31 +117,31 @@ export default async function ContractsPage({ searchParams }: Props) {
       {/* Contract Interaction Tool */}
       <section className="rounded-xl border border-blue-500/30 bg-blue-500/10 p-6">
         <h2 className="text-lg font-semibold text-blue-400 mb-2">Contract Interaction</h2>
-        <p className="text-sm text-slate-300 mb-4">
+        <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
           Enter a contract address to interact with it (read/write functions).
         </p>
         <ContractAddressInput />
       </section>
 
       {/* Token Links */}
-      <section className="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
-        <h2 className="text-lg font-semibold text-white mb-3">Quick Links</h2>
+      <section className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-6">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-3">Quick Links</h2>
         <div className="flex flex-wrap gap-3">
           <Link
             href="/tokens"
-            className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:bg-slate-800 transition-colors"
+            className="rounded-full border border-slate-300 dark:border-slate-700 px-4 py-2 text-sm text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             ERC-20 Tokens
           </Link>
           <Link
             href="/token/qfc"
-            className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:bg-slate-800 transition-colors"
+            className="rounded-full border border-slate-300 dark:border-slate-700 px-4 py-2 text-sm text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             QFC Tokenomics
           </Link>
           <Link
             href="/analytics"
-            className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:bg-slate-800 transition-colors"
+            className="rounded-full border border-slate-300 dark:border-slate-700 px-4 py-2 text-sm text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           >
             Analytics
           </Link>
@@ -206,7 +206,7 @@ export default async function ContractsPage({ searchParams }: Props) {
                   key: 'interactions',
                   header: 'Interactions',
                   render: (row) => (
-                    <span className="text-slate-300">{formatNumber(row.interaction_count)}</span>
+                    <span className="text-slate-600 dark:text-slate-300">{formatNumber(row.interaction_count)}</span>
                   ),
                 },
               ]}
@@ -228,7 +228,7 @@ export default async function ContractsPage({ searchParams }: Props) {
             </div>
           </>
         ) : (
-          <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-8 text-center">
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-8 text-center">
             <p className="text-slate-400">No verified contracts match the current filters.</p>
           </div>
         )}
@@ -253,7 +253,7 @@ export default async function ContractsPage({ searchParams }: Props) {
                   <div className="flex items-center gap-2">
                     <Link
                       href={`/contract/${row.address}`}
-                      className="font-mono text-slate-200 hover:text-white"
+                      className="font-mono text-slate-800 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white"
                     >
                       {shortenHash(row.address, 8)}
                     </Link>
@@ -290,7 +290,7 @@ export default async function ContractsPage({ searchParams }: Props) {
                   row.created_at_block ? (
                     <Link
                       href={`/blocks/${row.created_at_block}`}
-                      className="text-slate-300 hover:text-white"
+                      className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
                     >
                       #{row.created_at_block}
                     </Link>
@@ -314,7 +314,7 @@ export default async function ContractsPage({ searchParams }: Props) {
           />
         </section>
       ) : (
-        <section className="rounded-xl border border-slate-800 bg-slate-900/50 p-8 text-center">
+        <section className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-8 text-center">
           <p className="text-slate-400">No contracts have been deployed yet.</p>
           <p className="text-sm text-slate-500 mt-2">
             Contracts will appear here once they are deployed to the network.
@@ -332,13 +332,13 @@ function ContractAddressInput() {
         type="text"
         name="address"
         placeholder="Enter contract address (0x...)"
-        className="flex-1 rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 text-sm font-mono text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+        className="flex-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-4 py-2 text-sm font-mono text-slate-800 dark:text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none"
         pattern="^0x[a-fA-F0-9]{40}$"
         required
       />
       <button
         type="submit"
-        className="rounded-lg bg-blue-500 px-6 py-2 text-sm font-medium text-white hover:bg-blue-600 transition-colors"
+        className="rounded-lg bg-blue-500 px-6 py-2 text-sm font-medium text-slate-900 dark:text-white hover:bg-blue-600 transition-colors"
       >
         Go
       </button>
@@ -366,7 +366,7 @@ function PaginationLink({
   return (
     <Link
       href={`/contracts?${params.toString()}`}
-      className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 text-sm text-slate-300 hover:bg-slate-700 transition-colors"
+      className="rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
     >
       {label}
     </Link>

@@ -1372,7 +1372,7 @@ function CopyButton({ text }: { text: string }) {
   return (
     <button
       data-copy={text}
-      className="copy-btn absolute right-2 top-2 rounded border border-slate-700 bg-slate-800 px-2 py-1 text-[10px] text-slate-400 opacity-0 transition-opacity hover:text-white group-hover:opacity-100"
+      className="copy-btn absolute right-2 top-2 rounded border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-2 py-1 text-[10px] text-slate-400 opacity-0 transition-opacity hover:text-slate-900 dark:hover:text-white group-hover:opacity-100"
       title="Copy"
     >
       Copy
@@ -1408,20 +1408,20 @@ document.addEventListener('click',function(e){var s=e.target.closest('[data-togg
               <a
                 key={cat.id}
                 href={`#${cat.id}`}
-                className="block rounded-md px-3 py-1.5 text-sm text-slate-500 transition-colors hover:bg-slate-800/50 hover:text-white dark:hover:bg-slate-800/50"
+                className="block rounded-md px-3 py-1.5 text-sm text-slate-500 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white dark:hover:bg-slate-800/50"
               >
                 {cat.title}
                 <span className="ml-1.5 text-xs text-slate-600">{cat.endpoints.length}</span>
               </a>
             ))}
-            <hr className="!my-3 border-slate-800" />
-            <a href="#authentication" className="block rounded-md px-3 py-1.5 text-sm text-slate-500 hover:bg-slate-800/50 hover:text-white">
+            <hr className="!my-3 border-slate-200 dark:border-slate-800" />
+            <a href="#authentication" className="block rounded-md px-3 py-1.5 text-sm text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white">
               Authentication
             </a>
-            <a href="#rate-limiting" className="block rounded-md px-3 py-1.5 text-sm text-slate-500 hover:bg-slate-800/50 hover:text-white">
+            <a href="#rate-limiting" className="block rounded-md px-3 py-1.5 text-sm text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white">
               Rate Limiting
             </a>
-            <a href="#response-format" className="block rounded-md px-3 py-1.5 text-sm text-slate-500 hover:bg-slate-800/50 hover:text-white">
+            <a href="#response-format" className="block rounded-md px-3 py-1.5 text-sm text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-slate-900 dark:hover:text-white">
               Response Format
             </a>
           </nav>
@@ -1446,11 +1446,11 @@ document.addEventListener('click',function(e){var s=e.target.closest('[data-togg
               </div>
               <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 px-4 py-2">
                 <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400">Format</p>
-                <code className="text-sm text-slate-300">JSON</code>
+                <code className="text-sm text-slate-600 dark:text-slate-300">JSON</code>
               </div>
               <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 px-4 py-2">
                 <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400">Chain</p>
-                <code className="text-sm text-slate-300">QFC Testnet (9000)</code>
+                <code className="text-sm text-slate-600 dark:text-slate-300">QFC Testnet (9000)</code>
               </div>
             </div>
           </div>
@@ -1464,7 +1464,7 @@ document.addEventListener('click',function(e){var s=e.target.closest('[data-togg
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <p className="mb-1.5 text-xs font-medium text-emerald-400">Success</p>
-                <pre className="rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 p-4 text-sm text-slate-300 overflow-x-auto">
+                <pre className="rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 p-4 text-sm text-slate-600 dark:text-slate-300 overflow-x-auto">
 {`{
   "ok": true,
   "data": { ... }
@@ -1473,7 +1473,7 @@ document.addEventListener('click',function(e){var s=e.target.closest('[data-togg
               </div>
               <div>
                 <p className="mb-1.5 text-xs font-medium text-red-400">Error</p>
-                <pre className="rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 p-4 text-sm text-slate-300 overflow-x-auto">
+                <pre className="rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 p-4 text-sm text-slate-600 dark:text-slate-300 overflow-x-auto">
 {`{
   "ok": false,
   "error": "Human-readable message"
@@ -1492,22 +1492,22 @@ document.addEventListener('click',function(e){var s=e.target.closest('[data-togg
             </p>
             <div className="space-y-4 text-sm text-slate-400">
               <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40 p-4">
-                <p className="font-medium text-slate-300 mb-2">JWT Access Tokens</p>
+                <p className="font-medium text-slate-600 dark:text-slate-300 mb-2">JWT Access Tokens</p>
                 <p>
                   Obtained via <code className="text-cyan-400">/auth/login</code> or <code className="text-cyan-400">/auth/register</code>.
                   Pass as a Bearer token in the <code className="text-cyan-400">Authorization</code> header:
                 </p>
-                <pre className="mt-2 rounded border border-slate-700 bg-slate-900 p-3 text-xs text-slate-300 overflow-x-auto">
+                <pre className="mt-2 rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-xs text-slate-600 dark:text-slate-300 overflow-x-auto">
                   Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
                 </pre>
               </div>
               <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40 p-4">
-                <p className="font-medium text-slate-300 mb-2">API Keys</p>
+                <p className="font-medium text-slate-600 dark:text-slate-300 mb-2">API Keys</p>
                 <p>
                   For programmatic access with higher rate limits. Create via <code className="text-cyan-400">/api-keys</code> (requires JWT auth).
                   Pass the key as a query parameter or header:
                 </p>
-                <pre className="mt-2 rounded border border-slate-700 bg-slate-900 p-3 text-xs text-slate-300 overflow-x-auto">
+                <pre className="mt-2 rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-xs text-slate-600 dark:text-slate-300 overflow-x-auto">
 {`# Query parameter
 curl "${BASE}/blocks?apikey=qfc_ab12cd34..."
 
@@ -1516,7 +1516,7 @@ curl "${BASE}/blocks" -H "X-Api-Key: qfc_ab12cd34..."`}
                 </pre>
               </div>
               <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40 p-4">
-                <p className="font-medium text-slate-300 mb-2">Refresh Tokens</p>
+                <p className="font-medium text-slate-600 dark:text-slate-300 mb-2">Refresh Tokens</p>
                 <p>
                   Stored as an HTTP-only cookie (<code className="text-cyan-400">qfc_refresh</code>). Refreshed automatically via
                   {' '}<code className="text-cyan-400">/auth/refresh</code> with token rotation for security.
@@ -1543,26 +1543,26 @@ curl "${BASE}/blocks" -H "X-Api-Key: qfc_ab12cd34..."`}
                   </tr>
                 </thead>
                 <tbody className="text-slate-400">
-                  <tr className="border-b border-slate-800/50">
-                    <td className="py-2 pr-6 text-slate-300">Anonymous</td>
+                  <tr className="border-b border-slate-200 dark:border-slate-800/50">
+                    <td className="py-2 pr-6 text-slate-600 dark:text-slate-300">Anonymous</td>
                     <td className="py-2 pr-6">100 req/min/IP</td>
                     <td className="py-2 pr-6">--</td>
                     <td className="py-2">No API key required</td>
                   </tr>
-                  <tr className="border-b border-slate-800/50">
-                    <td className="py-2 pr-6 text-slate-300">Free</td>
+                  <tr className="border-b border-slate-200 dark:border-slate-800/50">
+                    <td className="py-2 pr-6 text-slate-600 dark:text-slate-300">Free</td>
                     <td className="py-2 pr-6">5 req/sec</td>
                     <td className="py-2 pr-6">10,000</td>
                     <td className="py-2">Default tier for new API keys</td>
                   </tr>
-                  <tr className="border-b border-slate-800/50">
-                    <td className="py-2 pr-6 text-slate-300">Standard</td>
+                  <tr className="border-b border-slate-200 dark:border-slate-800/50">
+                    <td className="py-2 pr-6 text-slate-600 dark:text-slate-300">Standard</td>
                     <td className="py-2 pr-6">20 req/sec</td>
                     <td className="py-2 pr-6">100,000</td>
                     <td className="py-2">Available on request</td>
                   </tr>
                   <tr>
-                    <td className="py-2 pr-6 text-slate-300">Pro</td>
+                    <td className="py-2 pr-6 text-slate-600 dark:text-slate-300">Pro</td>
                     <td className="py-2 pr-6">50 req/sec</td>
                     <td className="py-2 pr-6">Unlimited</td>
                     <td className="py-2">Available on request</td>
@@ -1599,7 +1599,7 @@ curl "${BASE}/blocks" -H "X-Api-Key: qfc_ab12cd34..."`}
                       >
                         <span className="toggle-icon w-4 shrink-0 text-center text-slate-500 font-mono">+</span>
                         <MethodBadge method={ep.method} />
-                        <code className="text-sm font-medium text-slate-200 dark:text-slate-200 text-slate-700">{ep.path}</code>
+                        <code className="text-sm font-medium text-slate-800 dark:text-slate-200 dark:text-slate-200 text-slate-700">{ep.path}</code>
                         <span className="ml-auto text-xs text-slate-500 hidden sm:inline">{ep.description.slice(0, 60)}{ep.description.length > 60 ? '...' : ''}</span>
                       </button>
 
@@ -1614,7 +1614,7 @@ curl "${BASE}/blocks" -H "X-Api-Key: qfc_ab12cd34..."`}
                             <div className="overflow-x-auto">
                               <table className="w-full text-xs">
                                 <thead>
-                                  <tr className="border-b border-slate-700 text-left">
+                                  <tr className="border-b border-slate-300 dark:border-slate-700 text-left">
                                     <th className="pb-1.5 pr-4 font-medium text-slate-400">Name</th>
                                     <th className="pb-1.5 pr-4 font-medium text-slate-400">Type</th>
                                     <th className="pb-1.5 pr-4 font-medium text-slate-400">Default</th>
@@ -1623,7 +1623,7 @@ curl "${BASE}/blocks" -H "X-Api-Key: qfc_ab12cd34..."`}
                                 </thead>
                                 <tbody>
                                   {ep.params.map((p) => (
-                                    <tr key={p.name} className="border-b border-slate-800/40">
+                                    <tr key={p.name} className="border-b border-slate-100 dark:border-slate-800/40">
                                       <td className="py-1.5 pr-4">
                                         <code className="text-cyan-400">{p.name}</code>
                                         {p.required && <span className="ml-1 text-red-400">*</span>}
@@ -1643,7 +1643,7 @@ curl "${BASE}/blocks" -H "X-Api-Key: qfc_ab12cd34..."`}
                         {ep.body && (
                           <div>
                             <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Request Body</p>
-                            <pre className="group relative rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-3 text-xs text-slate-300 overflow-x-auto">
+                            <pre className="group relative rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-3 text-xs text-slate-600 dark:text-slate-300 overflow-x-auto">
                               <CopyButton text={ep.body} />
                               {ep.body}
                             </pre>
@@ -1662,7 +1662,7 @@ curl "${BASE}/blocks" -H "X-Api-Key: qfc_ab12cd34..."`}
                         {/* Response example */}
                         <div>
                           <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Example Response</p>
-                          <pre className="group relative rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-3 text-xs text-slate-300 overflow-x-auto max-h-80 overflow-y-auto">
+                          <pre className="group relative rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-3 text-xs text-slate-600 dark:text-slate-300 overflow-x-auto max-h-80 overflow-y-auto">
                             <CopyButton text={ep.response} />
                             {ep.response}
                           </pre>

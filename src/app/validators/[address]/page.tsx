@@ -123,7 +123,7 @@ export default async function ValidatorDetailPage({
         />
         <Link
           href="/validators"
-          className="rounded-full border border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-200 self-start"
+          className="rounded-full border border-slate-300 dark:border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-800 dark:text-slate-200 self-start"
         >
           <TranslatedText tKey="validators.backToList" />
         </Link>
@@ -155,7 +155,7 @@ export default async function ValidatorDetailPage({
             <CopyButton value={address} label="Copy address" />
             <Link
               href="/validators"
-              className="rounded-full border border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-200"
+              className="rounded-full border border-slate-300 dark:border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-800 dark:text-slate-200"
             >
               <TranslatedText tKey="common.back" />
             </Link>
@@ -169,7 +169,7 @@ export default async function ValidatorDetailPage({
           <TranslatedText tKey="common.address" />
         </p>
         <div className="mt-2 flex items-center gap-2">
-          <p className="break-all font-mono text-sm text-slate-200">{address}</p>
+          <p className="break-all font-mono text-sm text-slate-800 dark:text-slate-200">{address}</p>
           <CopyButton value={address} label="Copy" />
         </div>
       </div>
@@ -230,7 +230,7 @@ export default async function ValidatorDetailPage({
               key: 'height',
               header: 'Block',
               render: (row) => (
-                <Link href={`/blocks/${row.height}`} className="text-slate-200 hover:text-cyan-400">
+                <Link href={`/blocks/${row.height}`} className="text-slate-800 dark:text-slate-200 hover:text-cyan-400">
                   #{formatNumber(row.height as string)}
                 </Link>
               ),
@@ -248,7 +248,7 @@ export default async function ValidatorDetailPage({
               key: 'tx_count',
               header: 'Txs',
               render: (row) => (
-                <span className="text-slate-300">{row.tx_count as number}</span>
+                <span className="text-slate-600 dark:text-slate-300">{row.tx_count as number}</span>
               ),
             },
             {
@@ -275,13 +275,13 @@ export default async function ValidatorDetailPage({
       <div className="flex items-center gap-3">
         <Link
           href={`/address/${address}`}
-          className="rounded-full border border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-400 hover:text-white transition-colors"
+          className="rounded-full border border-slate-300 dark:border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
         >
           <TranslatedText tKey="validators.viewAddress" />
         </Link>
         <Link
           href={`/blocks?producer=${address}`}
-          className="rounded-full border border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-400 hover:text-white transition-colors"
+          className="rounded-full border border-slate-300 dark:border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
         >
           <TranslatedText tKey="validators.viewAllBlocks" />
         </Link>

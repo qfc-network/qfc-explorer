@@ -70,9 +70,9 @@ export default async function AdminPage() {
         <div className="flex items-center gap-2 text-sm">
           <Link href="/" className="text-slate-500 hover:text-slate-300">Home</Link>
           <span className="text-slate-600">/</span>
-          <span className="text-slate-300">Admin</span>
+          <span className="text-slate-600 dark:text-slate-300">Admin</span>
         </div>
-        <h1 className="text-3xl font-semibold text-white">Admin Dashboard</h1>
+        <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">Admin Dashboard</h1>
         <p className="text-slate-400">System monitoring and controls</p>
       </header>
 
@@ -136,15 +136,15 @@ export default async function AdminPage() {
       <section className="space-y-4">
         <SectionHeader title="Indexer Status" description="Block indexer state and batch info" />
         <div className="grid gap-4 sm:grid-cols-2">
-          <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-5 text-sm text-slate-300">
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-5 text-sm text-slate-600 dark:text-slate-300">
             <p className="text-xs uppercase tracking-[0.2em] text-slate-500 mb-3">Last Batch</p>
-            <pre className="whitespace-pre-wrap text-xs font-mono bg-slate-800 rounded p-3 max-h-40 overflow-auto">
+            <pre className="whitespace-pre-wrap text-xs font-mono bg-slate-100 dark:bg-slate-800 rounded p-3 max-h-40 overflow-auto">
               {lastBatch ? JSON.stringify(lastBatch, null, 2) : 'No batch data'}
             </pre>
           </div>
-          <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-5 text-sm text-slate-300">
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-5 text-sm text-slate-600 dark:text-slate-300">
             <p className="text-xs uppercase tracking-[0.2em] text-slate-500 mb-3">Last Failure</p>
-            <pre className="whitespace-pre-wrap text-xs font-mono bg-slate-800 rounded p-3 max-h-40 overflow-auto">
+            <pre className="whitespace-pre-wrap text-xs font-mono bg-slate-100 dark:bg-slate-800 rounded p-3 max-h-40 overflow-auto">
               {failed ? JSON.stringify(failed, null, 2) : 'No failures'}
             </pre>
           </div>

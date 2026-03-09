@@ -64,7 +64,7 @@ export default async function SearchPage({
       {blockByHeight ? (
         <Link
           href={`/blocks/${blockByHeight.height}`}
-          className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 text-slate-200"
+          className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 text-slate-800 dark:text-slate-200"
         >
           Block {blockByHeight.height}
         </Link>
@@ -73,7 +73,7 @@ export default async function SearchPage({
       {blockByHash ? (
         <Link
           href={`/blocks/${blockByHash.height}`}
-          className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 text-slate-200"
+          className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 text-slate-800 dark:text-slate-200"
         >
           Block {blockByHash.height} ({shortenHash(blockByHash.hash)})
         </Link>
@@ -82,7 +82,7 @@ export default async function SearchPage({
       {txByHash ? (
         <Link
           href={`/txs/${txByHash.hash}`}
-          className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 text-slate-200"
+          className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 text-slate-800 dark:text-slate-200"
         >
           Transaction {shortenHash(txByHash.hash)}
         </Link>
@@ -91,27 +91,27 @@ export default async function SearchPage({
       {address ? (
         <Link
           href={`/address/${address.address}`}
-          className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 text-slate-200"
+          className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5 text-slate-800 dark:text-slate-200"
         >
           Address {shortenHash(address.address)}
         </Link>
       ) : null}
 
       {tokens.length > 0 ? (
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5">
           <p className="text-xs uppercase tracking-[0.2em] text-slate-500 mb-3">Tokens</p>
           <div className="grid gap-2">
             {tokens.map((token) => (
               <Link
                 key={token.address}
                 href={`/token/${token.address}`}
-                className="flex items-center gap-3 rounded-lg border border-slate-800/60 bg-slate-800/30 px-4 py-3 hover:border-cyan-500/30 hover:bg-slate-800/50 transition-colors"
+                className="flex items-center gap-3 rounded-lg border border-slate-200 dark:border-slate-800/60 bg-slate-100 dark:bg-slate-800/30 px-4 py-3 hover:border-cyan-500/30 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors"
               >
                 <span className="flex h-8 w-8 items-center justify-center rounded-full bg-cyan-500/10 text-xs font-bold text-cyan-400">
                   {(token.symbol || '?')[0]}
                 </span>
                 <div>
-                  <p className="text-sm text-slate-200">{token.name || 'Unknown Token'}</p>
+                  <p className="text-sm text-slate-800 dark:text-slate-200">{token.name || 'Unknown Token'}</p>
                   <p className="text-xs text-slate-500">{token.symbol || '—'} · {token.token_type} · {shortenHash(token.address)}</p>
                 </div>
               </Link>
@@ -121,13 +121,13 @@ export default async function SearchPage({
       ) : null}
 
       {!hasResults ? (
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-8 text-center">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-slate-800">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-8 text-center">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800">
             <svg className="h-6 w-6 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
-          <p className="text-sm text-slate-300">No results found for &quot;{query}&quot;</p>
+          <p className="text-sm text-slate-600 dark:text-slate-300">No results found for &quot;{query}&quot;</p>
           <p className="mt-2 text-xs text-slate-500">Try searching with:</p>
           <ul className="mt-2 space-y-1 text-xs text-slate-500">
             <li>A block number (e.g. <span className="text-slate-400">42</span>)</li>
@@ -139,31 +139,31 @@ export default async function SearchPage({
       ) : null}
 
       {hasSuggestions ? (
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-5">
           <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Suggestions</p>
-          <div className="mt-3 grid gap-2 text-sm text-slate-300">
+          <div className="mt-3 grid gap-2 text-sm text-slate-600 dark:text-slate-300">
             {suggestions?.data.blockHeights?.map((height) => (
-              <Link key={`height-${height}`} href={`/blocks/${height}`} className="text-slate-200">
+              <Link key={`height-${height}`} href={`/blocks/${height}`} className="text-slate-800 dark:text-slate-200">
                 Block {height}
               </Link>
             ))}
             {suggestions?.data.blockHashes?.map((block) => (
-              <Link key={`block-${block.hash}`} href={`/blocks/${block.height}`} className="text-slate-200">
+              <Link key={`block-${block.hash}`} href={`/blocks/${block.height}`} className="text-slate-800 dark:text-slate-200">
                 Block {block.height} ({shortenHash(block.hash)})
               </Link>
             ))}
             {suggestions?.data.txHashes?.map((tx) => (
-              <Link key={`tx-${tx.hash}`} href={`/txs/${tx.hash}`} className="text-slate-200">
+              <Link key={`tx-${tx.hash}`} href={`/txs/${tx.hash}`} className="text-slate-800 dark:text-slate-200">
                 Transaction {shortenHash(tx.hash)}
               </Link>
             ))}
             {suggestions?.data.addresses?.map((addr) => (
-              <Link key={`addr-${addr}`} href={`/address/${addr}`} className="text-slate-200">
+              <Link key={`addr-${addr}`} href={`/address/${addr}`} className="text-slate-800 dark:text-slate-200">
                 Address {shortenHash(addr)}
               </Link>
             ))}
             {suggestions?.data.tokens?.map((token) => (
-              <Link key={`token-${token.address}`} href={`/token/${token.address}`} className="text-slate-200">
+              <Link key={`token-${token.address}`} href={`/token/${token.address}`} className="text-slate-800 dark:text-slate-200">
                 Token: {token.name || token.symbol || shortenHash(token.address)}
               </Link>
             ))}
