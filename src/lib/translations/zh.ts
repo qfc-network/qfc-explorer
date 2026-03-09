@@ -785,6 +785,7 @@ const zh: Record<string, string> = {
   'miner.progress': '进度',
   'miner.cliffEnd': '锁定期结束',
   'miner.endTime': '结束时间',
+  'miner.hardwareProfile': '硬件配置',
 };
 
 export default zh;

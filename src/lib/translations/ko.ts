@@ -785,6 +785,7 @@ const ko: Record<string, string> = {
   'miner.progress': '진행률',
   'miner.cliffEnd': '클리프 종료',
   'miner.endTime': '종료 시간',
+  'miner.hardwareProfile': '하드웨어 프로필',
 };
 
 export default ko;

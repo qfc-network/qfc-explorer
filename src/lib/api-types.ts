@@ -764,6 +764,10 @@ export type ApiRegisteredMiner = {
   backend: string;
   os: string;
   arch: string;
+  cpuModel: string;
+  cpuCores: number;
+  totalMemoryMb: number;
+  version: string;
   registeredAt: string;
   contributionScore: string;
 };
@@ -784,6 +788,19 @@ export type ApiMinerDetail = ApiOk<{
   available: string;
   activeTranches: number;
   contributionScore: string;
+  // Hardware profile
+  gpuModel: string;
+  benchmarkScore: number;
+  tier: number;
+  vramMb: number;
+  backend: string;
+  os: string;
+  arch: string;
+  cpuModel: string;
+  cpuCores: number;
+  totalMemoryMb: number;
+  version: string;
+  registeredAt: string;
   earnings: Array<{
     blockHeight: string;
     reward: string;

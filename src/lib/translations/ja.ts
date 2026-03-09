@@ -785,6 +785,7 @@ const ja: Record<string, string> = {
   'miner.progress': '進捗',
   'miner.cliffEnd': 'クリフ終了',
   'miner.endTime': '終了時間',
+  'miner.hardwareProfile': 'ハードウェアプロファイル',
 };
 
 export default ja;

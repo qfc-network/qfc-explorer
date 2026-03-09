@@ -791,6 +791,7 @@ const en = {
   'miner.progress': 'Progress',
   'miner.cliffEnd': 'Cliff End',
   'miner.endTime': 'End Time',
+  'miner.hardwareProfile': 'Hardware Profile',
 } as const;
 
 export type TranslationKey = keyof typeof en;
