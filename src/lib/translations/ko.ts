@@ -750,6 +750,26 @@ const ko: Record<string, string> = {
   'activity.mon': '월',
   'activity.wed': '수',
   'activity.fri': '금',
+
+  // Miner Revenue Dashboard
+  'miner.title': '마이너',
+  'miner.notFound': '마이너를 찾을 수 없습니다',
+  'miner.viewDashboard': '마이너 대시보드',
+  'miner.viewAccount': '계정 보기',
+  'miner.totalEarned': '총 수익',
+  'miner.available': '사용 가능 잔액',
+  'miner.locked': '잠김 (베스팅)',
+  'miner.contributionScore': '기여 점수',
+  'miner.vestingSchedule': '베스팅 일정',
+  'miner.activeTranches': '활성 트랜치',
+  'miner.noTranches': '베스팅 트랜치가 없습니다.',
+  'miner.recentEarnings': '최근 수익',
+  'miner.noEarnings': '아직 기록된 수익이 없습니다.',
+  'miner.reward': '보상',
+  'miner.taskType': '작업 유형',
+  'miner.progress': '진행률',
+  'miner.cliffEnd': '클리프 종료',
+  'miner.endTime': '종료 시간',
 };
 
 export default ko;

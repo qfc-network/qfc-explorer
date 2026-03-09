@@ -124,6 +124,29 @@ export function formatFlops(value: string): string {
 }
 
 /**
+ * Convert hex wei string to QFC with 4 decimal places.
+ * Accepts values with or without 0x prefix.
+ */
+export function formatHexWeiToQfc(hexWei: string): string {
+  if (!hexWei) {
+    return '0';
+  }
+  try {
+    const wei = BigInt(hexWei.startsWith('0x') ? hexWei : `0x${hexWei}`);
+    const base = 10n ** 18n;
+    const whole = wei / base;
+    const fraction = wei % base;
+    if (fraction === 0n) {
+      return formatBigInt(whole);
+    }
+    const fractionStr = fraction.toString().padStart(18, '0').slice(0, 4);
+    return `${formatBigInt(whole)}.${fractionStr}`;
+  } catch {
+    return hexWei;
+  }
+}
+
+/**
  * Format duration from milliseconds to human-readable
  */
 export function formatDuration(ms: string): string {

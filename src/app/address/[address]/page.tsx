@@ -112,6 +112,12 @@ export default async function AddressDetailPage({
         {isContract && <MultisigBadge address={address} />}
         <span className="font-mono text-sm text-slate-400 break-all">{address}</span>
         <CopyButton value={address} label="Copy" />
+        <Link
+          href={`/miner/${address}`}
+          className="rounded-md border border-slate-300 dark:border-slate-700 px-3 py-1 text-xs text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 transition-colors"
+        >
+          <TranslatedText tKey="miner.viewDashboard" />
+        </Link>
       </div>
 
       {/* Overview cards */}

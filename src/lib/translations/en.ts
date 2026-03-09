@@ -756,6 +756,26 @@ const en = {
   'activity.mon': 'Mon',
   'activity.wed': 'Wed',
   'activity.fri': 'Fri',
+
+  // Miner Revenue Dashboard
+  'miner.title': 'Miner',
+  'miner.notFound': 'Miner not found',
+  'miner.viewDashboard': 'Miner Dashboard',
+  'miner.viewAccount': 'View Account',
+  'miner.totalEarned': 'Total Earned',
+  'miner.available': 'Available Balance',
+  'miner.locked': 'Locked (Vesting)',
+  'miner.contributionScore': 'Contribution Score',
+  'miner.vestingSchedule': 'Vesting Schedule',
+  'miner.activeTranches': 'active tranches',
+  'miner.noTranches': 'No vesting tranches.',
+  'miner.recentEarnings': 'Recent Earnings',
+  'miner.noEarnings': 'No earnings recorded yet.',
+  'miner.reward': 'Reward',
+  'miner.taskType': 'Task Type',
+  'miner.progress': 'Progress',
+  'miner.cliffEnd': 'Cliff End',
+  'miner.endTime': 'End Time',
 } as const;
 
 export type TranslationKey = keyof typeof en;

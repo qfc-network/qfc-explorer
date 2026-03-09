@@ -750,6 +750,26 @@ const ja: Record<string, string> = {
   'activity.mon': '月',
   'activity.wed': '水',
   'activity.fri': '金',
+
+  // Miner Revenue Dashboard
+  'miner.title': 'マイナー',
+  'miner.notFound': 'マイナーが見つかりません',
+  'miner.viewDashboard': 'マイナーダッシュボード',
+  'miner.viewAccount': 'アカウントを表示',
+  'miner.totalEarned': '総獲得量',
+  'miner.available': '利用可能残高',
+  'miner.locked': 'ロック中（べスティング）',
+  'miner.contributionScore': '貢献スコア',
+  'miner.vestingSchedule': 'べスティングスケジュール',
+  'miner.activeTranches': 'アクティブなトランシェ',
+  'miner.noTranches': 'べスティングトランシェはありません。',
+  'miner.recentEarnings': '最近の収益',
+  'miner.noEarnings': 'まだ収益がありません。',
+  'miner.reward': '報酬',
+  'miner.taskType': 'タスクタイプ',
+  'miner.progress': '進捗',
+  'miner.cliffEnd': 'クリフ終了',
+  'miner.endTime': '終了時間',
 };
 
 export default ja;
