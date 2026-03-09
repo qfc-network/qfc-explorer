@@ -30,7 +30,7 @@ export default function LocaleSwitcher() {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900/60 px-2.5 py-1.5 text-xs text-slate-300 hover:border-slate-700 hover:text-white transition-colors"
+        className="flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 px-2.5 py-1.5 text-xs text-slate-600 dark:text-slate-300 hover:border-slate-700 hover:text-slate-900 dark:hover:text-white transition-colors"
         aria-label="Select language"
         aria-expanded={open}
         aria-haspopup="listbox"
@@ -45,7 +45,7 @@ export default function LocaleSwitcher() {
       </button>
 
       {open && (
-        <div role="listbox" aria-label="Select language" className="absolute right-0 top-full z-50 mt-1 min-w-[140px] rounded-lg border border-slate-800 bg-slate-950 py-1 shadow-xl">
+        <div role="listbox" aria-label="Select language" className="absolute right-0 top-full z-50 mt-1 min-w-[140px] rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 py-1 shadow-xl">
           {localeList.map(([code, name]) => (
             <button
               key={code}
@@ -57,8 +57,8 @@ export default function LocaleSwitcher() {
               }}
               className={`flex w-full items-center gap-2 px-3 py-2 text-sm transition-colors ${
                 locale === code
-                  ? 'bg-slate-900 text-cyan-400'
-                  : 'text-slate-300 hover:bg-slate-900 hover:text-white'
+                  ? 'bg-white dark:bg-slate-900 text-cyan-400'
+                  : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               <span className="text-xs font-medium w-5">{FLAGS[code]}</span>

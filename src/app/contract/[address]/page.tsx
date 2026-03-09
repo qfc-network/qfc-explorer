@@ -12,7 +12,7 @@ const ContractInteraction = dynamic_import(
   {
     ssr: false,
     loading: () => (
-      <div className="h-64 animate-pulse rounded-xl border border-slate-800 bg-slate-900/50" />
+      <div className="h-64 animate-pulse rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50" />
     ),
   }
 );
@@ -22,7 +22,7 @@ const ContractComments = dynamic_import(
   {
     ssr: false,
     loading: () => (
-      <div className="h-48 animate-pulse rounded-xl border border-slate-800 bg-slate-900/50" />
+      <div className="h-48 animate-pulse rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50" />
     ),
   }
 );
@@ -32,7 +32,7 @@ const ContractVerification = dynamic_import(
   {
     ssr: false,
     loading: () => (
-      <div className="h-48 animate-pulse rounded-xl border border-slate-800 bg-slate-900/50" />
+      <div className="h-48 animate-pulse rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50" />
     ),
   }
 );
@@ -99,10 +99,10 @@ export default async function ContractPage(props: Props) {
           <span className="text-slate-600">/</span>
           <Link href="/contracts" className="text-slate-500 hover:text-slate-300">Contracts</Link>
           <span className="text-slate-600">/</span>
-          <span className="text-slate-300">{shortenHash(address)}</span>
+          <span className="text-slate-600 dark:text-slate-300">{shortenHash(address)}</span>
         </div>
         <div className="flex items-center gap-3">
-          <h1 className="text-3xl font-semibold text-white">
+          <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">
             {isContract ? 'Contract' : 'Address'}
           </h1>
           {isVerified && (
@@ -133,15 +133,15 @@ export default async function ContractPage(props: Props) {
       </header>
 
       {/* Contract Overview */}
-      <section className="rounded-xl border border-slate-800 bg-slate-900/50 p-6 space-y-4">
+      <section className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-6 space-y-4">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <p className="text-xs text-slate-500 uppercase tracking-wider">Address</p>
-            <p className="font-mono text-slate-200 break-all">{address}</p>
+            <p className="font-mono text-slate-800 dark:text-slate-200 break-all">{address}</p>
           </div>
           <div>
             <p className="text-xs text-slate-500 uppercase tracking-wider">Type</p>
-            <p className="text-slate-200">
+            <p className="text-slate-800 dark:text-slate-200">
               {isContract ? (
                 <span className="inline-flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-blue-500" />
@@ -158,7 +158,7 @@ export default async function ContractPage(props: Props) {
           {contractInfo?.data?.balance && (
             <div>
               <p className="text-xs text-slate-500 uppercase tracking-wider">Balance</p>
-              <p className="text-slate-200">{contractInfo.data.balance} QFC</p>
+              <p className="text-slate-800 dark:text-slate-200">{contractInfo.data.balance} QFC</p>
             </div>
           )}
           {contractInfo?.data?.creator_tx && (
@@ -166,7 +166,7 @@ export default async function ContractPage(props: Props) {
               <p className="text-xs text-slate-500 uppercase tracking-wider">Creator Transaction</p>
               <Link
                 href={`/txs/${contractInfo.data.creator_tx}`}
-                className="font-mono text-slate-200 hover:text-white"
+                className="font-mono text-slate-800 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white"
               >
                 {shortenHash(contractInfo.data.creator_tx)}
               </Link>
@@ -232,7 +232,7 @@ export default async function ContractPage(props: Props) {
             </Link>
             <Link
               href={`/address/${address}`}
-              className="rounded-lg border border-slate-700 px-4 py-2 text-xs font-medium text-slate-300 hover:bg-slate-800 transition-colors"
+              className="rounded-lg border border-slate-300 dark:border-slate-700 px-4 py-2 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             >
               View Proxy Address
             </Link>
@@ -247,13 +247,13 @@ export default async function ContractPage(props: Props) {
             title="Similar Contracts"
             description="Contracts with the same bytecode hash"
           />
-          <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-4">
             <div className="flex flex-wrap gap-2">
               {contractInfo.data.similar_contracts.map((c) => (
                 <Link
                   key={c.address}
                   href={`/contract/${c.address}`}
-                  className="inline-flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800/50 px-3 py-2 text-xs font-mono hover:border-cyan-500/40 hover:bg-slate-800 transition-colors"
+                  className="inline-flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/50 px-3 py-2 text-xs font-mono hover:border-cyan-500/40 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                 >
                   <span className="text-cyan-400">{shortenHash(c.address, 8, 6)}</span>
                   {c.is_verified && (
@@ -273,7 +273,7 @@ export default async function ContractPage(props: Props) {
             title="Contract Bytecode"
             description="Deployed contract code"
           />
-          <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-4">
             <pre className="text-xs text-slate-400 font-mono overflow-x-auto whitespace-pre-wrap break-all max-h-64">
               {code}
             </pre>

@@ -51,7 +51,7 @@ export default function ExportButton({
       <button
         onClick={() => setShowDropdown(!showDropdown)}
         disabled={exporting}
-        className="flex items-center gap-2 rounded-full border border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-200 hover:bg-slate-800 disabled:opacity-50 transition-colors"
+        className="flex items-center gap-2 rounded-full border border-slate-300 dark:border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 transition-colors"
       >
         {exporting ? (
           <>
@@ -67,11 +67,11 @@ export default function ExportButton({
       </button>
 
       {showDropdown && !exporting && (
-        <div className="absolute right-0 top-full mt-2 z-10 rounded-lg border border-slate-700 bg-slate-800 shadow-lg overflow-hidden">
+        <div className="absolute right-0 top-full mt-2 z-10 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 shadow-lg overflow-hidden">
           {formats.includes('csv') && (
             <button
               onClick={() => handleExport('csv')}
-              className="flex w-full items-center gap-2 px-4 py-2 text-sm text-slate-200 hover:bg-slate-700 transition-colors"
+              className="flex w-full items-center gap-2 px-4 py-2 text-sm text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
             >
               <CsvIcon />
               Export as CSV
@@ -80,7 +80,7 @@ export default function ExportButton({
           {formats.includes('json') && (
             <button
               onClick={() => handleExport('json')}
-              className="flex w-full items-center gap-2 px-4 py-2 text-sm text-slate-200 hover:bg-slate-700 transition-colors"
+              className="flex w-full items-center gap-2 px-4 py-2 text-sm text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
             >
               <JsonIcon />
               Export as JSON

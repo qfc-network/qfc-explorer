@@ -15,12 +15,12 @@ export default function HomeStats({ stats }: { stats: StatDef[] }) {
   return (
     <section className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
       {stats.map((s) => (
-        <div key={s.labelKey} className="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
+        <div key={s.labelKey} className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-4">
           <div className="flex items-center gap-2">
             <StatIcon type={s.icon} />
             <p className="text-[11px] uppercase tracking-wider text-slate-500">{t(s.labelKey)}</p>
           </div>
-          <p className="mt-2 text-lg font-semibold text-white">{s.value}</p>
+          <p className="mt-2 text-lg font-semibold text-slate-900 dark:text-white">{s.value}</p>
         </div>
       ))}
     </section>

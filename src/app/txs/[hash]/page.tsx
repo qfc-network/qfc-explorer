@@ -46,10 +46,10 @@ export default async function TransactionDetailPage({
   if (!tx) {
     return (
       <main className="mx-auto max-w-7xl px-4 py-12">
-        <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-8 text-center">
-          <p className="text-lg text-white">Transaction not found</p>
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-8 text-center">
+          <p className="text-lg text-slate-900 dark:text-white">Transaction not found</p>
           <p className="mt-2 text-sm text-slate-400 font-mono break-all">{hash}</p>
-          <Link href="/txs" className="mt-4 inline-block rounded-lg bg-slate-800 px-4 py-2 text-sm text-slate-300 hover:bg-slate-700">
+          <Link href="/txs" className="mt-4 inline-block rounded-lg bg-slate-100 dark:bg-slate-800 px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700">
             Back to transactions
           </Link>
         </div>
@@ -71,7 +71,7 @@ export default async function TransactionDetailPage({
     <main className="mx-auto max-w-7xl px-4 py-8">
       {/* Header */}
       <div className="flex flex-wrap items-center gap-3">
-        <h1 className="text-lg font-semibold text-white">Transaction Details</h1>
+        <h1 className="text-lg font-semibold text-slate-900 dark:text-white">Transaction Details</h1>
         <StatusBadge status={tx.status} />
         {defiLabel && <TransactionLabel label={defiLabel} />}
         <MethodIdBadge selector={methodSelector} />
@@ -84,7 +84,7 @@ export default async function TransactionDetailPage({
       )}
 
       {/* Transaction Status Timeline */}
-      <div className="mt-4 rounded-xl border border-slate-800 bg-slate-900/40 px-5 py-4">
+      <div className="mt-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 px-5 py-4">
         <div className="flex items-center gap-0">
           <TimelineStep
             label="Created"
@@ -108,9 +108,9 @@ export default async function TransactionDetailPage({
       </div>
 
       {/* Overview table */}
-      <div className="mt-6 rounded-xl border border-slate-800 bg-slate-900/40 divide-y divide-slate-800/40">
+      <div className="mt-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 divide-y divide-slate-200 dark:divide-slate-800/40">
         <Row label="Transaction Hash">
-          <span className="font-mono text-sm text-white break-all">{tx.hash}</span>
+          <span className="font-mono text-sm text-slate-900 dark:text-white break-all">{tx.hash}</span>
           <CopyButton value={tx.hash} label="Copy" />
         </Row>
         <Row label="Block">
@@ -120,7 +120,7 @@ export default async function TransactionDetailPage({
         </Row>
         {tx.timestamp_ms && (
           <Row label="Timestamp">
-            <span className="text-slate-300">{formatTimestampMs(tx.timestamp_ms)}</span>
+            <span className="text-slate-600 dark:text-slate-300">{formatTimestampMs(tx.timestamp_ms)}</span>
           </Row>
         )}
         <Row label="From">
@@ -152,28 +152,28 @@ export default async function TransactionDetailPage({
           )}
         </Row>
         <Row label="Value">
-          <span className="text-white font-medium">{formatWeiToQfc(tx.value)} QFC</span>
+          <span className="text-slate-900 dark:text-white font-medium">{formatWeiToQfc(tx.value)} QFC</span>
         </Row>
         {tx.type && (
           <Row label="Tx Type">
-            <span className="rounded bg-slate-800 px-2 py-0.5 text-xs text-slate-300 font-mono">{tx.type}</span>
+            <span className="rounded bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs text-slate-600 dark:text-slate-300 font-mono">{tx.type}</span>
           </Row>
         )}
         <Row label="Nonce">
-          <span className="text-slate-300">{formatNumber(tx.nonce)}</span>
+          <span className="text-slate-600 dark:text-slate-300">{formatNumber(tx.nonce)}</span>
         </Row>
 
         {/* Gas section */}
         <Row label="Gas Limit">
-          <span className="text-slate-300">{formatNumber(tx.gas_limit)}</span>
+          <span className="text-slate-600 dark:text-slate-300">{formatNumber(tx.gas_limit)}</span>
         </Row>
         {gasUsed != null && (
           <Row label="Gas Used">
             <div className="flex items-center gap-3">
-              <span className="text-slate-300">{formatNumber(gasUsed)}</span>
+              <span className="text-slate-600 dark:text-slate-300">{formatNumber(gasUsed)}</span>
               {gasPercent != null && (
                 <div className="flex items-center gap-2">
-                  <div className="h-2 w-32 rounded-full bg-slate-800 overflow-hidden">
+                  <div className="h-2 w-32 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
                     <div
                       className={`h-full rounded-full ${
                         gasPercent > 90 ? 'bg-red-400' : gasPercent > 70 ? 'bg-amber-400' : 'bg-emerald-400'
@@ -188,14 +188,14 @@ export default async function TransactionDetailPage({
           </Row>
         )}
         <Row label="Gas Price">
-          <span className="text-slate-300">{formatWeiToQfc(tx.gas_price)} QFC</span>
+          <span className="text-slate-600 dark:text-slate-300">{formatWeiToQfc(tx.gas_price)} QFC</span>
         </Row>
       </div>
 
       {/* Input Data */}
-      <div className="mt-6 rounded-xl border border-slate-800 bg-slate-900/40">
-        <div className="flex items-center justify-between border-b border-slate-800/40 px-5 py-3">
-          <h2 className="text-sm font-semibold text-white">Input Data</h2>
+      <div className="mt-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40">
+        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/40 px-5 py-3">
+          <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Input Data</h2>
           {tx.data && <CopyButton value={tx.data} label="Copy" />}
         </div>
         <div className="p-5">
@@ -219,7 +219,7 @@ export default async function TransactionDetailPage({
                       <th className="py-1.5">Value</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/30">
+                  <tbody className="divide-y divide-slate-200 dark:divide-slate-800/30">
                     {decoded.params.map((param, i) => {
                       const raw = decoded.rawParams[i] ?? '';
                       const formatted = formatParam(param, raw);
@@ -234,7 +234,7 @@ export default async function TransactionDetailPage({
                                 {formatted}
                               </Link>
                             ) : (
-                              <span className="text-slate-300">{formatted}</span>
+                              <span className="text-slate-600 dark:text-slate-300">{formatted}</span>
                             )}
                           </td>
                         </tr>
@@ -264,12 +264,12 @@ export default async function TransactionDetailPage({
       </div>
 
       {/* Event Logs — decoded via ABI when contract is verified */}
-      <div className="mt-6 rounded-xl border border-slate-800 bg-slate-900/40">
-        <div className="border-b border-slate-800/40 px-5 py-3">
-          <h2 className="text-sm font-semibold text-white">
+      <div className="mt-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40">
+        <div className="border-b border-slate-100 dark:border-slate-800/40 px-5 py-3">
+          <h2 className="text-sm font-semibold text-slate-900 dark:text-white">
             Event Logs
             {logs.length > 0 && (
-              <span className="ml-2 rounded-full bg-slate-800 px-2 py-0.5 text-xs text-slate-400">
+              <span className="ml-2 rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs text-slate-400">
                 {logs.length}
               </span>
             )}
@@ -302,7 +302,7 @@ function TimelineStep({ label, active, completed, failed }: { label: string; act
     ? 'bg-emerald-400 border-emerald-400/30'
     : active
     ? 'bg-cyan-400 border-cyan-400/30'
-    : 'bg-slate-700 border-slate-700';
+    : 'bg-slate-700 border-slate-300 dark:border-slate-700';
   const textColor = failed
     ? 'text-red-400'
     : completed

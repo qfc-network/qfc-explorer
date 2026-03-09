@@ -70,31 +70,31 @@ export default function AddressLabelsManager({ labels: initialLabels }: Props) {
   return (
     <div className="space-y-4">
       {/* Add form */}
-      <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-5">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-5">
         <p className="text-xs uppercase tracking-[0.2em] text-slate-500 mb-3">Add / Update Label</p>
         <div className="flex flex-wrap items-center gap-3">
           <input
             value={address}
             onChange={(e) => setAddress(e.target.value)}
-            className="w-96 rounded-full border border-slate-800 bg-slate-950/70 px-4 py-2 text-sm text-slate-200 font-mono"
+            className="w-96 rounded-full border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/70 px-4 py-2 text-sm text-slate-800 dark:text-slate-200 font-mono"
             placeholder="0x address"
           />
           <input
             value={label}
             onChange={(e) => setLabel(e.target.value)}
-            className="w-40 rounded-full border border-slate-800 bg-slate-950/70 px-4 py-2 text-sm text-slate-200"
+            className="w-40 rounded-full border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/70 px-4 py-2 text-sm text-slate-800 dark:text-slate-200"
             placeholder="Label"
           />
           <input
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="w-32 rounded-full border border-slate-800 bg-slate-950/70 px-4 py-2 text-sm text-slate-200"
+            className="w-32 rounded-full border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/70 px-4 py-2 text-sm text-slate-800 dark:text-slate-200"
             placeholder="Category"
           />
           <button
             type="button"
             onClick={addLabel}
-            className="rounded-full border border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-200"
+            className="rounded-full border border-slate-300 dark:border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-800 dark:text-slate-200"
           >
             Save
           </button>
@@ -103,12 +103,12 @@ export default function AddressLabelsManager({ labels: initialLabels }: Props) {
       </div>
 
       {/* Search + list */}
-      <div className="rounded-xl border border-slate-800 bg-slate-900/50 overflow-hidden">
-        <div className="px-4 py-3 border-b border-slate-800">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 overflow-hidden">
+        <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-800">
           <input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-full border border-slate-800 bg-slate-950/70 px-4 py-2 text-sm text-slate-200"
+            className="w-full rounded-full border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/70 px-4 py-2 text-sm text-slate-800 dark:text-slate-200"
             placeholder="Search labels..."
           />
         </div>
@@ -117,7 +117,7 @@ export default function AddressLabelsManager({ labels: initialLabels }: Props) {
             <div className="text-center text-slate-500 py-8">No labels found</div>
           ) : (
             <table className="w-full text-sm">
-              <thead className="sticky top-0 bg-slate-900">
+              <thead className="sticky top-0 bg-white dark:bg-slate-900">
                 <tr className="text-left text-slate-500">
                   <th className="px-4 pb-3 font-medium">Address</th>
                   <th className="px-4 pb-3 font-medium">Label</th>
@@ -127,14 +127,14 @@ export default function AddressLabelsManager({ labels: initialLabels }: Props) {
               </thead>
               <tbody>
                 {filtered.map((l) => (
-                  <tr key={l.address} className="border-t border-slate-800">
-                    <td className="px-4 py-2 font-mono text-slate-300 text-xs">
+                  <tr key={l.address} className="border-t border-slate-200 dark:border-slate-800">
+                    <td className="px-4 py-2 font-mono text-slate-600 dark:text-slate-300 text-xs">
                       {l.address.slice(0, 10)}...{l.address.slice(-8)}
                     </td>
-                    <td className="px-4 py-2 text-slate-200">{l.label}</td>
+                    <td className="px-4 py-2 text-slate-800 dark:text-slate-200">{l.label}</td>
                     <td className="px-4 py-2">
                       {l.category && (
-                        <span className="px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 text-xs">
+                        <span className="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 text-xs">
                           {l.category}
                         </span>
                       )}

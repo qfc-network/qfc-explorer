@@ -8,11 +8,13 @@
   --bg-secondary: #f1f5f9;
   --bg-card: #ffffff;
   --bg-card-hover: #f8fafc;
-  --text-primary: #1e293b;
+  --text-primary: #0f172a;
   --text-secondary: #475569;
   --text-muted: #64748b;
   --border-color: #e2e8f0;
   --border-subtle: #f1f5f9;
+  --accent: #0284c7;
+  --accent-soft: rgba(2, 132, 199, 0.08);
 }
 
 .dark {
@@ -26,6 +28,8 @@
   --text-muted: #64748b;
   --border-color: rgba(30, 41, 59, 0.6);
   --border-subtle: rgba(30, 41, 59, 0.4);
+  --accent: #4fc3f7;
+  --accent-soft: rgba(79, 195, 247, 0.08);
 }
 
 body {
@@ -33,14 +37,55 @@ body {
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   background: var(--bg-primary);
   color: var(--text-primary);
-}
-
-.dark body {
-  background: #0b1220;
-  color: #e5e7eb;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a {
   color: inherit;
   text-decoration: none;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+}
+:root ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+/* Light mode table row hover */
+:root tr:hover > td {
+  background: rgba(241, 245, 249, 0.5);
+}
+.dark tr:hover > td {
+  background: rgba(15, 23, 42, 0.3);
+}
+
+/* Light mode selection */
+::selection {
+  background: rgba(2, 132, 199, 0.15);
+}
+.dark ::selection {
+  background: rgba(79, 195, 247, 0.2);
+}
+
+/* Light mode code blocks */
+:root code, :root pre {
+  background: #f1f5f9;
+  color: #334155;
+}
+.dark code, .dark pre {
+  background: rgba(15, 23, 42, 0.6);
+  color: #e2e8f0;
 }

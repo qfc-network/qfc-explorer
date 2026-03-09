@@ -54,12 +54,12 @@ export default function TaskLookup() {
           value={taskId}
           onChange={(e) => setTaskId(e.target.value)}
           placeholder="Enter task ID (hex hash)"
-          className="flex-1 rounded-lg border border-slate-600 bg-slate-800 px-4 py-2 text-sm text-slate-200 placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none"
+          className="flex-1 rounded-lg border border-slate-600 bg-slate-100 dark:bg-slate-800 px-4 py-2 text-sm text-slate-800 dark:text-slate-200 placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none"
         />
         <button
           type="submit"
           disabled={loading || !taskId.trim()}
-          className="rounded-lg bg-cyan-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-cyan-500 disabled:opacity-50"
+          className="rounded-lg bg-cyan-600 px-5 py-2 text-sm font-medium text-slate-900 dark:text-white transition hover:bg-cyan-500 disabled:opacity-50"
         >
           {loading ? 'Looking up...' : 'Lookup'}
         </button>
@@ -72,16 +72,16 @@ export default function TaskLookup() {
       )}
 
       {task && (
-        <div className="overflow-hidden rounded-lg border border-slate-700 bg-slate-800/50">
-          <div className="flex items-center justify-between border-b border-slate-700 px-4 py-3">
-            <span className="text-sm font-medium text-slate-300">
+        <div className="overflow-hidden rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/50">
+          <div className="flex items-center justify-between border-b border-slate-300 dark:border-slate-700 px-4 py-3">
+            <span className="text-sm font-medium text-slate-600 dark:text-slate-300">
               Task {shortenHash(task.taskId)}
             </span>
             <span className={`inline-block rounded px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[task.status] ?? 'bg-slate-500/20 text-slate-400'}`}>
               {task.status}
             </span>
           </div>
-          <dl className="divide-y divide-slate-700/50 text-sm">
+          <dl className="divide-y divide-slate-200 dark:divide-slate-700/50 text-sm">
             <Row label="Task Type" value={task.taskType} />
             <Row label="Model" value={task.modelId} />
             <Row label="Submitter" value={task.submitter} mono />
@@ -108,7 +108,7 @@ function Row({ label, value, mono }: { label: string; value: string; mono?: bool
   return (
     <div className="flex items-center justify-between px-4 py-2">
       <dt className="text-slate-400">{label}</dt>
-      <dd className={`text-slate-200 ${mono ? 'font-mono text-xs' : ''}`}>{value}</dd>
+      <dd className={`text-slate-800 dark:text-slate-200 ${mono ? 'font-mono text-xs' : ''}`}>{value}</dd>
     </div>
   );
 }

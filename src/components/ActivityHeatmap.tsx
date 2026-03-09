@@ -250,7 +250,7 @@ export default function ActivityHeatmap({ address }: { address: string }) {
       {/* Tooltip */}
       {tooltip && (
         <div
-          className="pointer-events-none fixed z-50 rounded-md border border-slate-700 bg-slate-800 px-2.5 py-1.5 text-xs text-slate-200 shadow-lg"
+          className="pointer-events-none fixed z-50 rounded-md border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-2.5 py-1.5 text-xs text-slate-800 dark:text-slate-200 shadow-lg"
           style={{
             left: tooltip.x,
             top: tooltip.y - 36,

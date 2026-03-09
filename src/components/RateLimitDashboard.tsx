@@ -25,14 +25,14 @@ export default function RateLimitDashboard({ topIps, recentRequests }: Props) {
   const [activeTab, setActiveTab] = useState<'ips' | 'requests'>('ips');
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/50 overflow-hidden">
+    <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 overflow-hidden">
       {/* Tabs */}
-      <div className="flex border-b border-slate-800">
+      <div className="flex border-b border-slate-200 dark:border-slate-800">
         <button
           onClick={() => setActiveTab('ips')}
           className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
             activeTab === 'ips'
-              ? 'bg-slate-800 text-white'
+              ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white'
               : 'text-slate-400 hover:text-slate-200'
           }`}
         >
@@ -42,7 +42,7 @@ export default function RateLimitDashboard({ topIps, recentRequests }: Props) {
           onClick={() => setActiveTab('requests')}
           className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
             activeTab === 'requests'
-              ? 'bg-slate-800 text-white'
+              ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white'
               : 'text-slate-400 hover:text-slate-200'
           }`}
         >
@@ -89,9 +89,9 @@ function TopIpsTable({ ips }: { ips: TopIp[] }) {
             const resetIn = Math.max(0, Math.ceil((ip.resetAt - Date.now()) / 1000));
 
             return (
-              <tr key={i} className="border-t border-slate-800">
-                <td className="py-3 font-mono text-slate-300">{ip.ip}</td>
-                <td className="py-3 text-right font-mono text-slate-300">{ip.requests}</td>
+              <tr key={i} className="border-t border-slate-200 dark:border-slate-800">
+                <td className="py-3 font-mono text-slate-600 dark:text-slate-300">{ip.ip}</td>
+                <td className="py-3 text-right font-mono text-slate-600 dark:text-slate-300">{ip.requests}</td>
                 <td className="py-3 text-right">
                   <div className="flex items-center justify-end gap-2">
                     <div className="w-20 h-2 bg-slate-700 rounded-full overflow-hidden">
@@ -139,7 +139,7 @@ function RecentRequestsTable({ requests }: { requests: RecentRequest[] }) {
   return (
     <div className="overflow-x-auto max-h-80 overflow-y-auto">
       <table className="w-full text-sm">
-        <thead className="sticky top-0 bg-slate-900">
+        <thead className="sticky top-0 bg-white dark:bg-slate-900">
           <tr className="text-left text-slate-500">
             <th className="pb-3 font-medium">Time</th>
             <th className="pb-3 font-medium">IP</th>
@@ -153,9 +153,9 @@ function RecentRequestsTable({ requests }: { requests: RecentRequest[] }) {
             const timeStr = time.toLocaleTimeString();
 
             return (
-              <tr key={i} className="border-t border-slate-800">
+              <tr key={i} className="border-t border-slate-200 dark:border-slate-800">
                 <td className="py-2 text-slate-400 text-xs">{timeStr}</td>
-                <td className="py-2 font-mono text-slate-300 text-xs">{req.ip}</td>
+                <td className="py-2 font-mono text-slate-600 dark:text-slate-300 text-xs">{req.ip}</td>
                 <td className="py-2 font-mono text-slate-400 text-xs truncate max-w-[200px]">
                   {req.path}
                 </td>

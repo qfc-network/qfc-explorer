@@ -9,12 +9,12 @@ export default function TransactionFlowSection({ hash }: { hash: string }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <div className="mt-6 rounded-xl border border-slate-800 bg-slate-900/40">
+    <div className="mt-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40">
       <button
         onClick={() => setExpanded((v) => !v)}
-        className="flex w-full items-center justify-between px-5 py-3 text-left transition-colors hover:bg-slate-800/30"
+        className="flex w-full items-center justify-between px-5 py-3 text-left transition-colors hover:bg-slate-100 dark:hover:bg-slate-800/30"
       >
-        <h2 className="text-sm font-semibold text-white">Transaction Flow</h2>
+        <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Transaction Flow</h2>
         <span className="text-xs text-slate-400">
           {expanded ? 'Hide Flow Diagram' : 'Show Flow Diagram'}
           <svg
@@ -29,7 +29,7 @@ export default function TransactionFlowSection({ hash }: { hash: string }) {
         </span>
       </button>
       {expanded && (
-        <div className="border-t border-slate-800/40 p-5">
+        <div className="border-t border-slate-100 dark:border-slate-800/40 p-5">
           <TransactionFlow txHash={hash} />
         </div>
       )}

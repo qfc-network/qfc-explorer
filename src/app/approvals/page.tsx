@@ -79,12 +79,12 @@ export default function ApprovalsPage() {
           onChange={(e) => setAddress(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleCheck()}
           placeholder="Enter address (0x...)"
-          className="flex-1 rounded-lg border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none"
+          className="flex-1 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 text-sm text-slate-900 dark:text-white placeholder:text-slate-500 focus:border-cyan-500 focus:outline-none"
         />
         <button
           onClick={handleCheck}
           disabled={loading}
-          className="rounded-lg bg-cyan-600 px-6 py-3 text-sm font-medium text-white hover:bg-cyan-500 disabled:opacity-50 transition-colors"
+          className="rounded-lg bg-cyan-600 px-6 py-3 text-sm font-medium text-slate-900 dark:text-white hover:bg-cyan-500 disabled:opacity-50 transition-colors"
         >
           {loading ? 'Checking...' : 'Check'}
         </button>
@@ -98,23 +98,23 @@ export default function ApprovalsPage() {
       {approvals !== null && (
         <div className="space-y-4">
           {approvals.length === 0 ? (
-            <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-8 text-center">
+            <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-8 text-center">
               <p className="text-sm text-slate-400">No active token approvals found for this address.</p>
             </div>
           ) : (
             <>
               <p className="text-sm text-slate-400">
-                Found <span className="text-white font-medium">{approvals.length}</span> active approval{approvals.length !== 1 ? 's' : ''}
+                Found <span className="text-slate-900 dark:text-white font-medium">{approvals.length}</span> active approval{approvals.length !== 1 ? 's' : ''}
                 {approvals.filter((a) => a.isUnlimited).length > 0 && (
                   <span className="ml-2 text-red-400">
                     ({approvals.filter((a) => a.isUnlimited).length} unlimited)
                   </span>
                 )}
               </p>
-              <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/40">
+              <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-slate-800 text-left text-xs uppercase tracking-wider text-slate-500">
+                    <tr className="border-b border-slate-200 dark:border-slate-800 text-left text-xs uppercase tracking-wider text-slate-500">
                       <th className="px-4 py-3">Token</th>
                       <th className="px-4 py-3">Spender</th>
                       <th className="px-4 py-3 text-right">Allowance</th>
@@ -122,9 +122,9 @@ export default function ApprovalsPage() {
                       <th className="px-4 py-3">Tx</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/40">
+                  <tbody className="divide-y divide-slate-200 dark:divide-slate-800/40">
                     {approvals.map((a, i) => (
-                      <tr key={i} className="hover:bg-slate-900/60">
+                      <tr key={i} className="hover:bg-slate-50 dark:hover:bg-slate-900/60">
                         <td className="px-4 py-3">
                           <Link href={`/tokens/${a.tokenAddress}`} className="text-cyan-400 hover:text-cyan-300">
                             {a.tokenSymbol ?? a.tokenName ?? shortenHash(a.tokenAddress)}
@@ -134,12 +134,12 @@ export default function ApprovalsPage() {
                           )}
                         </td>
                         <td className="px-4 py-3">
-                          <Link href={`/address/${a.spender}`} className="font-mono text-slate-300 hover:text-cyan-400">
+                          <Link href={`/address/${a.spender}`} className="font-mono text-slate-600 dark:text-slate-300 hover:text-cyan-400">
                             {shortenHash(a.spender)}
                           </Link>
                         </td>
                         <td className="px-4 py-3 text-right">
-                          <span className={`font-mono ${a.isUnlimited ? 'text-red-400' : 'text-slate-300'}`}>
+                          <span className={`font-mono ${a.isUnlimited ? 'text-red-400' : 'text-slate-600 dark:text-slate-300'}`}>
                             {formatAllowance(a.allowance, a.tokenDecimals, a.isUnlimited)}
                           </span>
                           {a.tokenSymbol && !a.isUnlimited && (

@@ -34,7 +34,7 @@ function timeAgo(timestampMs: string | number): string {
 
 function BlockIcon() {
   return (
-    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-800 text-slate-400">
+    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-400">
       <svg aria-hidden="true" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
       </svg>
@@ -44,7 +44,7 @@ function BlockIcon() {
 
 function TxIcon() {
   return (
-    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-800 text-slate-400">
+    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-400">
       <svg aria-hidden="true" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
       </svg>
@@ -67,17 +67,17 @@ export default function LatestBlocksAndTxs({
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       {/* Latest Blocks */}
-      <div className="rounded-xl border border-slate-800 bg-slate-900/40">
-        <div className="flex items-center justify-between border-b border-slate-800/60 px-5 py-4">
-          <h2 className="text-sm font-semibold text-white">{t('home.latestBlocks')}</h2>
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800/60 px-5 py-4">
+          <h2 className="text-sm font-semibold text-slate-900 dark:text-white">{t('home.latestBlocks')}</h2>
           <Link
             href="/blocks"
-            className="rounded-lg bg-slate-800 px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+            className="rounded-lg bg-slate-100 dark:bg-slate-800 px-3 py-1.5 text-xs text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
             {t('home.viewAll')}
           </Link>
         </div>
-        <div className="divide-y divide-slate-800/40">
+        <div className="divide-y divide-slate-200 dark:divide-slate-800/40">
           {blocks.map((block) => (
             <div key={block.height} className="flex items-center gap-3 px-5 py-3.5">
               <BlockIcon />
@@ -92,7 +92,7 @@ export default function LatestBlocksAndTxs({
                   {block.producer ? (
                     <>
                       {t('common.validatedBy')}{' '}
-                      <Link href={`/address/${block.producer}`} className="text-slate-300 hover:text-white">
+                      <Link href={`/address/${block.producer}`} className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
                         {shortenHash(block.producer)}
                       </Link>
                       {labels[block.producer.toLowerCase()]?.label && (
@@ -106,7 +106,7 @@ export default function LatestBlocksAndTxs({
                   )}
                 </p>
               </div>
-              <div className="shrink-0 rounded-md bg-slate-800/60 px-2 py-1 text-xs text-slate-300">
+              <div className="shrink-0 rounded-md bg-slate-100 dark:bg-slate-800/60 px-2 py-1 text-xs text-slate-600 dark:text-slate-300">
                 {block.tx_count} txn{Number(block.tx_count) !== 1 ? 's' : ''}
               </div>
             </div>
@@ -115,17 +115,17 @@ export default function LatestBlocksAndTxs({
       </div>
 
       {/* Latest Transactions */}
-      <div className="rounded-xl border border-slate-800 bg-slate-900/40">
-        <div className="flex items-center justify-between border-b border-slate-800/60 px-5 py-4">
-          <h2 className="text-sm font-semibold text-white">{t('home.latestTransactions')}</h2>
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800/60 px-5 py-4">
+          <h2 className="text-sm font-semibold text-slate-900 dark:text-white">{t('home.latestTransactions')}</h2>
           <Link
             href="/txs"
-            className="rounded-lg bg-slate-800 px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+            className="rounded-lg bg-slate-100 dark:bg-slate-800 px-3 py-1.5 text-xs text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
             {t('home.viewAll')}
           </Link>
         </div>
-        <div className="divide-y divide-slate-800/40">
+        <div className="divide-y divide-slate-200 dark:divide-slate-800/40">
           {transactions.map((tx) => (
             <div key={tx.hash} className="flex items-center gap-3 px-5 py-3.5">
               <TxIcon />
@@ -139,12 +139,12 @@ export default function LatestBlocksAndTxs({
                   )}
                 </div>
                 <p className="mt-0.5 text-xs text-slate-400">
-                  <Link href={`/address/${tx.from_address}`} className="text-slate-300 hover:text-white">
+                  <Link href={`/address/${tx.from_address}`} className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
                     {labels[tx.from_address.toLowerCase()]?.label ?? shortenHash(tx.from_address)}
                   </Link>
                   <span className="mx-1 text-slate-600">→</span>
                   {tx.to_address ? (
-                    <Link href={`/address/${tx.to_address}`} className="text-slate-300 hover:text-white">
+                    <Link href={`/address/${tx.to_address}`} className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
                       {labels[tx.to_address.toLowerCase()]?.label ?? shortenHash(tx.to_address)}
                     </Link>
                   ) : (
@@ -153,7 +153,7 @@ export default function LatestBlocksAndTxs({
                 </p>
               </div>
               <div className="shrink-0 text-right">
-                <p className="text-xs font-medium text-slate-300">
+                <p className="text-xs font-medium text-slate-600 dark:text-slate-300">
                   {formatWeiToQfc(tx.value)}
                 </p>
                 <p className="text-[10px] text-slate-500">QFC</p>

@@ -33,12 +33,12 @@ export default function TranslatedPagination({
       {hasPrevious ? (
         <Link
           href={prevLink}
-          className="rounded-full border border-slate-800 px-4 py-2 hover:bg-slate-900 transition-colors"
+          className="rounded-full border border-slate-200 dark:border-slate-800 px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
         >
           {t('common.previous')}
         </Link>
       ) : (
-        <span className="rounded-full border border-slate-800/40 px-4 py-2 text-slate-600">
+        <span className="rounded-full border border-slate-100 dark:border-slate-800/40 px-4 py-2 text-slate-600">
           {t('common.previous')}
         </span>
       )}
@@ -46,12 +46,12 @@ export default function TranslatedPagination({
       {hasNext ? (
         <Link
           href={nextLink}
-          className="rounded-full border border-slate-800 px-4 py-2 hover:bg-slate-900 transition-colors"
+          className="rounded-full border border-slate-200 dark:border-slate-800 px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
         >
           {t('common.next')}
         </Link>
       ) : (
-        <span className="rounded-full border border-slate-800/40 px-4 py-2 text-slate-600">
+        <span className="rounded-full border border-slate-100 dark:border-slate-800/40 px-4 py-2 text-slate-600">
           {t('common.next')}
         </span>
       )}

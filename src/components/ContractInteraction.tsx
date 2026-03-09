@@ -125,7 +125,7 @@ export default function ContractInteraction({ address, isVerified, verifiedAbi }
   if (!isVerified && !importedAbi && checkedStorage && !useCustomAbi) {
     return (
       <section className="space-y-4">
-        <h2 className="text-xl font-semibold text-white">{t('abi.import')}</h2>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-white">{t('abi.import')}</h2>
         <AbiImport address={address} onAbiImported={handleAbiImported} />
       </section>
     );
@@ -135,7 +135,7 @@ export default function ContractInteraction({ address, isVerified, verifiedAbi }
     <section className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <h2 className="text-xl font-semibold text-white">Contract Interaction</h2>
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Contract Interaction</h2>
           {usingImportedAbi && (
             <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/20 px-2.5 py-1 text-xs font-medium text-amber-400 border border-amber-500/30">
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
@@ -154,13 +154,13 @@ export default function ContractInteraction({ address, isVerified, verifiedAbi }
               {t('abi.clear')}
             </button>
           )}
-          <div className="flex rounded-lg border border-slate-700 overflow-hidden">
+          <div className="flex rounded-lg border border-slate-300 dark:border-slate-700 overflow-hidden">
             <button
               onClick={() => setActiveTab('read')}
               className={`px-4 py-2 text-sm transition-colors ${
                 activeTab === 'read'
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                  ? 'bg-blue-500 text-slate-900 dark:text-white'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
               }`}
             >
               Read Contract
@@ -169,8 +169,8 @@ export default function ContractInteraction({ address, isVerified, verifiedAbi }
               onClick={() => setActiveTab('write')}
               className={`px-4 py-2 text-sm transition-colors ${
                 activeTab === 'write'
-                  ? 'bg-green-500 text-white'
-                  : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                  ? 'bg-green-500 text-slate-900 dark:text-white'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
               }`}
             >
               Write Contract
@@ -181,7 +181,7 @@ export default function ContractInteraction({ address, isVerified, verifiedAbi }
 
       {/* Custom ABI input - only show when not using imported or verified ABI */}
       {!usingImportedAbi && !(isVerified && verifiedAbi) && (
-        <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-4">
           <div className="flex items-center gap-2 mb-3">
             <input
               type="checkbox"
@@ -190,7 +190,7 @@ export default function ContractInteraction({ address, isVerified, verifiedAbi }
               onChange={(e) => setUseCustomAbi(e.target.checked)}
               className="rounded border-slate-600 bg-slate-700 text-blue-500"
             />
-            <label htmlFor="customAbi" className="text-sm text-slate-300">
+            <label htmlFor="customAbi" className="text-sm text-slate-600 dark:text-slate-300">
               Use custom ABI (paste JSON array)
             </label>
           </div>
@@ -199,7 +199,7 @@ export default function ContractInteraction({ address, isVerified, verifiedAbi }
               value={customAbi}
               onChange={(e) => setCustomAbi(e.target.value)}
               placeholder='[{"name": "balanceOf", "inputs": [...], "outputs": [...], "stateMutability": "view"}]'
-              className="w-full h-24 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm font-mono text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+              className="w-full h-24 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-2 text-sm font-mono text-slate-800 dark:text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none"
             />
           )}
         </div>
@@ -292,14 +292,14 @@ function FunctionCard({
   };
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/50 overflow-hidden">
+    <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 overflow-hidden">
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-between px-4 py-3 hover:bg-slate-800/50 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors"
       >
         <div className="flex items-center gap-2">
           <span className={`w-2 h-2 rounded-full ${mode === 'read' ? 'bg-blue-500' : 'bg-green-500'}`} />
-          <span className="font-mono text-slate-200">{func.name}</span>
+          <span className="font-mono text-slate-800 dark:text-slate-200">{func.name}</span>
           <span className="text-xs text-slate-500">
             ({func.inputs.map((i) => i.type).join(', ')})
           </span>
@@ -316,7 +316,7 @@ function FunctionCard({
       </button>
 
       {expanded && (
-        <div className="px-4 pb-4 space-y-3 border-t border-slate-800">
+        <div className="px-4 pb-4 space-y-3 border-t border-slate-200 dark:border-slate-800">
           {func.inputs.map((inp) => (
             <div key={inp.name} className="mt-3">
               <label className="block text-xs text-slate-500 mb-1">
@@ -327,7 +327,7 @@ function FunctionCard({
                 value={inputs[inp.name]}
                 onChange={(e) => setInputs({ ...inputs, [inp.name]: e.target.value })}
                 placeholder={`Enter ${inp.type}`}
-                className="w-full rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm font-mono text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+                className="w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-3 py-2 text-sm font-mono text-slate-800 dark:text-slate-200 placeholder-slate-500 focus:border-blue-500 focus:outline-none"
               />
             </div>
           ))}
@@ -337,15 +337,15 @@ function FunctionCard({
             disabled={loading}
             className={`w-full py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
               mode === 'read'
-                ? 'bg-blue-500 hover:bg-blue-600 text-white'
-                : 'bg-green-500 hover:bg-green-600 text-white'
+                ? 'bg-blue-500 hover:bg-blue-600 text-slate-900 dark:text-white'
+                : 'bg-green-500 hover:bg-green-600 text-slate-900 dark:text-white'
             } disabled:opacity-50`}
           >
             {loading ? 'Querying...' : mode === 'read' ? 'Query' : 'Write'}
           </button>
 
           {result !== null && (
-            <div className="rounded-lg bg-slate-800 p-3">
+            <div className="rounded-lg bg-slate-100 dark:bg-slate-800 p-3">
               <p className="text-xs text-slate-500 mb-1">Result:</p>
               <p className="font-mono text-sm text-green-400 break-all">{result}</p>
             </div>

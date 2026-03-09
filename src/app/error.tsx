@@ -40,7 +40,7 @@ export default function Error({
       <div className="flex items-center gap-3">
         <button
           onClick={reset}
-          className="rounded-full bg-cyan-500 px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-cyan-600"
+          className="rounded-full bg-cyan-500 px-6 py-2 text-sm font-medium text-slate-900 dark:text-white transition-colors hover:bg-cyan-600"
         >
           {t('error.retry')}
         </button>

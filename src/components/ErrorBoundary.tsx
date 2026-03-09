@@ -63,7 +63,7 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
           <div className="flex items-center justify-center gap-3">
             <button
               onClick={this.handleReset}
-              className="rounded-lg bg-cyan-500 px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-cyan-600"
+              className="rounded-lg bg-cyan-500 px-5 py-2 text-sm font-medium text-slate-900 dark:text-white transition-colors hover:bg-cyan-600"
             >
               Try Again
             </button>

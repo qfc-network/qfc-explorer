@@ -78,18 +78,18 @@ export default function MultisigBadge({ address }: { address: string }) {
       </button>
 
       {expanded && (
-        <div className="mt-2 rounded-lg border border-slate-800 bg-slate-900/60 p-3 text-sm">
+        <div className="mt-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-3 text-sm">
           <div className="grid gap-2">
             {/* Version */}
             <div className="flex items-center justify-between">
               <span className="text-slate-400">{t('multisig.version')}</span>
-              <span className="font-mono text-slate-200">Safe v{multisig.version}</span>
+              <span className="font-mono text-slate-800 dark:text-slate-200">Safe v{multisig.version}</span>
             </div>
 
             {/* Threshold */}
             <div className="flex items-center justify-between">
               <span className="text-slate-400">{t('multisig.threshold')}</span>
-              <span className="text-slate-200">
+              <span className="text-slate-800 dark:text-slate-200">
                 {multisig.threshold} / {multisig.owners.length}
               </span>
             </div>
@@ -97,7 +97,7 @@ export default function MultisigBadge({ address }: { address: string }) {
             {/* Nonce */}
             <div className="flex items-center justify-between">
               <span className="text-slate-400">{t('multisig.nonce')}</span>
-              <span className="font-mono text-slate-200">{multisig.nonce}</span>
+              <span className="font-mono text-slate-800 dark:text-slate-200">{multisig.nonce}</span>
             </div>
 
             {/* Owners */}

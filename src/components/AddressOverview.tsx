@@ -15,9 +15,9 @@ export default function AddressOverview({ cards }: { cards: CardDef[] }) {
   return (
     <>
       {cards.map((card) => (
-        <div key={card.labelKey} className="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
+        <div key={card.labelKey} className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-4">
           <p className="text-[11px] uppercase tracking-wider text-slate-500">{t(card.labelKey)}</p>
-          <p className="mt-1.5 text-sm font-medium text-white">{card.value}</p>
+          <p className="mt-1.5 text-sm font-medium text-slate-900 dark:text-white">{card.value}</p>
           {card.sub && <p className="mt-0.5 text-xs text-slate-400">{card.sub}</p>}
         </div>
       ))}

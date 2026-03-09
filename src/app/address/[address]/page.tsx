@@ -64,12 +64,12 @@ export default async function AddressDetailPage({
   if (!overview) {
     return (
       <main className="mx-auto flex min-h-screen max-w-7xl flex-col gap-6 px-4 py-12">
-        <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-8 text-center">
-          <p className="text-lg text-white"><TranslatedText tKey="address.notFound" /></p>
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-8 text-center">
+          <p className="text-lg text-slate-900 dark:text-white"><TranslatedText tKey="address.notFound" /></p>
           <p className="mt-2 text-sm text-slate-400 font-mono break-all">{address}</p>
           <Link
             href="/"
-            className="mt-4 inline-block rounded-lg bg-slate-800 px-4 py-2 text-sm text-slate-300 hover:bg-slate-700"
+            className="mt-4 inline-block rounded-lg bg-slate-100 dark:bg-slate-800 px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
           >
             <TranslatedText tKey="common.backToHome" />
           </Link>
@@ -101,7 +101,7 @@ export default async function AddressDetailPage({
     <main className="mx-auto max-w-7xl px-4 py-8">
       {/* Header */}
       <div className="flex flex-wrap items-center gap-3">
-        <h1 className="text-lg font-semibold text-white">
+        <h1 className="text-lg font-semibold text-slate-900 dark:text-white">
           {isContract ? <TranslatedText tKey="contract.title" /> : <TranslatedText tKey="address.title" />}
         </h1>
         {isContract && contract.is_verified && (
