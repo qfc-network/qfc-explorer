@@ -88,6 +88,77 @@ export default async function MinerDetailPage({
         </div>
       </div>
 
+      {/* Hardware profile */}
+      {miner.gpuModel && (
+        <section className="mt-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-5">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-500 mb-4">
+            <TranslatedText tKey="miner.hardwareProfile" />
+          </h2>
+          <div className="grid gap-x-8 gap-y-3 sm:grid-cols-2 lg:grid-cols-3 text-sm">
+            <div>
+              <span className="text-slate-500">GPU</span>
+              <p className="font-medium text-slate-900 dark:text-white">{miner.gpuModel}</p>
+            </div>
+            <div>
+              <span className="text-slate-500">VRAM</span>
+              <p className="font-medium text-slate-900 dark:text-white">
+                {miner.vramMb >= 1024 ? `${(miner.vramMb / 1024).toFixed(1)} GB` : `${miner.vramMb} MB`}
+              </p>
+            </div>
+            <div>
+              <span className="text-slate-500">Backend</span>
+              <p className="font-medium text-slate-900 dark:text-white">{miner.backend}</p>
+            </div>
+            {miner.cpuModel && (
+              <div>
+                <span className="text-slate-500">CPU</span>
+                <p className="font-medium text-slate-900 dark:text-white">{miner.cpuModel}</p>
+              </div>
+            )}
+            {miner.cpuCores > 0 && (
+              <div>
+                <span className="text-slate-500">CPU Cores</span>
+                <p className="font-medium text-slate-900 dark:text-white">{miner.cpuCores}</p>
+              </div>
+            )}
+            {miner.totalMemoryMb > 0 && (
+              <div>
+                <span className="text-slate-500">RAM</span>
+                <p className="font-medium text-slate-900 dark:text-white">
+                  {(miner.totalMemoryMb / 1024).toFixed(1)} GB
+                </p>
+              </div>
+            )}
+            {miner.os && (
+              <div>
+                <span className="text-slate-500">OS</span>
+                <p className="font-medium text-slate-900 dark:text-white">
+                  {miner.os}{miner.arch ? ` (${miner.arch})` : ''}
+                </p>
+              </div>
+            )}
+            {miner.tier > 0 && (
+              <div>
+                <span className="text-slate-500">Tier</span>
+                <p className="font-medium text-slate-900 dark:text-white">T{miner.tier}</p>
+              </div>
+            )}
+            {miner.benchmarkScore > 0 && (
+              <div>
+                <span className="text-slate-500">Benchmark</span>
+                <p className="font-medium text-slate-900 dark:text-white">{miner.benchmarkScore}</p>
+              </div>
+            )}
+            {miner.version && (
+              <div>
+                <span className="text-slate-500">Miner Version</span>
+                <p className="font-medium text-slate-900 dark:text-white">v{miner.version}</p>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
       {/* Score gauge + Earnings chart (side by side on desktop) */}
       <div className="mt-6 grid gap-4 lg:grid-cols-[280px_1fr]">
         {Number(miner.contributionScore) > 0 && (

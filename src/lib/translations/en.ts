@@ -768,6 +768,7 @@ const en = {
   'miners.tier': 'Tier',
   'miners.vram': 'VRAM',
   'miners.backend': 'Backend',
+  'miners.platform': 'Platform',
   'miners.score': 'Score',
   'miners.noMiners': 'No miners registered yet.',
 
@@ -790,6 +791,7 @@ const en = {
   'miner.progress': 'Progress',
   'miner.cliffEnd': 'Cliff End',
   'miner.endTime': 'End Time',
+  'miner.hardwareProfile': 'Hardware Profile',
 } as const;
 
 export type TranslationKey = keyof typeof en;
