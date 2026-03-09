@@ -28,7 +28,7 @@ export default function CopyButton({ value, label = 'Copy' }: CopyButtonProps) {
     <button
       type="button"
       onClick={handleCopy}
-      className="rounded-full border border-slate-800 px-3 py-1 text-xs uppercase tracking-[0.2em] text-slate-300"
+      className="rounded-full border border-slate-200 dark:border-slate-800 px-3 py-1 text-xs uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300"
     >
       {copied ? 'Copied' : error ? 'Failed' : label}
     </button>

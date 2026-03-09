@@ -5,6 +5,7 @@ import {
   searchBlockHeightPrefix,
   searchBlockHashPrefix,
   searchTransactionHashPrefix,
+  searchTokensByName,
 } from '@/db/queries';
 import { fail, ok } from '@/lib/api-response';
 
@@ -17,12 +18,14 @@ export async function GET(request: Request) {
 
   const isNumeric = /^\d+$/.test(query);
   const isHex = /^0x[0-9a-fA-F]+$/.test(query);
+  const isText = !isNumeric && !isHex && query.length >= 2;
 
-  const [blockHeights, blockHashes, txHashes, addresses] = await Promise.all([
+  const [blockHeights, blockHashes, txHashes, addresses, tokens] = await Promise.all([
     isNumeric ? searchBlockHeightPrefix(query, 5) : Promise.resolve([]),
     isHex ? searchBlockHashPrefix(query, 5) : Promise.resolve([]),
     isHex ? searchTransactionHashPrefix(query, 5) : Promise.resolve([]),
     isHex ? searchAddressPrefix(query, 5) : Promise.resolve([]),
+    isText ? searchTokensByName(query, 5) : Promise.resolve([]),
   ]);
 
   return ok({
@@ -31,5 +34,6 @@ export async function GET(request: Request) {
     blockHashes,
     txHashes,
     addresses,
+    tokens,
   });
 }

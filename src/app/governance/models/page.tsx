@@ -1,5 +1,17 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Governance',
+  description: 'QFC governance model registry and proposals.',
+  openGraph: {
+    title: 'Governance | QFC Explorer',
+    description: 'QFC governance model registry and proposals.',
+    type: 'website',
+  },
+};
+
 import SectionHeader from '@/components/SectionHeader';
 import StatsCard from '@/components/StatsCard';
 import Table from '@/components/Table';
@@ -52,6 +64,7 @@ export default async function GovernanceModelsPage() {
         />
         <Table
           rows={models}
+          keyField="name"
           emptyMessage="No approved models yet."
           columns={[
             {
@@ -97,6 +110,7 @@ export default async function GovernanceModelsPage() {
           />
           <Table
             rows={proposals}
+            keyField="proposalId"
             emptyMessage="No proposals submitted yet."
             columns={[
               {

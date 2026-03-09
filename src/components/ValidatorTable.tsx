@@ -35,17 +35,17 @@ export default function ValidatorTable({ validators, stats = [] }: Props) {
 
   if (mergedData.length === 0) {
     return (
-      <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-8 text-center text-slate-500">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-8 text-center text-slate-500">
         No validator data available
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/50">
+    <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50">
       <table className="w-full text-left text-sm">
         <thead>
-          <tr className="border-b border-slate-800 text-slate-400">
+          <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-400">
             <th className="px-4 py-3 font-medium">Validator</th>
             <th className="px-4 py-3 font-medium text-right">Blocks Produced</th>
             <th className="px-4 py-3 font-medium text-right">Contribution Score</th>
@@ -57,17 +57,17 @@ export default function ValidatorTable({ validators, stats = [] }: Props) {
           {mergedData.map((v, i) => (
             <tr
               key={v.address}
-              className="border-b border-slate-800/50 last:border-0 hover:bg-slate-800/30 transition-colors"
+              className="border-b border-slate-200 dark:border-slate-800/50 last:border-0 hover:bg-slate-100 dark:hover:bg-slate-800/30 transition-colors"
             >
               <td className="px-4 py-3">
                 <Link
                   href={`/address/${v.address}`}
-                  className="font-mono text-slate-200 hover:text-white transition-colors"
+                  className="font-mono text-slate-800 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white transition-colors"
                 >
                   {shortenHash(v.address)}
                 </Link>
               </td>
-              <td className="px-4 py-3 text-right font-mono text-slate-300">
+              <td className="px-4 py-3 text-right font-mono text-slate-600 dark:text-slate-300">
                 {v.blocks_produced.toLocaleString()}
               </td>
               <td className="px-4 py-3 text-right">
@@ -93,7 +93,7 @@ function ScoreBar({ value }: { value: number }) {
 
   return (
     <div className="flex items-center gap-2 justify-end">
-      <span className="text-slate-300 text-xs w-10 text-right">{percentage.toFixed(1)}%</span>
+      <span className="text-slate-600 dark:text-slate-300 text-xs w-10 text-right">{percentage.toFixed(1)}%</span>
       <div className="w-20 h-2 bg-slate-700 rounded-full overflow-hidden">
         <div
           className={`h-full ${color} rounded-full transition-all`}
@@ -110,7 +110,7 @@ function UptimeBar({ value }: { value: number }) {
 
   return (
     <div className="flex items-center gap-2 justify-end">
-      <span className="text-slate-300 text-xs w-12 text-right">{percentage.toFixed(2)}%</span>
+      <span className="text-slate-600 dark:text-slate-300 text-xs w-12 text-right">{percentage.toFixed(2)}%</span>
       <div className="w-16 h-2 bg-slate-700 rounded-full overflow-hidden">
         <div
           className={`h-full ${color} rounded-full transition-all`}

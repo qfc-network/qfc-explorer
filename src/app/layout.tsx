@@ -1,31 +1,75 @@
 import './globals.css';
 import type { ReactNode } from 'react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
-import SearchBar from '@/components/SearchBar';
+import dynamic from 'next/dynamic';
+import Navbar from '@/components/Navbar';
+import ClientProviders from '@/components/ClientProviders';
+import ErrorBoundary from '@/components/ErrorBoundary';
+import ServiceWorkerRegister from '@/components/ServiceWorkerRegister';
 
-export const metadata = {
-  title: 'QFC Explorer',
-  description: 'QFC blockchain explorer',
+const KeyboardShortcuts = dynamic(
+  () => import('@/components/KeyboardShortcuts'),
+  { ssr: false }
+);
+
+export const metadata: Metadata = {
+  metadataBase: new URL('https://explorer.testnet.qfc.network'),
+  title: {
+    default: 'QFC Explorer',
+    template: '%s | QFC Explorer',
+  },
+  description:
+    'QFC blockchain explorer — track blocks, transactions, accounts, tokens, and smart contracts on the QFC network.',
+  manifest: '/manifest.json',
+  openGraph: {
+    siteName: 'QFC Explorer',
+    type: 'website',
+    locale: 'en_US',
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('qfc-theme');if(t==='light'){document.documentElement.classList.remove('dark')}else if(t==='dark'){document.documentElement.classList.add('dark')}else if(!window.matchMedia('(prefers-color-scheme: dark)').matches){document.documentElement.classList.remove('dark')}}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body>
-        <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
-          <header className="border-b border-slate-900/80 bg-slate-950/70 px-6 py-6">
-            <div className="mx-auto flex w-full max-w-6xl flex-col gap-4">
-              <div className="flex items-center justify-between gap-6">
-                <Link href="/" className="group">
-                  <p className="text-xs uppercase tracking-[0.4em] text-slate-500 group-hover:text-slate-300 transition-colors">QFC Explorer</p>
-                  <p className="mt-1 text-sm text-slate-400">Search blocks, transactions, and accounts.</p>
-                </Link>
+        <ClientProviders>
+          <div className="min-h-screen bg-gradient-to-b from-slate-50 via-slate-100 to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+            <Navbar />
+            <ErrorBoundary>
+              {children}
+            </ErrorBoundary>
+            <footer className="border-t border-slate-200 dark:border-slate-800/40 mt-16">
+              <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-10 md:flex-row md:items-center md:justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-to-br from-cyan-400 to-blue-600 text-[10px] font-bold text-slate-900 dark:text-white">
+                    Q
+                  </div>
+                  <span className="text-sm text-slate-500">QFC Explorer</span>
+                </div>
+                <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-slate-500">
+                  <Link href="https://qfc.network" className="hover:text-slate-700 dark:hover:text-slate-300">qfc.network</Link>
+                  <Link href="https://docs.qfc.network" className="hover:text-slate-700 dark:hover:text-slate-300">Docs</Link>
+                  <Link href="https://faucet.testnet.qfc.network" className="hover:text-slate-700 dark:hover:text-slate-300">Faucet</Link>
+                  <Link href="https://github.com/qfc-network" className="hover:text-slate-700 dark:hover:text-slate-300">GitHub</Link>
+                </div>
+                <p className="text-xs text-slate-400 dark:text-slate-600">QFC Network &copy; 2026</p>
               </div>
-              <SearchBar />
-            </div>
-          </header>
-          {children}
-        </div>
+            </footer>
+          </div>
+          <KeyboardShortcuts />
+          <ServiceWorkerRegister />
+        </ClientProviders>
       </body>
     </html>
   );

@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
 
-import { getTokenHolders } from '@/db/queries';
+import { getTokenHolders, getNftHoldersByToken } from '@/db/queries';
 import { fail, ok } from '@/lib/api-response';
 import { clamp, parseNumber } from '@/lib/pagination';
 
@@ -12,10 +12,14 @@ export async function GET(
   const limit = clamp(parseNumber(searchParams.get('limit'), 25), 1, 200);
   const tokenAddress = params.address.toLowerCase();
 
-  const holders = await getTokenHolders(tokenAddress, limit);
+  const [holders, nftHolders] = await Promise.all([
+    getTokenHolders(tokenAddress, limit),
+    getNftHoldersByToken(tokenAddress, limit),
+  ]);
+
   if (!holders) {
     return fail('Token not found', 404);
   }
 
-  return ok({ token: tokenAddress, holders });
+  return ok({ token: tokenAddress, holders, nftHolders });
 }

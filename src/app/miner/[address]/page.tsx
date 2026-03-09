@@ -8,6 +8,7 @@ import { formatHexWeiToQfc, formatFlops } from '@/lib/qfc-format';
 import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
 import CopyButton from '@/components/CopyButton';
+import TranslatedText from '@/components/TranslatedText';
 
 export default async function MinerDetailPage({
   params,
@@ -28,56 +29,63 @@ export default async function MinerDetailPage({
         <SectionHeader title="Miner not found" description={`Address ${address}`} />
         <Link
           href="/"
-          className="rounded-full border border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-200"
+          className="inline-block rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
         >
-          Back to home
+          <TranslatedText tKey="common.backToHome" />
         </Link>
       </main>
     );
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 px-6 py-12">
-      <SectionHeader
-        title={`Miner ${shortenHash(miner.address)}`}
-        description={`Contribution score: ${miner.contributionScore}`}
-        action={
-          <div className="flex items-center gap-3">
-            <CopyButton value={miner.address} label="Copy address" />
-            <Link
-              href={`/address/${miner.address}`}
-              className="rounded-full border border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-200"
-            >
-              View account
-            </Link>
-          </div>
-        }
-      />
+    <main className="mx-auto max-w-7xl px-4 py-8">
+      {/* Header */}
+      <div className="flex flex-wrap items-center gap-3">
+        <h1 className="text-lg font-semibold text-slate-900 dark:text-white">
+          <TranslatedText tKey="miner.title" /> {shortenHash(miner.address)}
+        </h1>
+        <span className="rounded bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+          <TranslatedText tKey="miner.contributionScore" />: {miner.contributionScore}
+        </span>
+        <CopyButton value={miner.address} label="Copy" />
+        <Link
+          href={`/address/${miner.address}`}
+          className="rounded-md border border-slate-300 dark:border-slate-700 px-3 py-1 text-xs text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+        >
+          <TranslatedText tKey="miner.viewAccount" />
+        </Link>
+      </div>
 
       {/* Revenue summary cards */}
-      <div className="grid gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
-          <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Total Earned</p>
-          <p className="mt-2 text-2xl font-bold text-emerald-400">
+      <div className="mt-6 grid gap-3 sm:grid-cols-3">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-5">
+          <p className="text-xs uppercase tracking-wider text-slate-500">
+            <TranslatedText tKey="miner.totalEarned" />
+          </p>
+          <p className="mt-2 text-2xl font-bold text-emerald-600 dark:text-emerald-400">
             {formatHexWeiToQfc(miner.totalEarned)} QFC
           </p>
         </div>
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
-          <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Available Balance</p>
-          <p className="mt-2 text-2xl font-bold text-emerald-400">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-5">
+          <p className="text-xs uppercase tracking-wider text-slate-500">
+            <TranslatedText tKey="miner.available" />
+          </p>
+          <p className="mt-2 text-2xl font-bold text-emerald-600 dark:text-emerald-400">
             {formatHexWeiToQfc(miner.available)} QFC
           </p>
         </div>
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
-          <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Locked (Vesting)</p>
-          <p className="mt-2 text-2xl font-bold text-emerald-400">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-5">
+          <p className="text-xs uppercase tracking-wider text-slate-500">
+            <TranslatedText tKey="miner.locked" />
+          </p>
+          <p className="mt-2 text-2xl font-bold text-emerald-600 dark:text-emerald-400">
             {formatHexWeiToQfc(miner.locked)} QFC
           </p>
         </div>
       </div>
 
       {/* Vesting schedule */}
-      <section className="space-y-4">
+      <section className="mt-8 space-y-4">
         <SectionHeader
           title="Vesting Schedule"
           description={`${miner.activeTranches} active tranche${miner.activeTranches === 1 ? '' : 's'}`}
@@ -90,7 +98,7 @@ export default async function MinerDetailPage({
               key: 'blockHeight',
               header: 'Block',
               render: (row) => (
-                <Link href={`/blocks/${row.blockHeight}`} className="text-slate-200">
+                <Link href={`/blocks/${row.blockHeight}`} className="text-cyan-600 dark:text-cyan-400 hover:underline">
                   {formatNumber(row.blockHeight)}
                 </Link>
               ),
@@ -110,13 +118,13 @@ export default async function MinerDetailPage({
               header: 'Progress',
               render: (row) => (
                 <div className="flex items-center gap-2">
-                  <div className="h-2 w-24 overflow-hidden rounded-full bg-slate-800">
+                  <div className="h-2 w-24 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
                     <div
                       className="h-full rounded-full bg-emerald-500"
                       style={{ width: `${Math.min(100, row.percentVested)}%` }}
                     />
                   </div>
-                  <span className="text-xs text-slate-400">{row.percentVested}%</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400">{row.percentVested}%</span>
                 </div>
               ),
             },
@@ -135,7 +143,7 @@ export default async function MinerDetailPage({
       </section>
 
       {/* Recent earnings */}
-      <section className="space-y-4">
+      <section className="mt-8 space-y-4">
         <SectionHeader title="Recent Earnings" />
         <Table
           rows={miner.earnings}
@@ -145,7 +153,7 @@ export default async function MinerDetailPage({
               key: 'blockHeight',
               header: 'Block',
               render: (row) => (
-                <Link href={`/blocks/${row.blockHeight}`} className="text-slate-200">
+                <Link href={`/blocks/${row.blockHeight}`} className="text-cyan-600 dark:text-cyan-400 hover:underline">
                   {formatNumber(row.blockHeight)}
                 </Link>
               ),
@@ -159,7 +167,7 @@ export default async function MinerDetailPage({
               key: 'taskType',
               header: 'Task Type',
               render: (row) => (
-                <span className="rounded-full border border-slate-700 px-2 py-0.5 text-xs text-slate-300">
+                <span className="rounded-full border border-slate-300 dark:border-slate-700 px-2 py-0.5 text-xs text-slate-600 dark:text-slate-300">
                   {row.taskType}
                 </span>
               ),

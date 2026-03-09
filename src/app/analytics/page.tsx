@@ -1,15 +1,52 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Analytics',
+  description: 'QFC blockchain analytics and charts.',
+  openGraph: {
+    title: 'Analytics | QFC Explorer',
+    description: 'QFC blockchain analytics and charts.',
+    type: 'website',
+  },
+};
+
 import Link from 'next/link';
+import dynamic_import from 'next/dynamic';
 import { fetchJsonSafe } from '@/lib/api-client';
 import type { ApiNetwork, ApiStats } from '@/lib/api-types';
 import { formatNumber } from '@/lib/format';
 import SectionHeader from '@/components/SectionHeader';
 import StatsCard from '@/components/StatsCard';
-import AnalyticsChart from '@/components/AnalyticsChart';
 import ValidatorTable from '@/components/ValidatorTable';
 import ExportButton from '@/components/ExportButton';
 import AutoRefresh from '@/components/AutoRefresh';
+import TranslatedText from '@/components/TranslatedText';
+
+const AnalyticsChart = dynamic_import(
+  () => import('@/components/AnalyticsChart'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-[300px] animate-pulse rounded-lg bg-slate-100 dark:bg-slate-800/50" />
+    ),
+  }
+);
+
+const DailyCharts = dynamic_import(
+  () => import('@/components/DailyCharts'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="grid gap-6 lg:grid-cols-2">
+        {[0, 1, 2, 3].map((i) => (
+          <div key={i} className="h-64 animate-pulse rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50" />
+        ))}
+      </div>
+    ),
+  }
+);
 
 type AnalyticsData = {
   ok: boolean;
@@ -79,21 +116,21 @@ export default async function AnalyticsPage() {
         <div className="flex items-center gap-2">
           <Link href="/" className="text-slate-500 hover:text-slate-300">Home</Link>
           <span className="text-slate-600">/</span>
-          <span className="text-slate-300">Analytics</span>
+          <span className="text-slate-600 dark:text-slate-300">Analytics</span>
         </div>
-        <h1 className="text-4xl font-semibold text-white">Network Analytics</h1>
-        <p className="max-w-2xl text-base text-slate-300">
-          Comprehensive metrics and trends for the QFC network.
+        <h1 className="text-4xl font-semibold text-slate-900 dark:text-white"><TranslatedText tKey="analytics.title" /></h1>
+        <p className="max-w-2xl text-base text-slate-600 dark:text-slate-300">
+          <TranslatedText tKey="analytics.description" />
         </p>
       </header>
 
       {/* Overview Stats */}
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatsCard label="Total Blocks" value={formatNumber(overview.total_blocks)} />
-        <StatsCard label="Total Transactions" value={formatNumber(overview.total_transactions)} />
-        <StatsCard label="Unique Addresses" value={formatNumber(overview.total_addresses)} />
+        <StatsCard label={<TranslatedText tKey="analytics.totalBlocks" />} value={formatNumber(overview.total_blocks)} />
+        <StatsCard label={<TranslatedText tKey="analytics.totalTransactions" />} value={formatNumber(overview.total_transactions)} />
+        <StatsCard label={<TranslatedText tKey="analytics.uniqueAddresses" />} value={formatNumber(overview.total_addresses)} />
         <StatsCard
-          label="Total Gas Used"
+          label={<TranslatedText tKey="analytics.totalGasUsed" />}
           value={formatNumber(String(BigInt(overview.total_gas_used || '0') / BigInt(10 ** 9)))}
           suffix=" Gwei"
         />
@@ -102,12 +139,12 @@ export default async function AnalyticsPage() {
       {/* Live Metrics */}
       <section className="grid gap-4 sm:grid-cols-2">
         <StatsCard
-          label="Current TPS"
+          label={<TranslatedText tKey="analytics.currentTps" />}
           value={Number(currentTps).toFixed(2)}
           highlight
         />
         <StatsCard
-          label="Avg Block Time"
+          label={<TranslatedText tKey="analytics.avgBlockTime" />}
           value={`${Number(avgBlockTime).toFixed(0)} ms`}
           highlight
         />
@@ -116,8 +153,8 @@ export default async function AnalyticsPage() {
       {/* TPS Chart */}
       <section className="space-y-4">
         <SectionHeader
-          title="Transactions Per Second (TPS)"
-          description="Historical TPS over the last 100 blocks"
+          title={<TranslatedText tKey="analytics.tpsTitle" />}
+          description={<TranslatedText tKey="analytics.tpsDesc" />}
           action={
             <ExportButton
               endpoint="/api/analytics/export?type=tps"
@@ -125,7 +162,7 @@ export default async function AnalyticsPage() {
             />
           }
         />
-        <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-6">
           <AnalyticsChart
             data={series.tps}
             color="#22c55e"
@@ -138,8 +175,8 @@ export default async function AnalyticsPage() {
       {/* Gas Usage Chart */}
       <section className="space-y-4">
         <SectionHeader
-          title="Gas Usage Trend"
-          description="Gas consumed per block over the last 100 blocks"
+          title={<TranslatedText tKey="analytics.gasUsageTitle" />}
+          description={<TranslatedText tKey="analytics.gasUsageDesc" />}
           action={
             <ExportButton
               endpoint="/api/analytics/export?type=gas"
@@ -147,7 +184,7 @@ export default async function AnalyticsPage() {
             />
           }
         />
-        <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-6">
           <AnalyticsChart
             data={series.gas_used}
             color="#3b82f6"
@@ -160,8 +197,8 @@ export default async function AnalyticsPage() {
       {/* Block Time Chart */}
       <section className="space-y-4">
         <SectionHeader
-          title="Block Time"
-          description="Time between blocks in milliseconds"
+          title={<TranslatedText tKey="analytics.blockTimeTitle" />}
+          description={<TranslatedText tKey="analytics.blockTimeDesc" />}
           action={
             <ExportButton
               endpoint="/api/analytics/export?type=block_time"
@@ -169,7 +206,7 @@ export default async function AnalyticsPage() {
             />
           }
         />
-        <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-6">
           <AnalyticsChart
             data={series.block_time}
             color="#f59e0b"
@@ -182,8 +219,8 @@ export default async function AnalyticsPage() {
       {/* Validator Statistics */}
       <section className="space-y-4">
         <SectionHeader
-          title="Validator Statistics"
-          description="Block production and contribution metrics for validators"
+          title={<TranslatedText tKey="analytics.validatorStats" />}
+          description={<TranslatedText tKey="analytics.validatorStatsDesc" />}
           action={
             <ExportButton
               endpoint="/api/analytics/export?type=validators"
@@ -200,10 +237,10 @@ export default async function AnalyticsPage() {
       {/* Transaction Volume Chart */}
       <section className="space-y-4">
         <SectionHeader
-          title="Transaction Volume"
-          description="Number of transactions per block"
+          title={<TranslatedText tKey="analytics.txVolume" />}
+          description={<TranslatedText tKey="analytics.txVolumeDesc" />}
         />
-        <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6">
+        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-6">
           <AnalyticsChart
             data={series.tx_count}
             color="#a855f7"
@@ -211,6 +248,15 @@ export default async function AnalyticsPage() {
             yAxisLabel="Txs"
           />
         </div>
+      </section>
+
+      {/* Daily Trend Charts */}
+      <section className="space-y-4">
+        <SectionHeader
+          title={<TranslatedText tKey="analytics.dailyCharts" />}
+          description={<TranslatedText tKey="analytics.dailyChartsDesc" />}
+        />
+        <DailyCharts />
       </section>
     </main>
   );

@@ -84,6 +84,7 @@ export default function AnalyticsChart({
       {/* Chart area */}
       <div className="absolute left-16 right-0 top-0 bottom-8">
         <svg
+          aria-hidden="true"
           viewBox="0 0 100 100"
           preserveAspectRatio="none"
           className="h-full w-full"

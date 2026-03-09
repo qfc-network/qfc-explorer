@@ -1,31 +1,56 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Admin',
+  description: 'QFC Explorer admin dashboard.',
+  openGraph: {
+    title: 'Admin | QFC Explorer',
+    description: 'QFC Explorer admin dashboard.',
+    type: 'website',
+  },
+};
+
 import Link from 'next/link';
 import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
 import AdminControls from '@/components/AdminControls';
 import RateLimitDashboard from '@/components/RateLimitDashboard';
+import ArchiveDashboard from '@/components/ArchiveDashboard';
+import AddressLabelsManager from '@/components/AddressLabelsManager';
 import { fetchJsonSafe } from '@/lib/api-client';
-import type { ApiOk } from '@/lib/api-types';
+import type { ApiAdminIndexer, ApiAdminDb, ApiAdminRateLimit, ApiAdminArchive, ApiAdminLabels, ApiAdminWs, ApiAdminRedis } from '@/lib/api-types';
 
 export default async function AdminPage() {
-  const [response, dbResponse, rateLimitResponse] = await Promise.all([
-    fetchJsonSafe<ApiOk<{ items: Array<{ key: string; value: string; updated_at: string }>; lastBatch: any; failed: any }>>(
+  const [response, dbResponse, rateLimitResponse, archiveResponse, labelsResponse, wsResponse, redisResponse] = await Promise.all([
+    fetchJsonSafe<ApiAdminIndexer>(
       '/api/admin/indexer',
       { next: { revalidate: 5 } }
     ),
-    fetchJsonSafe<ApiOk<{ pool: { total: number; idle: number; waiting: number } }>>(
+    fetchJsonSafe<ApiAdminDb>(
       '/api/admin/db',
       { next: { revalidate: 5 } }
     ),
-    fetchJsonSafe<ApiOk<{
-      config: { windowMs: number; maxRequests: number; windowSeconds: number };
-      stats: { activeIps: number; totalRequests: number; limitedRequests: number; limitedPercentage: string };
-      topIps: Array<{ ip: string; requests: number; limited: boolean; resetAt: number }>;
-      recentRequests: Array<{ ip: string; path: string; timestamp: number; limited: boolean }>;
-    }>>(
+    fetchJsonSafe<ApiAdminRateLimit>(
       '/api/admin/rate-limit',
       { next: { revalidate: 5 } }
+    ),
+    fetchJsonSafe<ApiAdminArchive>(
+      '/api/admin/archive',
+      { next: { revalidate: 10 } }
+    ),
+    fetchJsonSafe<ApiAdminLabels>(
+      '/api/admin/labels',
+      { next: { revalidate: 10 } }
+    ),
+    fetchJsonSafe<ApiAdminWs>(
+      '/api/admin/ws',
+      { next: { revalidate: 5 } }
+    ),
+    fetchJsonSafe<ApiAdminRedis>(
+      '/api/admin/redis',
+      { next: { revalidate: 10 } }
     ),
   ]);
 
@@ -34,6 +59,10 @@ export default async function AdminPage() {
   const failed = response?.data.failed ?? null;
   const poolStats = dbResponse?.data.pool ?? null;
   const rateLimit = rateLimitResponse?.data ?? null;
+  const archive = archiveResponse?.data ?? null;
+  const labels = labelsResponse?.data?.labels ?? [];
+  const wsStats = wsResponse?.data ?? null;
+  const redisConfig = redisResponse?.data ?? null;
 
   return (
     <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 px-6 py-12">
@@ -41,9 +70,9 @@ export default async function AdminPage() {
         <div className="flex items-center gap-2 text-sm">
           <Link href="/" className="text-slate-500 hover:text-slate-300">Home</Link>
           <span className="text-slate-600">/</span>
-          <span className="text-slate-300">Admin</span>
+          <span className="text-slate-600 dark:text-slate-300">Admin</span>
         </div>
-        <h1 className="text-3xl font-semibold text-white">Admin Dashboard</h1>
+        <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">Admin Dashboard</h1>
         <p className="text-slate-400">System monitoring and controls</p>
       </header>
 
@@ -75,19 +104,47 @@ export default async function AdminPage() {
         />
       </section>
 
+      {/* WebSocket & Redis Stats */}
+      <section className="grid gap-4 sm:grid-cols-4">
+        <StatCard
+          label="WS Connections"
+          value={wsStats?.connections?.toString() ?? '—'}
+          sub={wsStats?.polling ? 'polling active' : 'idle'}
+          color="blue"
+        />
+        <StatCard
+          label="WS Channels"
+          value={wsStats?.channels?.toString() ?? '—'}
+          sub="subscribed"
+          color="green"
+        />
+        <StatCard
+          label="Redis Mode"
+          value={redisConfig?.mode ?? '—'}
+          sub={`${redisConfig?.nodes ?? 0} node(s)`}
+          color={redisConfig?.connected ? 'green' : 'yellow'}
+        />
+        <StatCard
+          label="Address Labels"
+          value={labels.length.toString()}
+          sub="registered"
+          color="blue"
+        />
+      </section>
+
       {/* Indexer Status */}
       <section className="space-y-4">
         <SectionHeader title="Indexer Status" description="Block indexer state and batch info" />
         <div className="grid gap-4 sm:grid-cols-2">
-          <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-5 text-sm text-slate-300">
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-5 text-sm text-slate-600 dark:text-slate-300">
             <p className="text-xs uppercase tracking-[0.2em] text-slate-500 mb-3">Last Batch</p>
-            <pre className="whitespace-pre-wrap text-xs font-mono bg-slate-800 rounded p-3 max-h-40 overflow-auto">
+            <pre className="whitespace-pre-wrap text-xs font-mono bg-slate-100 dark:bg-slate-800 rounded p-3 max-h-40 overflow-auto">
               {lastBatch ? JSON.stringify(lastBatch, null, 2) : 'No batch data'}
             </pre>
           </div>
-          <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-5 text-sm text-slate-300">
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/50 p-5 text-sm text-slate-600 dark:text-slate-300">
             <p className="text-xs uppercase tracking-[0.2em] text-slate-500 mb-3">Last Failure</p>
-            <pre className="whitespace-pre-wrap text-xs font-mono bg-slate-800 rounded p-3 max-h-40 overflow-auto">
+            <pre className="whitespace-pre-wrap text-xs font-mono bg-slate-100 dark:bg-slate-800 rounded p-3 max-h-40 overflow-auto">
               {failed ? JSON.stringify(failed, null, 2) : 'No failures'}
             </pre>
           </div>
@@ -98,6 +155,22 @@ export default async function AdminPage() {
       <section className="space-y-4">
         <SectionHeader title="Controls" description="Indexer management actions" />
         <AdminControls />
+      </section>
+
+      {/* Data Archive */}
+      <section className="space-y-4">
+        <SectionHeader title="Data Archive" description="Move old block data to archive schema for better query performance" />
+        <ArchiveDashboard
+          threshold={archive?.threshold ?? '—'}
+          tables={archive?.tables ?? []}
+          recentOperations={archive?.recentOperations ?? []}
+        />
+      </section>
+
+      {/* Address Labels */}
+      <section className="space-y-4">
+        <SectionHeader title="Address Labels" description="Human-readable names for known addresses (exchanges, projects, system contracts)" />
+        <AddressLabelsManager labels={labels} />
       </section>
 
       {/* Rate Limit Dashboard */}
@@ -117,6 +190,7 @@ export default async function AdminPage() {
         <SectionHeader title="Indexer State" description="Key-value state storage" />
         <Table
           rows={items}
+          keyField="key"
           emptyMessage="No indexer state found."
           columns={[
             { key: 'key', header: 'Key', render: (row) => <span className="font-mono">{row.key}</span> },

@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getPool } from '@/db/pool';
+import type { Pool } from 'pg';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -128,30 +129,66 @@ export async function GET(request: NextRequest) {
         filename = 'qfc_transactions';
         const limit = Math.min(parseInt(searchParams.get('limit') || '1000'), 10000);
         const address = searchParams.get('address');
+        const startDate = searchParams.get('start_date');
+        const endDate = searchParams.get('end_date');
 
-        let query = `
-          SELECT
-            hash,
-            block_height,
-            from_address,
-            to_address,
-            value,
-            gas_limit,
-            gas_price,
-            status,
-            nonce
-          FROM transactions
-        `;
+        // Resolve date range to block heights
+        const dateBlocks = await resolveDateRange(pool, startDate, endDate);
 
+        const conditions: string[] = [];
         const params: (string | number)[] = [limit];
         if (address) {
-          query += ` WHERE from_address = $2 OR to_address = $2`;
           params.push(address);
+          conditions.push(`(from_address = $${params.length} OR to_address = $${params.length})`);
         }
-        query += ` ORDER BY block_height DESC, tx_index DESC LIMIT $1`;
+        if (dateBlocks.startBlock) {
+          params.push(dateBlocks.startBlock);
+          conditions.push(`block_height >= $${params.length}`);
+        }
+        if (dateBlocks.endBlock) {
+          params.push(dateBlocks.endBlock);
+          conditions.push(`block_height <= $${params.length}`);
+        }
 
-        const result = await pool.query(query, params);
+        const where = conditions.length > 0 ? ` WHERE ${conditions.join(' AND ')}` : '';
+        const result = await pool.query(`
+          SELECT hash, block_height, from_address, to_address, value,
+                 gas_limit, gas_price, status, nonce
+          FROM transactions${where}
+          ORDER BY block_height DESC, tx_index DESC LIMIT $1
+        `, params);
         data = result.rows.reverse();
+        break;
+      }
+
+      case 'token_transfers': {
+        filename = 'qfc_token_transfers';
+        const limit = Math.min(parseInt(searchParams.get('limit') || '5000'), 10000);
+        const address = searchParams.get('address');
+        const startDate = searchParams.get('start_date');
+        const endDate = searchParams.get('end_date');
+
+        if (!address) {
+          return new NextResponse('address parameter required for token_transfers export', { status: 400 });
+        }
+
+        const dateBlocks = await resolveDateRange(pool, startDate, endDate);
+        const params: (string | number)[] = [limit, address];
+        let dateFilter = '';
+        if (dateBlocks.startBlock) { params.push(dateBlocks.startBlock); dateFilter += ` AND tt.block_height >= $${params.length}`; }
+        if (dateBlocks.endBlock) { params.push(dateBlocks.endBlock); dateFilter += ` AND tt.block_height <= $${params.length}`; }
+
+        const result = await pool.query(`
+          SELECT tt.tx_hash, tt.block_height, tt.token_address,
+                 tt.from_address, tt.to_address, tt.value,
+                 t.symbol AS token_symbol, t.decimals AS token_decimals
+          FROM token_transfers tt
+          LEFT JOIN tokens t ON t.address = tt.token_address
+          WHERE (tt.from_address = $2 OR tt.to_address = $2)${dateFilter}
+          ORDER BY tt.block_height DESC, tt.log_index DESC
+          LIMIT $1
+        `, params);
+        data = result.rows;
         break;
       }
 
@@ -179,6 +216,26 @@ export async function GET(request: NextRequest) {
     console.error('Export error:', error);
     return new NextResponse('Export failed', { status: 500 });
   }
+}
+
+async function resolveDateRange(pool: Pool, startDate: string | null, endDate: string | null) {
+  let startBlock: string | null = null;
+  let endBlock: string | null = null;
+  if (startDate) {
+    const ts = new Date(startDate).getTime();
+    if (!isNaN(ts)) {
+      const r = await pool.query('SELECT MIN(height) AS h FROM blocks WHERE timestamp_ms >= $1', [ts]);
+      startBlock = r.rows[0]?.h ?? null;
+    }
+  }
+  if (endDate) {
+    const ts = new Date(endDate).getTime() + 86400000;
+    if (!isNaN(ts)) {
+      const r = await pool.query('SELECT MAX(height) AS h FROM blocks WHERE timestamp_ms < $1', [ts]);
+      endBlock = r.rows[0]?.h ?? null;
+    }
+  }
+  return { startBlock, endBlock };
 }
 
 function convertToCsv(data: Array<Record<string, unknown>>): string {
