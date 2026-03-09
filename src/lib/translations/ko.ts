@@ -47,6 +47,8 @@ const ko: Record<string, string> = {
   'home.latestBlocks': '최신 블록',
   'home.latestTransactions': '최신 트랜잭션',
   'home.viewAll': '전체 보기',
+  'home.noTransactions': '아직 트랜잭션이 없습니다',
+  'home.noTransactionsHint': '네트워크에서 트랜잭션을 처리하면 여기에 표시됩니다.',
 
   // Stat cards
   'stats.blockHeight': '블록 높이',

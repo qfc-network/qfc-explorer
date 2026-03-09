@@ -47,6 +47,8 @@ const ja: Record<string, string> = {
   'home.latestBlocks': '最新ブロック',
   'home.latestTransactions': '最新トランザクション',
   'home.viewAll': 'すべて表示',
+  'home.noTransactions': 'トランザクションはまだありません',
+  'home.noTransactionsHint': 'ネットワークがトランザクションを処理すると、ここに表示されます。',
 
   // Stat cards
   'stats.blockHeight': 'ブロック高',
