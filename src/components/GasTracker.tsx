@@ -17,7 +17,8 @@ export default function GasTracker() {
 
     async function fetchGas() {
       try {
-        const res = await fetch('/api/gas-oracle');
+        const apiBase = process.env.NEXT_PUBLIC_API_URL || '';
+        const res = await fetch(`${apiBase}/gas-oracle`);
         if (!res.ok) throw new Error('fetch failed');
         const json = await res.json() as ApiGasOracle;
         if (active && json.ok) {
