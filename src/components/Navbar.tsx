@@ -41,6 +41,7 @@ const NAV_ITEMS: NavItem[] = [
     ],
   },
   { labelKey: 'nav.aiInference', href: '/inference' },
+  { labelKey: 'nav.agents', href: '/agents' },
   {
     labelKey: 'nav.network',
     children: [

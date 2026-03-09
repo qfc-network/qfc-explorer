@@ -786,6 +786,28 @@ const ja: Record<string, string> = {
   'miner.cliffEnd': 'クリフ終了',
   'miner.endTime': '終了時間',
   'miner.hardwareProfile': 'ハードウェアプロファイル',
+
+  // AI Agents
+  'nav.agents': 'AIエージェント',
+  'agents.title': 'AIエージェント',
+  'agents.description': 'QFCネットワークに登録されたAIエージェント。',
+  'agents.totalAgents': 'エージェント総数',
+  'agents.activeAgents': 'アクティブ',
+  'agents.totalDeposit': '総デポジット',
+  'agents.noAgents': 'エージェントはまだ登録されていません。',
+  'agents.agentId': 'エージェントID',
+  'agents.owner': 'オーナー',
+  'agents.agentAddress': 'エージェントアドレス',
+  'agents.deposit': 'デポジット',
+  'agents.registered': '登録日',
+  'agents.permissions': '権限',
+  'agents.dailyLimit': '日次上限',
+  'agents.maxPerTx': 'Tx毎上限',
+  'agents.spentToday': '本日の支出',
+  'agents.notFound': 'エージェントが見つかりません',
+  'agents.backToList': 'エージェント一覧に戻る',
+  'agents.viewOwner': 'オーナーを表示',
+  'agents.viewAgent': 'エージェントアドレスを表示',
 };
 
 export default ja;
