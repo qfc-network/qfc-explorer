@@ -15,7 +15,7 @@ const GasTracker = nextDynamic(() => import('@/components/GasTracker'), { ssr: f
 const HomeLiveUpdater = nextDynamic(() => import('@/components/HomeLiveUpdater'), { ssr: false });
 
 export default async function Home() {
-  const [blocksResponse, transactionsResponse, statsResponse] = await Promise.all([
+  const [blocksResponse, transactionsResponse, statsResponse, networkResponse] = await Promise.all([
     fetchJsonSafe<ApiBlocksList>(
       '/api/blocks?limit=8&page=1',
       { next: { revalidate: 5 } }
@@ -27,6 +27,10 @@ export default async function Home() {
     fetchJsonSafe<ApiStats>(
       '/api/stats',
       { next: { revalidate: 10 } }
+    ),
+    fetchJsonSafe<{ data: { validators?: unknown[]; nodeInfo?: { peerCount?: number } } }>(
+      '/api/network',
+      { next: { revalidate: 30 } }
     ),
   ]);
   const blocks = blocksResponse?.data.items ?? [];
@@ -44,17 +48,26 @@ export default async function Home() {
   const tps = statsResponse?.data.stats.tps;
   const activeAddresses = statsResponse?.data.stats.active_addresses;
   const series = statsResponse?.data.series;
+  const validatorCount = networkResponse?.data.validators?.length ?? 0;
+  const peerCount = networkResponse?.data.nodeInfo?.peerCount ?? 0;
 
   const fmtTps = tps == null ? '—' : Number(tps) < 0.01 ? Number(tps).toFixed(4) : Number(tps).toFixed(2);
   const fmtBlockTime = avgBlockTimeMs == null ? '—' : `${(Number(avgBlockTimeMs) / 1000).toFixed(1)}s`;
+
+  // Show validators if no active addresses yet (early testnet)
+  const addressValue = Number(activeAddresses) > 0
+    ? formatNumber(activeAddresses!)
+    : validatorCount > 0
+      ? `${validatorCount} validators`
+      : '—';
 
   const statItems = [
     { icon: 'block', labelKey: 'stats.blockHeight' as const, value: formatNumber(latestHeight) },
     { icon: 'clock', labelKey: 'stats.blockTime' as const, value: fmtBlockTime },
     { icon: 'zap', labelKey: 'stats.tps' as const, value: fmtTps },
-    { icon: 'users', labelKey: 'stats.addresses' as const, value: activeAddresses == null ? '—' : formatNumber(activeAddresses) },
+    { icon: 'users', labelKey: 'stats.addresses' as const, value: addressValue },
     { icon: 'chain', labelKey: 'stats.chainId' as const, value: '9000' },
-    { icon: 'shield', labelKey: 'stats.finality' as const, value: 'PoC' },
+    { icon: 'shield', labelKey: 'stats.finality' as const, value: `${peerCount + 1} peers` },
   ];
 
   return (

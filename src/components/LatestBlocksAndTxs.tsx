@@ -126,7 +126,15 @@ export default function LatestBlocksAndTxs({
           </Link>
         </div>
         <div className="divide-y divide-slate-200 dark:divide-slate-800/40">
-          {transactions.map((tx) => (
+          {transactions.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <svg className="h-10 w-10 text-slate-300 dark:text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
+              <p className="mt-3 text-sm text-slate-400">{t('home.noTransactions')}</p>
+              <p className="mt-1 text-xs text-slate-400/70">{t('home.noTransactionsHint')}</p>
+            </div>
+          ) : transactions.map((tx) => (
             <div key={tx.hash} className="flex items-center gap-3 px-5 py-3.5">
               <TxIcon />
               <div className="min-w-0 flex-1">

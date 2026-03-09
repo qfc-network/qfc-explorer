@@ -47,6 +47,8 @@ const en = {
   'home.latestBlocks': 'Latest Blocks',
   'home.latestTransactions': 'Latest Transactions',
   'home.viewAll': 'View all',
+  'home.noTransactions': 'No transactions yet',
+  'home.noTransactionsHint': 'Transactions will appear here once the network processes them.',
 
   // Stat cards
   'stats.blockHeight': 'Block Height',

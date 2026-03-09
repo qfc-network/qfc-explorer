@@ -47,6 +47,8 @@ const zh: Record<string, string> = {
   'home.latestBlocks': '最新区块',
   'home.latestTransactions': '最新交易',
   'home.viewAll': '查看全部',
+  'home.noTransactions': '暂无交易',
+  'home.noTransactionsHint': '当网络处理交易后，交易将在此显示。',
 
   // Stat cards
   'stats.blockHeight': '区块高度',
