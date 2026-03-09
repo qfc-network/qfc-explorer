@@ -9,6 +9,10 @@ import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
 import CopyButton from '@/components/CopyButton';
 import TranslatedText from '@/components/TranslatedText';
+import MinerScoreGauge from '@/components/MinerScoreGauge';
+import MinerEarningsChart from '@/components/MinerEarningsChart';
+import VestingTimeline from '@/components/VestingTimeline';
+import MinerRoiCalculator from '@/components/MinerRoiCalculator';
 
 export default async function MinerDetailPage({
   params,
@@ -84,7 +88,24 @@ export default async function MinerDetailPage({
         </div>
       </div>
 
-      {/* Vesting schedule */}
+      {/* Score gauge + Earnings chart (side by side on desktop) */}
+      <div className="mt-6 grid gap-4 lg:grid-cols-[280px_1fr]">
+        {Number(miner.contributionScore) > 0 && (
+          <MinerScoreGauge score={miner.contributionScore} />
+        )}
+        <div className={Number(miner.contributionScore) > 0 ? '' : 'lg:col-span-2'}>
+          <MinerEarningsChart earnings={miner.earnings} />
+        </div>
+      </div>
+
+      {/* Vesting timeline */}
+      {miner.tranches.length > 0 && (
+        <section className="mt-6">
+          <VestingTimeline tranches={miner.tranches} />
+        </section>
+      )}
+
+      {/* Vesting schedule table */}
       <section className="mt-8 space-y-4">
         <SectionHeader
           title="Vesting Schedule"
@@ -184,6 +205,11 @@ export default async function MinerDetailPage({
             },
           ]}
         />
+      </section>
+
+      {/* ROI Calculator */}
+      <section className="mt-8">
+        <MinerRoiCalculator totalEarned={miner.totalEarned} earnings={miner.earnings} />
       </section>
     </main>
   );
