@@ -768,6 +768,7 @@ const en = {
   'miners.tier': 'Tier',
   'miners.vram': 'VRAM',
   'miners.backend': 'Backend',
+  'miners.platform': 'Platform',
   'miners.score': 'Score',
   'miners.noMiners': 'No miners registered yet.',
 

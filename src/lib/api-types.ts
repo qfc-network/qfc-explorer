@@ -762,6 +762,8 @@ export type ApiRegisteredMiner = {
   tier: number;
   vramMb: number;
   backend: string;
+  os: string;
+  arch: string;
   registeredAt: string;
   contributionScore: string;
 };

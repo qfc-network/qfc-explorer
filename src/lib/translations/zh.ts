@@ -762,6 +762,7 @@ const zh: Record<string, string> = {
   'miners.tier': '等级',
   'miners.vram': '显存',
   'miners.backend': '后端',
+  'miners.platform': '平台',
   'miners.score': '分数',
   'miners.noMiners': '暂无注册矿工。',
 

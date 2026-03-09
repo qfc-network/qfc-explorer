@@ -762,6 +762,7 @@ const ko: Record<string, string> = {
   'miners.tier': '티어',
   'miners.vram': 'VRAM',
   'miners.backend': '백엔드',
+  'miners.platform': '플랫폼',
   'miners.score': '점수',
   'miners.noMiners': '등록된 마이너가 없습니다.',
 

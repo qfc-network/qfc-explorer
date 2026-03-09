@@ -762,6 +762,7 @@ const ja: Record<string, string> = {
   'miners.tier': 'ティア',
   'miners.vram': 'VRAM',
   'miners.backend': 'バックエンド',
+  'miners.platform': 'プラットフォーム',
   'miners.score': 'スコア',
   'miners.noMiners': '登録済みマイナーはありません。',
 
