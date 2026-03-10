@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { apiUrl } from '@/lib/client-api';
 
 type ArchiveLog = {
   table_name: string;
@@ -28,7 +29,7 @@ export default function ArchiveDashboard({ threshold, tables, recentOperations }
     }
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/archive', {
+      const res = await fetch(apiUrl('/api/admin/archive'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ belowHeight: h }),
