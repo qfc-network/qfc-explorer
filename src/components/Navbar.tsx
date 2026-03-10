@@ -40,8 +40,14 @@ const NAV_ITEMS: NavItem[] = [
       { labelKey: 'nav.apiDocs', href: '/api-docs' },
     ],
   },
-  { labelKey: 'nav.aiInference', href: '/inference' },
-  { labelKey: 'nav.agents', href: '/agents' },
+  {
+    labelKey: 'nav.aiInference',
+    children: [
+      { labelKey: 'nav.inferenceOverview', href: '/inference' },
+      { labelKey: 'nav.inferenceTasks', href: '/inference/tasks' },
+      { labelKey: 'nav.inferenceAnalytics', href: '/inference/analytics' },
+    ],
+  },
   {
     labelKey: 'nav.network',
     children: [
@@ -240,9 +246,9 @@ export default function Navbar() {
           <ThemeToggle />
         </div>
 
-        {/* Mobile hamburger button */}
+        {/* Mobile hamburger button — hidden when panel is open (panel has its own close button) */}
         <button
-          className="relative z-50 flex h-10 w-10 items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white md:hidden"
+          className={`relative z-50 flex h-10 w-10 items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white md:hidden ${mobileOpen ? 'invisible' : ''}`}
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-expanded={mobileOpen}
           aria-label={t('nav.menu')}
@@ -280,7 +286,7 @@ export default function Navbar() {
       {/* Mobile slide-in panel */}
       <div
         ref={panelRef}
-        className={`fixed right-0 top-0 z-40 flex h-full w-[280px] max-w-[85vw] flex-col bg-white dark:bg-slate-950 shadow-2xl transition-transform duration-300 ease-in-out md:hidden ${
+        className={`fixed right-0 top-0 z-50 flex h-full w-[280px] max-w-[85vw] flex-col bg-white dark:bg-slate-950 shadow-2xl transition-transform duration-300 ease-in-out md:hidden ${
           mobileOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
