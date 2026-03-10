@@ -6,7 +6,7 @@ import SectionHeader from '@/components/SectionHeader';
 import StatsCard from '@/components/StatsCard';
 import Table from '@/components/Table';
 import AutoRefresh from '@/components/AutoRefresh';
-import { getApiBaseUrl } from '@/lib/api-client';
+import { fetchJsonSafe, getApiBaseUrl } from '@/lib/api-client';
 
 export const metadata: Metadata = {
   title: 'Bridge',
@@ -39,10 +39,13 @@ type BridgeOp = {
 async function rpcCall<T>(method: string, params: unknown[] = []): Promise<T | null> {
   try {
     const base = getApiBaseUrl();
-    const res = await fetch(`${base}/api/rpc`, {
+    const isExternal = base.includes(':3001') ||
+      (process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || '').length > 0;
+    const url = isExternal ? `${base}/rpc` : `${base}/api/rpc`;
+    const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ jsonrpc: '2.0', method, params, id: 1 }),
+      body: JSON.stringify({ method, params }),
       next: { revalidate: 15 },
     });
     const json = await res.json();
