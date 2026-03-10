@@ -781,6 +781,30 @@ export type ApiMinersList = ApiOk<{
 
 // --- Miner Revenue ---
 
+// --- AI Agents ---
+
+export type ApiAgentInfo = {
+  agentId: string;
+  owner: string;
+  agentAddress: string;
+  permissions: number[];
+  permissionLabels: string[];
+  dailyLimit: string;
+  maxPerTx: string;
+  deposit: string;
+  spentToday: string;
+  lastSpendDay: string;
+  registeredAt: string;
+  active: boolean;
+};
+
+export type ApiAgentsList = ApiOk<{
+  total: number;
+  items: ApiAgentInfo[];
+}>;
+
+export type ApiAgentDetail = ApiOk<ApiAgentInfo>;
+
 export type ApiMinerDetail = ApiOk<{
   address: string;
   totalEarned: string;

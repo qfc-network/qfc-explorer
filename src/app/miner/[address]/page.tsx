@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { formatNumber, shortenHash, formatTimestampMs } from '@/lib/format';
 import { formatHexWeiToQfc, formatFlops } from '@/lib/qfc-format';
@@ -17,6 +18,20 @@ import {
   fetchMinerVesting,
   fetchContributionScore,
 } from '@/indexer/qfc';
+
+export async function generateMetadata({ params }: { params: { address: string } }): Promise<Metadata> {
+  const address = params.address;
+  const short = `${address.slice(0, 6)}...${address.slice(-4)}`;
+  return {
+    title: `Miner ${short}`,
+    description: `Inference miner ${short} on the QFC network — performance, earnings, and task history.`,
+    openGraph: {
+      title: `Miner ${short} | QFC Explorer`,
+      description: `Inference miner ${short} on the QFC network.`,
+      type: 'article',
+    },
+  };
+}
 
 export default async function MinerDetailPage({
   params,

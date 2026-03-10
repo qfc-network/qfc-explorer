@@ -85,6 +85,9 @@ export default function ToolsPage() {
   const [sigLoading, setSigLoading] = useState(false);
   const [encodeType, setEncodeType] = useState('address');
   const [encodeValue, setEncodeValue] = useState('');
+  const [pushTxInput, setPushTxInput] = useState('');
+  const [pushTxResult, setPushTxResult] = useState<{ txHash?: string; error?: string } | null>(null);
+  const [pushTxLoading, setPushTxLoading] = useState(false);
 
   const selectorClean = selectorInput.replace(/^0x/, '').toLowerCase().slice(0, 8);
   const selectorMatch = selectorClean.length === 8 ? KNOWN_SELECTORS[selectorClean] ?? null : null;
@@ -104,6 +107,29 @@ export default function ToolsPage() {
       if (chunk.length === 64) calldataParams.push(chunk);
     }
   }
+
+  const handlePushTx = useCallback(async () => {
+    const raw = pushTxInput.trim();
+    if (!raw) return;
+    setPushTxLoading(true);
+    setPushTxResult(null);
+    try {
+      const res = await fetch(apiUrl('/api/rpc'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ method: 'eth_sendRawTransaction', params: [raw] }),
+      });
+      const json = await res.json();
+      if (json.ok) {
+        setPushTxResult({ txHash: json.data as string });
+      } else {
+        setPushTxResult({ error: json.error || 'Transaction rejected' });
+      }
+    } catch (e) {
+      setPushTxResult({ error: e instanceof Error ? e.message : 'Network error' });
+    }
+    setPushTxLoading(false);
+  }, [pushTxInput]);
 
   const handleSigHash = useCallback(async () => {
     const sig = sigInput.trim();
@@ -316,6 +342,43 @@ export default function ToolsPage() {
                     })}
                   </div>
                 </div>
+              )}
+            </div>
+          )}
+        </section>
+
+        {/* Push Raw Transaction */}
+        <section className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-5">
+          <h2 className="text-sm font-medium text-slate-900 dark:text-white">Push Raw Transaction</h2>
+          <p className="mt-1 text-xs text-slate-400">Broadcast a signed transaction to the QFC network</p>
+          <textarea
+            value={pushTxInput}
+            onChange={(e) => setPushTxInput(e.target.value)}
+            placeholder="0x02f87..."
+            rows={4}
+            className="mt-3 w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-4 py-2.5 text-sm font-mono text-slate-900 dark:text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none resize-none"
+          />
+          <button
+            onClick={handlePushTx}
+            disabled={pushTxLoading || !pushTxInput.trim()}
+            className="mt-3 rounded-lg bg-cyan-600 px-4 py-2.5 text-xs font-medium text-slate-900 dark:text-white hover:bg-cyan-500 disabled:opacity-50 transition-colors"
+          >
+            {pushTxLoading ? 'Broadcasting...' : 'Broadcast Transaction'}
+          </button>
+          {pushTxResult && (
+            <div className="mt-3 rounded-lg bg-slate-100 dark:bg-slate-800/50 p-3">
+              {pushTxResult.txHash ? (
+                <>
+                  <p className="text-xs text-slate-500">Transaction Hash</p>
+                  <Link href={`/tx/${pushTxResult.txHash}`} className="mt-1 block font-mono text-xs text-cyan-400 hover:text-cyan-300 break-all">
+                    {pushTxResult.txHash}
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <p className="text-xs text-slate-500">Error</p>
+                  <p className="mt-1 text-sm text-red-400">{pushTxResult.error}</p>
+                </>
               )}
             </div>
           )}
