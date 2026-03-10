@@ -12,12 +12,7 @@ import MinerScoreGauge from '@/components/MinerScoreGauge';
 import MinerEarningsChart from '@/components/MinerEarningsChart';
 import VestingTimeline from '@/components/VestingTimeline';
 import MinerRoiCalculator from '@/components/MinerRoiCalculator';
-import { RpcClient } from '@/indexer/rpc';
-import {
-  fetchMinerEarnings,
-  fetchMinerVesting,
-  fetchContributionScore,
-} from '@/indexer/qfc';
+import { fetchJsonSafe, getApiBaseUrl } from '@/lib/api-client';
 
 export async function generateMetadata({ params }: { params: { address: string } }): Promise<Metadata> {
   const address = params.address;
@@ -42,24 +37,31 @@ export default async function MinerDetailPage({
 
   let miner: any = null;
   try {
-    const rpcUrl = process.env.RPC_URL;
-    if (rpcUrl && /^0x[0-9a-fA-F]{40}$/.test(address)) {
-      const client = new RpcClient(rpcUrl);
-      const [earnings, vesting, contribution] = await Promise.all([
-        fetchMinerEarnings(client, address),
-        fetchMinerVesting(client, address),
-        fetchContributionScore(client, address),
-      ]);
-      miner = {
-        address,
-        totalEarned: vesting.totalEarned,
-        locked: vesting.locked,
-        available: vesting.available,
-        activeTranches: vesting.activeTranches,
-        contributionScore: contribution.score,
-        earnings,
-        tranches: vesting.tranches,
-      };
+    if (/^0x[0-9a-fA-F]{40}$/.test(address)) {
+      const data = await fetchJsonSafe<Record<string, any>>(`${getApiBaseUrl()}/miners/${address}`);
+      if (data) {
+        miner = {
+          address,
+          totalEarned: data.totalEarned ?? '0x0',
+          locked: data.locked ?? '0x0',
+          available: data.available ?? '0x0',
+          activeTranches: data.activeTranches ?? 0,
+          contributionScore: data.contributionScore ?? 0,
+          earnings: data.earnings ?? [],
+          tranches: data.tranches ?? [],
+          gpuModel: data.gpuModel,
+          vramMb: data.vramMb,
+          backend: data.backend,
+          cpuModel: data.cpuModel,
+          cpuCores: data.cpuCores,
+          totalMemoryMb: data.totalMemoryMb,
+          os: data.os,
+          arch: data.arch,
+          tier: data.tier,
+          benchmarkScore: data.benchmarkScore,
+          version: data.version,
+        };
+      }
     }
   } catch (e) {
     console.error('Failed to fetch miner data:', e);
