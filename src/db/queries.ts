@@ -17,7 +17,13 @@ export type TransactionRow = {
   value: string;
   status: string;
   gas_limit?: string;
-  data?: string | null;
+  gas_price?: string;
+  gas_used?: string | null;
+  nonce?: string;
+  type?: string | null;
+  timestamp_ms?: string | null;
+  input_data?: string | null;
+  data?: string | null; // legacy alias
 };
 
 export async function getLatestBlocks(limit = 10): Promise<BlockRow[]> {
