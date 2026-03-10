@@ -23,16 +23,20 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
-# Copy node_modules and src for indexer (tsx needs these)
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/src ./src
-COPY --from=builder /app/tsconfig.json ./tsconfig.json
+# Copy node_modules from deps (not builder) so cache is tied to package-lock
+COPY --from=deps /app/node_modules ./node_modules
+# Copy src and tsconfig directly from build context to avoid stale COPY --from=builder cache
+COPY src ./src
+COPY tsconfig.json ./tsconfig.json
+
+# Fail fast at build time if indexer source is missing
+RUN test -f src/indexer/index.ts || (echo "ERROR: src/indexer/index.ts not found" && exit 1)
 
 # Create startup script that runs both Next.js and indexer
 RUN echo '#!/bin/sh' > /app/start.sh && \
     echo 'node server.js &' >> /app/start.sh && \
     echo 'sleep 5' >> /app/start.sh && \
-    echo 'npx tsx src/indexer/index.ts' >> /app/start.sh && \
+    echo 'exec ./node_modules/.bin/tsx src/indexer/index.ts' >> /app/start.sh && \
     chmod +x /app/start.sh
 
 EXPOSE 3000
