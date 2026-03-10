@@ -210,7 +210,7 @@ export default function Navbar() {
   }, [pathname]);
 
   return (
-    <nav aria-label="Main navigation" className="border-b border-slate-200 bg-white/80 dark:border-slate-800/60 dark:bg-slate-950/80 backdrop-blur-sm sticky top-0 z-40">
+    <nav aria-label="Main navigation" className="border-b border-slate-200 bg-white/80 dark:border-slate-800/60 dark:bg-slate-950/80 md:backdrop-blur-sm sticky top-0 z-40">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-0 min-h-[56px]">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 py-3 min-w-0">
