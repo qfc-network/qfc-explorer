@@ -2,8 +2,6 @@ export const dynamic = "force-dynamic";
 
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { fetchJsonSafe } from '@/lib/api-client';
-import type { ApiMinerDetail } from '@/lib/api-types';
 import { formatNumber, shortenHash, formatTimestampMs } from '@/lib/format';
 import { formatHexWeiToQfc, formatFlops } from '@/lib/qfc-format';
 import SectionHeader from '@/components/SectionHeader';
@@ -14,6 +12,12 @@ import MinerScoreGauge from '@/components/MinerScoreGauge';
 import MinerEarningsChart from '@/components/MinerEarningsChart';
 import VestingTimeline from '@/components/VestingTimeline';
 import MinerRoiCalculator from '@/components/MinerRoiCalculator';
+import { RpcClient } from '@/indexer/rpc';
+import {
+  fetchMinerEarnings,
+  fetchMinerVesting,
+  fetchContributionScore,
+} from '@/indexer/qfc';
 
 export async function generateMetadata({ params }: { params: { address: string } }): Promise<Metadata> {
   const address = params.address;
@@ -35,12 +39,31 @@ export default async function MinerDetailPage({
   params: { address: string };
 }) {
   const { address } = params;
-  const response = await fetchJsonSafe<ApiMinerDetail>(
-    `/api/miners/${address}`,
-    { next: { revalidate: 15 } }
-  );
 
-  const miner = response?.data ?? null;
+  let miner: any = null;
+  try {
+    const rpcUrl = process.env.RPC_URL;
+    if (rpcUrl && /^0x[0-9a-fA-F]{40}$/.test(address)) {
+      const client = new RpcClient(rpcUrl);
+      const [earnings, vesting, contribution] = await Promise.all([
+        fetchMinerEarnings(client, address),
+        fetchMinerVesting(client, address),
+        fetchContributionScore(client, address),
+      ]);
+      miner = {
+        address,
+        totalEarned: vesting.totalEarned,
+        locked: vesting.locked,
+        available: vesting.available,
+        activeTranches: vesting.activeTranches,
+        contributionScore: contribution.score,
+        earnings,
+        tranches: vesting.tranches,
+      };
+    }
+  } catch (e) {
+    console.error('Failed to fetch miner data:', e);
+  }
 
   if (!miner) {
     return (
@@ -198,7 +221,7 @@ export default async function MinerDetailPage({
           description={`${miner.activeTranches} active tranche${miner.activeTranches === 1 ? '' : 's'}`}
         />
         <Table
-          rows={miner.tranches}
+          rows={miner.tranches as Record<string, any>[]}
           emptyMessage="No vesting tranches."
           columns={[
             {
@@ -253,7 +276,7 @@ export default async function MinerDetailPage({
       <section className="mt-8 space-y-4">
         <SectionHeader title="Recent Earnings" />
         <Table
-          rows={miner.earnings}
+          rows={miner.earnings as Record<string, any>[]}
           emptyMessage="No earnings recorded yet."
           columns={[
             {

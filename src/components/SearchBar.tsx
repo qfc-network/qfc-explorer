@@ -123,7 +123,7 @@ export default function SearchBar({ prominent = false }: { prominent?: boolean }
           onChange={(event) => setQuery(event.target.value)}
           placeholder={t('search.placeholder')}
           aria-label="Search blocks, transactions, addresses"
-          className={`${inputCls} ${prominent ? 'pl-11' : 'pl-9'}`}
+          className={`${inputCls} ${prominent ? 'pl-11 pr-24 sm:pr-28' : 'pl-9 pr-10 sm:pr-20'}`}
           onFocus={() => {
             if (suggestions) setOpen(true);
           }}
@@ -131,9 +131,11 @@ export default function SearchBar({ prominent = false }: { prominent?: boolean }
         />
         <button
           type="submit"
-          className={`absolute right-2 rounded-lg bg-cyan-600 px-4 text-xs font-medium text-slate-900 dark:text-white hover:bg-cyan-500 transition-colors ${prominent ? 'py-2' : 'py-1.5'}`}
+          className={`absolute right-2 rounded-lg bg-cyan-600 text-xs font-medium text-slate-900 dark:text-white hover:bg-cyan-500 transition-colors ${prominent ? 'py-2 px-3 sm:px-4' : 'py-1.5 px-2.5 sm:px-4'}`}
+          aria-label={t('search.button')}
         >
-          {t('search.button')}
+          <span className="sm:hidden">↵</span>
+          <span className="hidden sm:inline">{t('search.button')}</span>
         </button>
       </form>
 
