@@ -262,38 +262,15 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile overlay backdrop */}
-      <div
-        className={`fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
-          mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}
-        onClick={closeMobile}
-        aria-hidden="true"
-      />
-
-      {/* Mobile slide-in panel */}
+      {/* Mobile dropdown menu (Etherscan-style: slide down) */}
       <div
         ref={panelRef}
-        className={`fixed right-0 top-0 z-[70] flex h-full w-full max-w-full flex-col bg-white dark:bg-slate-950 shadow-2xl transition-transform duration-300 ease-in-out md:hidden ${
-          mobileOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
+        className={`absolute left-0 right-0 top-full z-[70] border-b border-slate-200 bg-white dark:border-slate-800/60 dark:bg-slate-950 shadow-xl transition-all duration-200 ease-out md:hidden ${
+          mobileOpen ? 'max-h-[85vh] opacity-100 translate-y-0 pointer-events-auto' : 'max-h-0 opacity-0 -translate-y-2 pointer-events-none'
+        } overflow-hidden`}
       >
-        {/* Panel header */}
-        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800/60 px-4 py-3 pt-[max(env(safe-area-inset-top),0.75rem)]">
-          <span className="text-sm font-semibold text-slate-900 dark:text-white">{t('nav.menu')}</span>
-          <button
-            onClick={closeMobile}
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-            aria-label="Close menu"
-          >
-            <svg aria-hidden="true" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
         {/* Scrollable nav items */}
-        <div className="flex-1 overflow-y-auto overscroll-contain">
+        <div className="max-h-[72vh] overflow-y-auto overscroll-contain">
           {NAV_ITEMS.map((item) =>
             item.children ? (
               <MobileAccordion
