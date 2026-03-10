@@ -71,12 +71,12 @@ export default async function ContractsPage({ searchParams }: Props) {
   }
   const verifiedQs = verifiedParams.toString();
   const verifiedPath = verifiedQs
-    ? `/api/contracts/verified?${verifiedQs}`
-    : '/api/contracts/verified';
+    ? `/api/contract/verified?${verifiedQs}`
+    : '/api/contract/verified';
 
   const [contractsResponse, verifiedResponse, compilersResponse] = await Promise.all([
     fetchJsonSafe<ContractsResponse>(
-      '/api/contracts?limit=50',
+      '/api/contract?limit=50',
       { next: { revalidate: 30 } }
     ),
     fetchJsonSafe<VerifiedResponse>(
@@ -84,7 +84,7 @@ export default async function ContractsPage({ searchParams }: Props) {
       { next: { revalidate: 30 } }
     ),
     fetchJsonSafe<CompilersResponse>(
-      '/api/contracts/compilers',
+      '/api/contract/compilers',
       { next: { revalidate: 300 } }
     ),
   ]);
