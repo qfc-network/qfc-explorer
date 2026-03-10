@@ -786,6 +786,28 @@ const ko: Record<string, string> = {
   'miner.cliffEnd': '클리프 종료',
   'miner.endTime': '종료 시간',
   'miner.hardwareProfile': '하드웨어 프로필',
+
+  // AI Agents
+  'nav.agents': 'AI 에이전트',
+  'agents.title': 'AI 에이전트',
+  'agents.description': 'QFC 네트워크에 등록된 AI 에이전트.',
+  'agents.totalAgents': '총 에이전트',
+  'agents.activeAgents': '활성 에이전트',
+  'agents.totalDeposit': '총 예치금',
+  'agents.noAgents': '등록된 에이전트가 없습니다.',
+  'agents.agentId': '에이전트 ID',
+  'agents.owner': '소유자',
+  'agents.agentAddress': '에이전트 주소',
+  'agents.deposit': '예치금',
+  'agents.registered': '등록일',
+  'agents.permissions': '권한',
+  'agents.dailyLimit': '일일 한도',
+  'agents.maxPerTx': '거래당 최대',
+  'agents.spentToday': '오늘 사용량',
+  'agents.notFound': '에이전트를 찾을 수 없습니다',
+  'agents.backToList': '에이전트 목록으로',
+  'agents.viewOwner': '소유자 보기',
+  'agents.viewAgent': '에이전트 주소 보기',
 };
 
 export default ko;

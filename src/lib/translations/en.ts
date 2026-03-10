@@ -792,6 +792,28 @@ const en = {
   'miner.cliffEnd': 'Cliff End',
   'miner.endTime': 'End Time',
   'miner.hardwareProfile': 'Hardware Profile',
+
+  // AI Agents pages
+  'nav.agents': 'AI Agents',
+  'agents.title': 'AI Agents',
+  'agents.description': 'Registered AI agents on the QFC network.',
+  'agents.totalAgents': 'Total Agents',
+  'agents.activeAgents': 'Active Agents',
+  'agents.totalDeposit': 'Total Deposited',
+  'agents.noAgents': 'No agents registered yet.',
+  'agents.agentId': 'Agent ID',
+  'agents.owner': 'Owner',
+  'agents.agentAddress': 'Agent Address',
+  'agents.deposit': 'Deposit',
+  'agents.registered': 'Registered',
+  'agents.permissions': 'Permissions',
+  'agents.dailyLimit': 'Daily Limit',
+  'agents.maxPerTx': 'Max Per Tx',
+  'agents.spentToday': 'Spent Today',
+  'agents.notFound': 'Agent not found',
+  'agents.backToList': 'Back to Agents',
+  'agents.viewOwner': 'View Owner',
+  'agents.viewAgent': 'View Agent Address',
 } as const;
 
 export type TranslationKey = keyof typeof en;

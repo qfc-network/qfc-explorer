@@ -786,6 +786,28 @@ const zh: Record<string, string> = {
   'miner.cliffEnd': '锁定期结束',
   'miner.endTime': '结束时间',
   'miner.hardwareProfile': '硬件配置',
+
+  // AI Agents
+  'nav.agents': 'AI 代理',
+  'agents.title': 'AI 代理',
+  'agents.description': 'QFC 网络上注册的 AI 代理。',
+  'agents.totalAgents': '代理总数',
+  'agents.activeAgents': '活跃代理',
+  'agents.totalDeposit': '总存款',
+  'agents.noAgents': '尚未注册代理。',
+  'agents.agentId': '代理 ID',
+  'agents.owner': '所有者',
+  'agents.agentAddress': '代理地址',
+  'agents.deposit': '存款',
+  'agents.registered': '注册时间',
+  'agents.permissions': '权限',
+  'agents.dailyLimit': '每日限额',
+  'agents.maxPerTx': '单笔上限',
+  'agents.spentToday': '今日支出',
+  'agents.notFound': '未找到代理',
+  'agents.backToList': '返回代理列表',
+  'agents.viewOwner': '查看所有者',
+  'agents.viewAgent': '查看代理地址',
 };
 
 export default zh;
