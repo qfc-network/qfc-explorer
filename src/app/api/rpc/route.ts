@@ -4,6 +4,34 @@ import { ok, fail } from '@/lib/api-response';
 
 const RPC_URL = process.env.RPC_URL || 'http://127.0.0.1:8545';
 
+/** Only allow safe, read-only methods + tx broadcast through the public proxy. */
+const ALLOWED_METHODS = new Set([
+  // Transaction broadcast
+  'eth_sendRawTransaction',
+  // Read-only queries used by bridge/agents/tools pages
+  'eth_call',
+  'eth_estimateGas',
+  'eth_getTransactionByHash',
+  'eth_getTransactionReceipt',
+  'eth_getBalance',
+  'eth_getCode',
+  'eth_blockNumber',
+  'eth_getBlockByNumber',
+  'eth_getBlockByHash',
+  'eth_chainId',
+  'net_version',
+  // QFC custom read-only RPCs
+  'qfc_getBridgeStatus',
+  'qfc_getBridgeDeposits',
+  'qfc_getBridgeWithdrawals',
+  'qfc_getAgentRegistry',
+  'qfc_getRecentTasks',
+  'qfc_getContributionScore',
+  'qfc_getMinerEarnings',
+  'qfc_getMinerVesting',
+  'qfc_getModelProposals',
+]);
+
 export async function POST(request: Request) {
   let body: unknown;
   try {
@@ -20,6 +48,10 @@ export async function POST(request: Request) {
 
   if (!method || typeof method !== 'string') {
     return fail('Missing "method" field', 400);
+  }
+
+  if (!ALLOWED_METHODS.has(method)) {
+    return fail(`Method "${method}" is not allowed`, 403);
   }
 
   const response = await fetch(RPC_URL, {
