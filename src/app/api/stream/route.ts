@@ -5,29 +5,38 @@ import { getStatsOverview } from '@/db/queries';
 
 export async function GET() {
   const intervalMs = Math.max(3000, Number(process.env.SSE_INTERVAL_MS ?? 5000));
+
+  let active = true;
+  let interval: ReturnType<typeof setInterval> | null = null;
+
   const stream = new ReadableStream({
     async start(controller) {
       const encoder = new TextEncoder();
-      let active = true;
 
       const send = async () => {
         if (!active) return;
-        const stats = await getStatsOverview();
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify(stats)}\n\n`));
+        try {
+          const stats = await getStatsOverview();
+          if (!active) return; // check again after async work
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify(stats)}\n\n`));
+        } catch {
+          // DB error — skip this tick, don't crash the stream
+        }
       };
 
-      const interval = setInterval(send, intervalMs);
+      interval = setInterval(send, intervalMs);
       await send();
 
-      controller.enqueue(encoder.encode('event: ready\n\n'));
-
-      return () => {
-        active = false;
-        clearInterval(interval);
-      };
+      if (active) {
+        controller.enqueue(encoder.encode('event: ready\n\n'));
+      }
     },
     cancel() {
-      // noop
+      active = false;
+      if (interval) {
+        clearInterval(interval);
+        interval = null;
+      }
     },
   });
 
