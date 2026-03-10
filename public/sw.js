@@ -1,4 +1,4 @@
-const CACHE_VERSION = 2;
+const CACHE_VERSION = 3;
 const STATIC_CACHE = `qfc-explorer-static-v${CACHE_VERSION}`;
 const API_CACHE = `qfc-explorer-api-v${CACHE_VERSION}`;
 const IMAGE_CACHE = `qfc-explorer-images-v${CACHE_VERSION}`;
