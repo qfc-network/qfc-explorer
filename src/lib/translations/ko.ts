@@ -811,6 +811,35 @@ const ko: Record<string, string> = {
   'agents.backToList': '에이전트 목록으로',
   'agents.viewOwner': '소유자 보기',
   'agents.viewAgent': '에이전트 주소 보기',
+  'agents.viewSessionKeys': '세션 키',
+  'agents.viewRiskDashboard': '리스크 대시보드',
+
+  // Navigation - Agents
+  'nav.agentsMenu': 'AI 에이전트',
+  'nav.agentList': '에이전트 목록',
+  'nav.sessionKeys': '세션 키',
+  'nav.riskDashboard': '리스크 대시보드',
+
+  // Session Keys
+  'sessions.title': '세션 키',
+  'sessions.description': 'AI 에이전트 세션 키 모니터 — 상태, TTL, 활동.',
+  'sessions.totalKeys': '총 키',
+  'sessions.validKeys': '유효',
+  'sessions.expiredKeys': '만료',
+  'sessions.revokedKeys': '취소됨',
+  'sessions.noKeys': '세션 키를 찾을 수 없습니다.',
+
+  // Risk Dashboard
+  'risk.title': '리스크 대시보드',
+  'risk.description': 'AI 에이전트 지갑 리스크 관리 대시보드.',
+  'risk.totalAgents': '총 에이전트',
+  'risk.activeAgents': '활성 에이전트',
+  'risk.totalViolations': '위반 건수',
+  'risk.totalRejections': '거부 건수',
+  'risk.recentViolations': '최근 위반',
+  'risk.noViolations': '위반 기록이 없습니다.',
+  'risk.dailySpend': '일일 지출',
+  'risk.maxPerTx': '거래당 최대',
 };
 
 export default ko;
