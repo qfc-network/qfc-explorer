@@ -16,6 +16,9 @@ const en = {
   'nav.abiTools': 'ABI Tools',
   'nav.apiDocs': 'API Docs',
   'nav.aiInference': 'AI Inference',
+  'nav.inferenceOverview': 'Overview',
+  'nav.inferenceTasks': 'Inference Tasks',
+  'nav.inferenceAnalytics': 'Analytics',
   'nav.network': 'Network',
   'nav.validators': 'Validators',
   'nav.analytics': 'Analytics',
@@ -768,6 +771,7 @@ const en = {
   'miners.tier': 'Tier',
   'miners.vram': 'VRAM',
   'miners.backend': 'Backend',
+  'miners.platform': 'Platform',
   'miners.score': 'Score',
   'miners.noMiners': 'No miners registered yet.',
 
@@ -790,6 +794,7 @@ const en = {
   'miner.progress': 'Progress',
   'miner.cliffEnd': 'Cliff End',
   'miner.endTime': 'End Time',
+  'miner.hardwareProfile': 'Hardware Profile',
 
   // DEX page
   'nav.dex': 'DEX',
@@ -816,6 +821,69 @@ const en = {
   'dex.time': 'Time',
   'dex.noPools': 'No pools available yet.',
   'dex.noSwaps': 'No recent swaps.',
+
+  // AI Agents pages
+  'nav.agents': 'AI Agents',
+  'agents.title': 'AI Agents',
+  'agents.description': 'Registered AI agents on the QFC network.',
+  'agents.totalAgents': 'Total Agents',
+  'agents.activeAgents': 'Active Agents',
+  'agents.totalDeposit': 'Total Deposited',
+  'agents.noAgents': 'No agents registered yet.',
+  'agents.agentId': 'Agent ID',
+  'agents.owner': 'Owner',
+  'agents.agentAddress': 'Agent Address',
+  'agents.deposit': 'Deposit',
+  'agents.registered': 'Registered',
+  'agents.permissions': 'Permissions',
+  'agents.dailyLimit': 'Daily Limit',
+  'agents.maxPerTx': 'Max Per Tx',
+  'agents.spentToday': 'Spent Today',
+  'agents.notFound': 'Agent not found',
+  'agents.backToList': 'Back to Agents',
+  'agents.viewOwner': 'View Owner',
+  'agents.viewAgent': 'View Agent Address',
+  'agents.viewSessionKeys': 'Session Keys',
+  'agents.viewRiskDashboard': 'Risk Dashboard',
+
+  // Navigation - Agents
+  'nav.agentsMenu': 'AI Agents',
+  'nav.agentList': 'Agent List',
+  'nav.sessionKeys': 'Session Keys',
+  'nav.riskDashboard': 'Risk Dashboard',
+
+  // Session Keys page
+  'sessions.title': 'Session Keys',
+  'sessions.description': 'Monitor session keys for AI agents — status, TTL, and activity.',
+  'sessions.totalKeys': 'Total Keys',
+  'sessions.validKeys': 'Valid',
+  'sessions.expiredKeys': 'Expired',
+  'sessions.revokedKeys': 'Revoked',
+  'sessions.noKeys': 'No session keys found.',
+
+  // Agent Dashboard page
+  'dashboard.title': 'Agent Dashboard',
+  'dashboard.description': 'Operator view — your agents, alerts, and spending trends.',
+  'dashboard.spentToday': 'Spent Today',
+  'dashboard.alerts': 'Alerts',
+  'dashboard.spendingTrend': 'Spending Trend (7d)',
+  'dashboard.myAgents': 'My Agents',
+  'dashboard.noAlerts': 'No alerts.',
+
+  // Navigation - Dashboard
+  'nav.agentDashboard': 'Dashboard',
+
+  // Risk Dashboard page
+  'risk.title': 'Risk Dashboard',
+  'risk.description': 'Operator dashboard for AI agent wallet risk posture.',
+  'risk.totalAgents': 'Total Agents',
+  'risk.activeAgents': 'Active Agents',
+  'risk.totalViolations': 'Violations',
+  'risk.totalRejections': 'Rejections',
+  'risk.recentViolations': 'Recent Violations',
+  'risk.noViolations': 'No violations recorded.',
+  'risk.dailySpend': 'Daily Spend',
+  'risk.maxPerTx': 'Max Per Tx',
 } as const;
 
 export type TranslationKey = keyof typeof en;

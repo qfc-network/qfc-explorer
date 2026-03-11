@@ -15,18 +15,33 @@ export default function LiveStats() {
   } | null>(null);
 
   useEffect(() => {
-    const source = new EventSource(apiUrl('/api/stream'));
-    source.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        setStats(data);
-      } catch {
-        // ignore
-      }
-    };
+    let cancelled = false;
+    let source: EventSource | null = null;
+
+    // Preflight: check if the stream endpoint exists before opening EventSource
+    const url = apiUrl('/api/stream');
+    fetch(url, { method: 'HEAD' }).then((res) => {
+      if (cancelled || !res.ok) return;
+      source = new EventSource(url);
+      source.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          setStats(data);
+        } catch {
+          // ignore
+        }
+      };
+      source.onerror = () => {
+        source?.close();
+        source = null;
+      };
+    }).catch(() => {
+      // endpoint not available, silently skip
+    });
 
     return () => {
-      source.close();
+      cancelled = true;
+      source?.close();
     };
   }, []);
 

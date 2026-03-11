@@ -16,6 +16,9 @@ const zh: Record<string, string> = {
   'nav.abiTools': 'ABI 工具',
   'nav.apiDocs': 'API 文档',
   'nav.aiInference': 'AI 推理',
+  'nav.inferenceOverview': '概览',
+  'nav.inferenceTasks': '推理任务',
+  'nav.inferenceAnalytics': '分析',
   'nav.network': '网络',
   'nav.validators': '验证者',
   'nav.analytics': '数据分析',
@@ -762,6 +765,7 @@ const zh: Record<string, string> = {
   'miners.tier': '等级',
   'miners.vram': '显存',
   'miners.backend': '后端',
+  'miners.platform': '平台',
   'miners.score': '分数',
   'miners.noMiners': '暂无注册矿工。',
 
@@ -784,6 +788,7 @@ const zh: Record<string, string> = {
   'miner.progress': '进度',
   'miner.cliffEnd': '锁定期结束',
   'miner.endTime': '结束时间',
+  'miner.hardwareProfile': '硬件配置',
 
   // DEX page
   'nav.dex': 'DEX',
@@ -810,6 +815,67 @@ const zh: Record<string, string> = {
   'dex.time': '时间',
   'dex.noPools': '暂无可用流动性池。',
   'dex.noSwaps': '暂无最近交换。',
+
+  // AI Agents
+  'nav.agents': 'AI 代理',
+  'agents.title': 'AI 代理',
+  'agents.description': 'QFC 网络上注册的 AI 代理。',
+  'agents.totalAgents': '代理总数',
+  'agents.activeAgents': '活跃代理',
+  'agents.totalDeposit': '总存款',
+  'agents.noAgents': '尚未注册代理。',
+  'agents.agentId': '代理 ID',
+  'agents.owner': '所有者',
+  'agents.agentAddress': '代理地址',
+  'agents.deposit': '存款',
+  'agents.registered': '注册时间',
+  'agents.permissions': '权限',
+  'agents.dailyLimit': '每日限额',
+  'agents.maxPerTx': '单笔上限',
+  'agents.spentToday': '今日支出',
+  'agents.notFound': '未找到代理',
+  'agents.backToList': '返回代理列表',
+  'agents.viewOwner': '查看所有者',
+  'agents.viewAgent': '查看代理地址',
+  'agents.viewSessionKeys': '会话密钥',
+  'agents.viewRiskDashboard': '风险面板',
+
+  // Navigation - Agents
+  'nav.agentsMenu': 'AI 代理',
+  'nav.agentList': '代理列表',
+  'nav.sessionKeys': '会话密钥',
+  'nav.riskDashboard': '风险面板',
+
+  // Session Keys
+  'sessions.title': '会话密钥',
+  'sessions.description': '监控 AI 代理会话密钥的状态、TTL 和活动。',
+  'sessions.totalKeys': '密钥总数',
+  'sessions.validKeys': '有效',
+  'sessions.expiredKeys': '已过期',
+  'sessions.revokedKeys': '已撤销',
+  'sessions.noKeys': '未找到会话密钥。',
+
+  // Risk Dashboard
+  'risk.title': '风险面板',
+  'risk.description': 'AI 代理钱包风险态势运维面板。',
+  'risk.totalAgents': '代理总数',
+  'risk.activeAgents': '活跃代理',
+  'risk.totalViolations': '违规次数',
+  'risk.totalRejections': '拒绝次数',
+  'risk.recentViolations': '近期违规',
+  'risk.noViolations': '无违规记录。',
+  'risk.dailySpend': '每日支出',
+  'risk.maxPerTx': '单笔上限',
+
+  // Agent Dashboard
+  'dashboard.title': 'Agent 控制台',
+  'dashboard.description': '运营视图 — 您的 Agent、告警和消费趋势。',
+  'dashboard.spentToday': '今日消费',
+  'dashboard.alerts': '告警',
+  'dashboard.spendingTrend': '消费趋势 (7天)',
+  'dashboard.myAgents': '我的 Agent',
+  'dashboard.noAlerts': '暂无告警。',
+  'nav.agentDashboard': '控制台',
 };
 
 export default zh;

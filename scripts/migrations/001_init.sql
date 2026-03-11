@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS blocks (
   gas_used BIGINT,
   extra_data BYTEA,
   tx_count INTEGER NOT NULL DEFAULT 0,
+  base_fee_per_gas TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -36,7 +37,9 @@ CREATE TABLE IF NOT EXISTS transactions (
   gas_limit BIGINT NOT NULL,
   gas_price TEXT NOT NULL,
   status TEXT NOT NULL,
-  data BYTEA,
+  input_data TEXT,
+  max_fee_per_gas TEXT,
+  max_priority_fee_per_gas TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -91,3 +94,15 @@ CREATE INDEX IF NOT EXISTS idx_events_block_height ON events(block_height);
 CREATE INDEX IF NOT EXISTS idx_events_contract ON events(contract_address);
 
 COMMIT;
+
+-- Token prices (from external oracle/CoinGecko)
+CREATE TABLE IF NOT EXISTS token_prices (
+  token_address TEXT NOT NULL PRIMARY KEY,
+  price_usd     NUMERIC(30,10) NOT NULL DEFAULT 0,
+  market_cap_usd NUMERIC(30,2),
+  change_24h    NUMERIC(10,4),
+  volume_24h    NUMERIC(30,2),
+  coingecko_id  TEXT,
+  source        TEXT NOT NULL DEFAULT 'manual',
+  updated_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);

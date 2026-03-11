@@ -90,7 +90,7 @@ export default function ContractVerification({
     setResult(null);
 
     try {
-      const response = await fetch(apiUrl('/api/contracts/verify'), {
+      const response = await fetch(apiUrl('/api/contract/verify'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -187,7 +187,7 @@ export default function ContractVerification({
     }
 
     try {
-      const response = await fetch(apiUrl('/api/contracts/verify-multi'), {
+      const response = await fetch(apiUrl('/api/contract/verify-multi'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -220,7 +220,7 @@ export default function ContractVerification({
     setVyperResult(null);
 
     try {
-      const response = await fetch(apiUrl('/api/contracts/verify-vyper'), {
+      const response = await fetch(apiUrl('/api/contract/verify-vyper'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

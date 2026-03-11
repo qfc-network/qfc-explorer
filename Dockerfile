@@ -10,6 +10,9 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 # Limit build workers to avoid QEMU SIGILL on arm64 cross-compile
 ENV NODE_OPTIONS="--max-old-space-size=1024"
+# NEXT_PUBLIC_* vars must be set at build time (inlined into client bundle)
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 RUN npm run build
 
 FROM node:20-alpine AS runner
@@ -23,17 +26,5 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
-# Copy node_modules and src for indexer (tsx needs these)
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/src ./src
-COPY --from=builder /app/tsconfig.json ./tsconfig.json
-
-# Create startup script that runs both Next.js and indexer
-RUN echo '#!/bin/sh' > /app/start.sh && \
-    echo 'node server.js &' >> /app/start.sh && \
-    echo 'sleep 5' >> /app/start.sh && \
-    echo 'npx tsx src/indexer/index.ts' >> /app/start.sh && \
-    chmod +x /app/start.sh
-
 EXPOSE 3000
-CMD ["/app/start.sh"]
+CMD ["node", "server.js"]

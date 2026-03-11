@@ -16,6 +16,9 @@ const ja: Record<string, string> = {
   'nav.abiTools': 'ABI ツール',
   'nav.apiDocs': 'API ドキュメント',
   'nav.aiInference': 'AI 推論',
+  'nav.inferenceOverview': '概要',
+  'nav.inferenceTasks': '推論タスク',
+  'nav.inferenceAnalytics': '分析',
   'nav.network': 'ネットワーク',
   'nav.validators': 'バリデーター',
   'nav.analytics': '分析',
@@ -762,6 +765,7 @@ const ja: Record<string, string> = {
   'miners.tier': 'ティア',
   'miners.vram': 'VRAM',
   'miners.backend': 'バックエンド',
+  'miners.platform': 'プラットフォーム',
   'miners.score': 'スコア',
   'miners.noMiners': '登録済みマイナーはありません。',
 
@@ -784,6 +788,7 @@ const ja: Record<string, string> = {
   'miner.progress': '進捗',
   'miner.cliffEnd': 'クリフ終了',
   'miner.endTime': '終了時間',
+  'miner.hardwareProfile': 'ハードウェアプロファイル',
 
   // DEX page
   'nav.dex': 'DEX',
@@ -810,6 +815,67 @@ const ja: Record<string, string> = {
   'dex.time': '時間',
   'dex.noPools': '利用可能なプールはまだありません。',
   'dex.noSwaps': '最近のスワップはありません。',
+
+  // AI Agents
+  'nav.agents': 'AIエージェント',
+  'agents.title': 'AIエージェント',
+  'agents.description': 'QFCネットワークに登録されたAIエージェント。',
+  'agents.totalAgents': 'エージェント総数',
+  'agents.activeAgents': 'アクティブ',
+  'agents.totalDeposit': '総デポジット',
+  'agents.noAgents': 'エージェントはまだ登録されていません。',
+  'agents.agentId': 'エージェントID',
+  'agents.owner': 'オーナー',
+  'agents.agentAddress': 'エージェントアドレス',
+  'agents.deposit': 'デポジット',
+  'agents.registered': '登録日',
+  'agents.permissions': '権限',
+  'agents.dailyLimit': '日次上限',
+  'agents.maxPerTx': 'Tx毎上限',
+  'agents.spentToday': '本日の支出',
+  'agents.notFound': 'エージェントが見つかりません',
+  'agents.backToList': 'エージェント一覧に戻る',
+  'agents.viewOwner': 'オーナーを表示',
+  'agents.viewAgent': 'エージェントアドレスを表示',
+  'agents.viewSessionKeys': 'セッションキー',
+  'agents.viewRiskDashboard': 'リスクダッシュボード',
+
+  // Navigation - Agents
+  'nav.agentsMenu': 'AIエージェント',
+  'nav.agentList': 'エージェント一覧',
+  'nav.sessionKeys': 'セッションキー',
+  'nav.riskDashboard': 'リスクダッシュボード',
+
+  // Session Keys
+  'sessions.title': 'セッションキー',
+  'sessions.description': 'AIエージェントのセッションキーを監視 — ステータス、TTL、アクティビティ。',
+  'sessions.totalKeys': 'キー総数',
+  'sessions.validKeys': '有効',
+  'sessions.expiredKeys': '期限切れ',
+  'sessions.revokedKeys': '取消済み',
+  'sessions.noKeys': 'セッションキーが見つかりません。',
+
+  // Risk Dashboard
+  'risk.title': 'リスクダッシュボード',
+  'risk.description': 'AIエージェントウォレットのリスク管理ダッシュボード。',
+  'risk.totalAgents': 'エージェント総数',
+  'risk.activeAgents': 'アクティブ',
+  'risk.totalViolations': '違反数',
+  'risk.totalRejections': '拒否数',
+  'risk.recentViolations': '最近の違反',
+  'risk.noViolations': '違反はありません。',
+  'risk.dailySpend': '日次支出',
+  'risk.maxPerTx': 'Tx毎上限',
+
+  // Agent Dashboard
+  'dashboard.title': 'エージェントダッシュボード',
+  'dashboard.description': 'オペレータービュー — エージェント、アラート、支出トレンド。',
+  'dashboard.spentToday': '本日の支出',
+  'dashboard.alerts': 'アラート',
+  'dashboard.spendingTrend': '支出トレンド (7日)',
+  'dashboard.myAgents': 'マイエージェント',
+  'dashboard.noAlerts': 'アラートなし。',
+  'nav.agentDashboard': 'ダッシュボード',
 };
 
 export default ja;

@@ -16,6 +16,9 @@ const ko: Record<string, string> = {
   'nav.abiTools': 'ABI 도구',
   'nav.apiDocs': 'API 문서',
   'nav.aiInference': 'AI 추론',
+  'nav.inferenceOverview': '개요',
+  'nav.inferenceTasks': '추론 작업',
+  'nav.inferenceAnalytics': '분석',
   'nav.network': '네트워크',
   'nav.validators': '검증자',
   'nav.analytics': '분석',
@@ -762,6 +765,7 @@ const ko: Record<string, string> = {
   'miners.tier': '티어',
   'miners.vram': 'VRAM',
   'miners.backend': '백엔드',
+  'miners.platform': '플랫폼',
   'miners.score': '점수',
   'miners.noMiners': '등록된 마이너가 없습니다.',
 
@@ -784,6 +788,7 @@ const ko: Record<string, string> = {
   'miner.progress': '진행률',
   'miner.cliffEnd': '클리프 종료',
   'miner.endTime': '종료 시간',
+  'miner.hardwareProfile': '하드웨어 프로필',
 
   // DEX page
   'nav.dex': 'DEX',
@@ -810,6 +815,67 @@ const ko: Record<string, string> = {
   'dex.time': '시간',
   'dex.noPools': '아직 사용 가능한 풀이 없습니다.',
   'dex.noSwaps': '최근 스왑이 없습니다.',
+
+  // AI Agents
+  'nav.agents': 'AI 에이전트',
+  'agents.title': 'AI 에이전트',
+  'agents.description': 'QFC 네트워크에 등록된 AI 에이전트.',
+  'agents.totalAgents': '총 에이전트',
+  'agents.activeAgents': '활성 에이전트',
+  'agents.totalDeposit': '총 예치금',
+  'agents.noAgents': '등록된 에이전트가 없습니다.',
+  'agents.agentId': '에이전트 ID',
+  'agents.owner': '소유자',
+  'agents.agentAddress': '에이전트 주소',
+  'agents.deposit': '예치금',
+  'agents.registered': '등록일',
+  'agents.permissions': '권한',
+  'agents.dailyLimit': '일일 한도',
+  'agents.maxPerTx': '거래당 최대',
+  'agents.spentToday': '오늘 사용량',
+  'agents.notFound': '에이전트를 찾을 수 없습니다',
+  'agents.backToList': '에이전트 목록으로',
+  'agents.viewOwner': '소유자 보기',
+  'agents.viewAgent': '에이전트 주소 보기',
+  'agents.viewSessionKeys': '세션 키',
+  'agents.viewRiskDashboard': '리스크 대시보드',
+
+  // Navigation - Agents
+  'nav.agentsMenu': 'AI 에이전트',
+  'nav.agentList': '에이전트 목록',
+  'nav.sessionKeys': '세션 키',
+  'nav.riskDashboard': '리스크 대시보드',
+
+  // Session Keys
+  'sessions.title': '세션 키',
+  'sessions.description': 'AI 에이전트 세션 키 모니터 — 상태, TTL, 활동.',
+  'sessions.totalKeys': '총 키',
+  'sessions.validKeys': '유효',
+  'sessions.expiredKeys': '만료',
+  'sessions.revokedKeys': '취소됨',
+  'sessions.noKeys': '세션 키를 찾을 수 없습니다.',
+
+  // Risk Dashboard
+  'risk.title': '리스크 대시보드',
+  'risk.description': 'AI 에이전트 지갑 리스크 관리 대시보드.',
+  'risk.totalAgents': '총 에이전트',
+  'risk.activeAgents': '활성 에이전트',
+  'risk.totalViolations': '위반 건수',
+  'risk.totalRejections': '거부 건수',
+  'risk.recentViolations': '최근 위반',
+  'risk.noViolations': '위반 기록이 없습니다.',
+  'risk.dailySpend': '일일 지출',
+  'risk.maxPerTx': '거래당 최대',
+
+  // Agent Dashboard
+  'dashboard.title': '에이전트 대시보드',
+  'dashboard.description': '운영자 뷰 — 에이전트, 알림, 지출 추세.',
+  'dashboard.spentToday': '오늘 지출',
+  'dashboard.alerts': '알림',
+  'dashboard.spendingTrend': '지출 추세 (7일)',
+  'dashboard.myAgents': '내 에이전트',
+  'dashboard.noAlerts': '알림 없음.',
+  'nav.agentDashboard': '대시보드',
 };
 
 export default ko;

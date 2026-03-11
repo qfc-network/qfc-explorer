@@ -81,7 +81,8 @@ export type ApiTransactionDetail = ApiOk<{
     gas_price: string;
     gas_used: string | null;
     nonce: string;
-    data: string | null;
+    data: string | null; // legacy
+    input_data: string | null;
     type: string | null;
     timestamp_ms: string | null;
   };
@@ -385,6 +386,34 @@ export type ApiTaskStatus = ApiOk<{
   resultSize?: number;
   minerAddress?: string;
   executionTimeMs?: number;
+}>;
+
+export type ApiInferenceTasksList = ApiOk<{
+  page: number;
+  limit: number;
+  total: number;
+  status: string | null;
+  stats: {
+    total: number;
+    completed: number;
+    pending: number;
+    failed: number;
+    avgExecutionTimeMs: number;
+  };
+  items: Array<{
+    taskId: string;
+    status: string;
+    submitter: string;
+    taskType: string;
+    modelId: string;
+    createdAt: number;
+    deadline: number;
+    maxFee: string;
+    result?: string;
+    resultSize?: number;
+    minerAddress?: string;
+    executionTimeMs?: number;
+  }>;
 }>;
 
 export type ApiTxPool = ApiOk<{
@@ -762,6 +791,12 @@ export type ApiRegisteredMiner = {
   tier: number;
   vramMb: number;
   backend: string;
+  os: string;
+  arch: string;
+  cpuModel: string;
+  cpuCores: number;
+  totalMemoryMb: number;
+  version: string;
   registeredAt: string;
   contributionScore: string;
 };
@@ -775,6 +810,126 @@ export type ApiMinersList = ApiOk<{
 
 // --- Miner Revenue ---
 
+// --- AI Agents ---
+
+export type ApiAgentInfo = {
+  agentId: string;
+  owner: string;
+  agentAddress: string;
+  permissions: number[];
+  permissionLabels: string[];
+  dailyLimit: string;
+  maxPerTx: string;
+  deposit: string;
+  spentToday: string;
+  lastSpendDay: string;
+  registeredAt: string;
+  active: boolean;
+};
+
+export type ApiAgentsList = ApiOk<{
+  total: number;
+  items: ApiAgentInfo[];
+}>;
+
+export type ApiAgentDetail = ApiOk<ApiAgentInfo>;
+
+// --- Session Keys ---
+
+export type ApiSessionKeyInfo = {
+  keyAddress: string;
+  agentId: string;
+  owner: string;
+  status: string; // 'valid' | 'expired' | 'revoked'
+  permissions: number[];
+  permissionLabels: string[];
+  createdAt: string;
+  expiresAt: string;
+  lastActivityAt: string | null;
+};
+
+export type ApiSessionKeysList = ApiOk<{
+  total: number;
+  stats: { valid: number; expired: number; revoked: number };
+  items: ApiSessionKeyInfo[];
+}>;
+
+// --- Agent Risk Dashboard ---
+
+export type ApiAgentRiskItem = ApiAgentInfo & {
+  violationCount: number;
+  rejectionCount: number;
+};
+
+export type ApiAgentRiskViolation = {
+  txHash: string;
+  agentId: string;
+  reason: string;
+  timestamp: string;
+  amount: string;
+};
+
+export type ApiAgentRiskDashboard = ApiOk<{
+  stats: {
+    totalAgents: number;
+    activeAgents: number;
+    totalViolations: number;
+    totalRejections: number;
+  };
+  agents: ApiAgentRiskItem[];
+  violations: ApiAgentRiskViolation[];
+}>;
+
+// --- Agent Dashboard ---
+
+export type ApiAgentDashboard = ApiOk<{
+  stats: {
+    totalAgents: number;
+    activeAgents: number;
+    totalDeposit: string;
+    totalSpentToday: string;
+  };
+  agents: ApiAgentInfo[];
+  alerts: ApiAgentAlert[];
+  spendingTrend: ApiSpendingPoint[];
+}>;
+
+export type ApiAgentAlert = {
+  agentId: string;
+  type: 'high_spend' | 'limit_reached' | 'key_expiring' | 'revoked';
+  message: string;
+  timestamp: string;
+};
+
+export type ApiSpendingPoint = {
+  date: string;
+  amount: string;
+};
+
+// --- Agent Transactions ---
+
+export type ApiAgentTransaction = {
+  hash: string;
+  from: string;
+  to: string;
+  value: string;
+  status: number;
+  timestamp: string;
+  method: string;
+};
+
+export type ApiAgentTransactions = ApiOk<{
+  total: number;
+  items: ApiAgentTransaction[];
+}>;
+
+// --- Agent Session Keys (per agent) ---
+
+export type ApiAgentSessionKeys = ApiOk<{
+  total: number;
+  items: ApiSessionKeyInfo[];
+}>;
+
 export type ApiMinerDetail = ApiOk<{
   address: string;
   totalEarned: string;
@@ -782,6 +937,19 @@ export type ApiMinerDetail = ApiOk<{
   available: string;
   activeTranches: number;
   contributionScore: string;
+  // Hardware profile
+  gpuModel: string;
+  benchmarkScore: number;
+  tier: number;
+  vramMb: number;
+  backend: string;
+  os: string;
+  arch: string;
+  cpuModel: string;
+  cpuCores: number;
+  totalMemoryMb: number;
+  version: string;
+  registeredAt: string;
   earnings: Array<{
     blockHeight: string;
     reward: string;

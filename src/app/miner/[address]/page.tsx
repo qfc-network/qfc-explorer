@@ -1,8 +1,7 @@
 export const dynamic = "force-dynamic";
 
+import type { Metadata } from 'next';
 import Link from 'next/link';
-import { fetchJsonSafe } from '@/lib/api-client';
-import type { ApiMinerDetail } from '@/lib/api-types';
 import { formatNumber, shortenHash, formatTimestampMs } from '@/lib/format';
 import { formatHexWeiToQfc, formatFlops } from '@/lib/qfc-format';
 import SectionHeader from '@/components/SectionHeader';
@@ -13,6 +12,21 @@ import MinerScoreGauge from '@/components/MinerScoreGauge';
 import MinerEarningsChart from '@/components/MinerEarningsChart';
 import VestingTimeline from '@/components/VestingTimeline';
 import MinerRoiCalculator from '@/components/MinerRoiCalculator';
+import { fetchJsonSafe, getApiBaseUrl } from '@/lib/api-client';
+
+export async function generateMetadata({ params }: { params: { address: string } }): Promise<Metadata> {
+  const address = params.address;
+  const short = `${address.slice(0, 6)}...${address.slice(-4)}`;
+  return {
+    title: `Miner ${short}`,
+    description: `Inference miner ${short} on the QFC network — performance, earnings, and task history.`,
+    openGraph: {
+      title: `Miner ${short} | QFC Explorer`,
+      description: `Inference miner ${short} on the QFC network.`,
+      type: 'article',
+    },
+  };
+}
 
 export default async function MinerDetailPage({
   params,
@@ -20,12 +34,38 @@ export default async function MinerDetailPage({
   params: { address: string };
 }) {
   const { address } = params;
-  const response = await fetchJsonSafe<ApiMinerDetail>(
-    `/api/miners/${address}`,
-    { next: { revalidate: 15 } }
-  );
 
-  const miner = response?.data ?? null;
+  let miner: any = null;
+  try {
+    if (/^0x[0-9a-fA-F]{40}$/.test(address)) {
+      const data = await fetchJsonSafe<Record<string, any>>(`${getApiBaseUrl()}/miners/${address}`);
+      if (data) {
+        miner = {
+          address,
+          totalEarned: data.totalEarned ?? '0x0',
+          locked: data.locked ?? '0x0',
+          available: data.available ?? '0x0',
+          activeTranches: data.activeTranches ?? 0,
+          contributionScore: data.contributionScore ?? 0,
+          earnings: data.earnings ?? [],
+          tranches: data.tranches ?? [],
+          gpuModel: data.gpuModel,
+          vramMb: data.vramMb,
+          backend: data.backend,
+          cpuModel: data.cpuModel,
+          cpuCores: data.cpuCores,
+          totalMemoryMb: data.totalMemoryMb,
+          os: data.os,
+          arch: data.arch,
+          tier: data.tier,
+          benchmarkScore: data.benchmarkScore,
+          version: data.version,
+        };
+      }
+    }
+  } catch (e) {
+    console.error('Failed to fetch miner data:', e);
+  }
 
   if (!miner) {
     return (
@@ -88,6 +128,77 @@ export default async function MinerDetailPage({
         </div>
       </div>
 
+      {/* Hardware profile */}
+      {miner.gpuModel && (
+        <section className="mt-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-5">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-500 mb-4">
+            <TranslatedText tKey="miner.hardwareProfile" />
+          </h2>
+          <div className="grid gap-x-8 gap-y-3 sm:grid-cols-2 lg:grid-cols-3 text-sm">
+            <div>
+              <span className="text-slate-500">GPU</span>
+              <p className="font-medium text-slate-900 dark:text-white">{miner.gpuModel}</p>
+            </div>
+            <div>
+              <span className="text-slate-500">VRAM</span>
+              <p className="font-medium text-slate-900 dark:text-white">
+                {miner.vramMb >= 1024 ? `${(miner.vramMb / 1024).toFixed(1)} GB` : `${miner.vramMb} MB`}
+              </p>
+            </div>
+            <div>
+              <span className="text-slate-500">Backend</span>
+              <p className="font-medium text-slate-900 dark:text-white">{miner.backend}</p>
+            </div>
+            {miner.cpuModel && (
+              <div>
+                <span className="text-slate-500">CPU</span>
+                <p className="font-medium text-slate-900 dark:text-white">{miner.cpuModel}</p>
+              </div>
+            )}
+            {miner.cpuCores > 0 && (
+              <div>
+                <span className="text-slate-500">CPU Cores</span>
+                <p className="font-medium text-slate-900 dark:text-white">{miner.cpuCores}</p>
+              </div>
+            )}
+            {miner.totalMemoryMb > 0 && (
+              <div>
+                <span className="text-slate-500">RAM</span>
+                <p className="font-medium text-slate-900 dark:text-white">
+                  {(miner.totalMemoryMb / 1024).toFixed(1)} GB
+                </p>
+              </div>
+            )}
+            {miner.os && (
+              <div>
+                <span className="text-slate-500">OS</span>
+                <p className="font-medium text-slate-900 dark:text-white">
+                  {miner.os}{miner.arch ? ` (${miner.arch})` : ''}
+                </p>
+              </div>
+            )}
+            {miner.tier > 0 && (
+              <div>
+                <span className="text-slate-500">Tier</span>
+                <p className="font-medium text-slate-900 dark:text-white">T{miner.tier}</p>
+              </div>
+            )}
+            {miner.benchmarkScore > 0 && (
+              <div>
+                <span className="text-slate-500">Benchmark</span>
+                <p className="font-medium text-slate-900 dark:text-white">{miner.benchmarkScore}</p>
+              </div>
+            )}
+            {miner.version && (
+              <div>
+                <span className="text-slate-500">Miner Version</span>
+                <p className="font-medium text-slate-900 dark:text-white">v{miner.version}</p>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
       {/* Score gauge + Earnings chart (side by side on desktop) */}
       <div className="mt-6 grid gap-4 lg:grid-cols-[280px_1fr]">
         {Number(miner.contributionScore) > 0 && (
@@ -112,7 +223,7 @@ export default async function MinerDetailPage({
           description={`${miner.activeTranches} active tranche${miner.activeTranches === 1 ? '' : 's'}`}
         />
         <Table
-          rows={miner.tranches}
+          rows={miner.tranches as Record<string, any>[]}
           emptyMessage="No vesting tranches."
           columns={[
             {
@@ -167,7 +278,7 @@ export default async function MinerDetailPage({
       <section className="mt-8 space-y-4">
         <SectionHeader title="Recent Earnings" />
         <Table
-          rows={miner.earnings}
+          rows={miner.earnings as Record<string, any>[]}
           emptyMessage="No earnings recorded yet."
           columns={[
             {
