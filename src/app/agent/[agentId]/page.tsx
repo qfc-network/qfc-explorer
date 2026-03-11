@@ -189,10 +189,16 @@ export default async function AgentDetailPage({
           View Agent Address
         </Link>
         <Link
+          href={`/agents/${encodeURIComponent(agent.agentId)}/keys`}
+          className="rounded-full border border-slate-300 dark:border-slate-700 px-4 py-2 text-sm text-slate-700 dark:text-slate-200 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800"
+        >
+          Manage Keys
+        </Link>
+        <Link
           href={`/agents/sessions?agent=${encodeURIComponent(agent.agentId)}`}
           className="rounded-full border border-slate-300 dark:border-slate-700 px-4 py-2 text-sm text-slate-700 dark:text-slate-200 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800"
         >
-          Session Keys
+          Session Keys Monitor
         </Link>
         <Link
           href={`/agents/risk?agent=${encodeURIComponent(agent.agentId)}`}

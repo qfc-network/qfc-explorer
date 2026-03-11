@@ -840,6 +840,16 @@ const ko: Record<string, string> = {
   'risk.noViolations': '위반 기록이 없습니다.',
   'risk.dailySpend': '일일 지출',
   'risk.maxPerTx': '거래당 최대',
+
+  // Agent Dashboard
+  'dashboard.title': '에이전트 대시보드',
+  'dashboard.description': '운영자 뷰 — 에이전트, 알림, 지출 추세.',
+  'dashboard.spentToday': '오늘 지출',
+  'dashboard.alerts': '알림',
+  'dashboard.spendingTrend': '지출 추세 (7일)',
+  'dashboard.myAgents': '내 에이전트',
+  'dashboard.noAlerts': '알림 없음.',
+  'nav.agentDashboard': '대시보드',
 };
 
 export default ko;
