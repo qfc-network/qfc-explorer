@@ -40,6 +40,7 @@ const NAV_ITEMS: NavItem[] = [
       { labelKey: 'nav.apiDocs', href: '/api-docs' },
     ],
   },
+  { labelKey: 'nav.dex', href: '/dex' },
   {
     labelKey: 'nav.aiInference',
     children: [
