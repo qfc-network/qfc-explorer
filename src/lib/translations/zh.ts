@@ -784,6 +784,12 @@ const zh: Record<string, string> = {
   'miner.progress': '进度',
   'miner.cliffEnd': '锁定期结束',
   'miner.endTime': '结束时间',
+
+  // Inference navigation
+  'nav.inferenceOverview': '概览',
+  'nav.submitTask': '提交任务',
+  'nav.browseTasks': '浏览任务',
+  'nav.inferenceAnalytics': '分析',
 };
 
 export default zh;

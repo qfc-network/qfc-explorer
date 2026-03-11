@@ -40,7 +40,15 @@ const NAV_ITEMS: NavItem[] = [
       { labelKey: 'nav.apiDocs', href: '/api-docs' },
     ],
   },
-  { labelKey: 'nav.aiInference', href: '/inference' },
+  {
+    labelKey: 'nav.aiInference',
+    children: [
+      { labelKey: 'nav.inferenceOverview', href: '/inference' },
+      { labelKey: 'nav.submitTask', href: '/inference/submit' },
+      { labelKey: 'nav.browseTasks', href: '/inference/tasks' },
+      { labelKey: 'nav.inferenceAnalytics', href: '/inference/analytics' },
+    ],
+  },
   {
     labelKey: 'nav.network',
     children: [

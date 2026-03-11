@@ -773,6 +773,45 @@ export type ApiMinersList = ApiOk<{
   items: ApiRegisteredMiner[];
 }>;
 
+// --- Inference Tasks List ---
+
+export type InferenceTaskItem = {
+  taskId: string;
+  modelId: string;
+  modelName: string;
+  submitter: string;
+  miner: string | null;
+  status: string;
+  maxFee: string;
+  createdAt: number;
+};
+
+export type ApiInferenceTasksList = ApiOk<{
+  tasks: InferenceTaskItem[];
+  total: number;
+}>;
+
+// --- Inference Task Detail ---
+
+export type InferenceTaskDetail = {
+  taskId: string;
+  modelId: string;
+  modelName: string;
+  submitter: string;
+  miner: string | null;
+  status: string;
+  maxFee: string;
+  inputHash: string;
+  resultHash: string | null;
+  proof: string | null;
+  createdAt: number;
+  claimedAt: number | null;
+  completedAt: number | null;
+  challengeWindow: number | null;
+};
+
+export type ApiInferenceTaskDetail = ApiOk<InferenceTaskDetail>;
+
 // --- Miner Revenue ---
 
 export type ApiMinerDetail = ApiOk<{

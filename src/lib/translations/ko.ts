@@ -784,6 +784,12 @@ const ko: Record<string, string> = {
   'miner.progress': '진행률',
   'miner.cliffEnd': '클리프 종료',
   'miner.endTime': '종료 시간',
+
+  // Inference navigation
+  'nav.inferenceOverview': '개요',
+  'nav.submitTask': '작업 제출',
+  'nav.browseTasks': '작업 탐색',
+  'nav.inferenceAnalytics': '분석',
 };
 
 export default ko;

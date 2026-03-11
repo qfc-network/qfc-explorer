@@ -790,6 +790,12 @@ const en = {
   'miner.progress': 'Progress',
   'miner.cliffEnd': 'Cliff End',
   'miner.endTime': 'End Time',
+
+  // Inference navigation
+  'nav.inferenceOverview': 'Overview',
+  'nav.submitTask': 'Submit Task',
+  'nav.browseTasks': 'Browse Tasks',
+  'nav.inferenceAnalytics': 'Analytics',
 } as const;
 
 export type TranslationKey = keyof typeof en;

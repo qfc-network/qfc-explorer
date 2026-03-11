@@ -784,6 +784,12 @@ const ja: Record<string, string> = {
   'miner.progress': '進捗',
   'miner.cliffEnd': 'クリフ終了',
   'miner.endTime': '終了時間',
+
+  // Inference navigation
+  'nav.inferenceOverview': '概要',
+  'nav.submitTask': 'タスク送信',
+  'nav.browseTasks': 'タスク一覧',
+  'nav.inferenceAnalytics': 'アナリティクス',
 };
 
 export default ja;

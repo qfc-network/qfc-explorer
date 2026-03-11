@@ -6,6 +6,7 @@ import { fetchJsonSafe } from '@/lib/api-client';
 import type { ApiTaskStatus } from '@/lib/api-types';
 import { formatWeiToQfc } from '@/lib/format';
 import CopyButton from '@/components/CopyButton';
+import ChallengeButton from './ChallengeButton';
 
 export async function generateMetadata({ params }: { params: { taskId: string } }): Promise<Metadata> {
   const id = params.taskId;
@@ -47,8 +48,8 @@ export default async function TaskDetailPage({
         <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-8 text-center">
           <p className="text-lg text-slate-900 dark:text-white">Task not found</p>
           <p className="mt-2 text-sm text-slate-400 font-mono break-all">{taskId}</p>
-          <Link href="/" className="mt-4 inline-block rounded-lg bg-slate-100 dark:bg-slate-800 px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700">
-            Back to home
+          <Link href="/inference/tasks" className="mt-4 inline-block rounded-lg bg-slate-100 dark:bg-slate-800 px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700">
+            Back to tasks
           </Link>
         </div>
       </main>
@@ -66,15 +67,27 @@ export default async function TaskDetailPage({
   const isExpired = task.status === 'Expired';
   const isFinal = isCompleted || isFailed || isExpired;
 
+  // Challenge window: allow challenge if completed and within deadline
+  const canChallenge =
+    isCompleted && deadline != null && deadline.getTime() > Date.now();
+
   return (
     <main className="mx-auto max-w-7xl px-4 py-8">
       {/* Header */}
-      <div className="flex flex-wrap items-center gap-3">
-        <h1 className="text-lg font-semibold text-slate-900 dark:text-white">Inference Task</h1>
-        <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${statusCfg.color}`}>
-          <span className={`h-1.5 w-1.5 rounded-full ${statusCfg.dotColor}`} />
-          {statusCfg.label}
-        </span>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <h1 className="text-lg font-semibold text-slate-900 dark:text-white">Inference Task</h1>
+          <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${statusCfg.color}`}>
+            <span className={`h-1.5 w-1.5 rounded-full ${statusCfg.dotColor}`} />
+            {statusCfg.label}
+          </span>
+        </div>
+        <Link
+          href="/inference/tasks"
+          className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors"
+        >
+          All Tasks
+        </Link>
       </div>
 
       {/* Status Timeline */}
@@ -166,6 +179,13 @@ export default async function TaskDetailPage({
               {tryFormatJson(task.result)}
             </pre>
           </div>
+        </div>
+      )}
+
+      {/* Challenge Button */}
+      {canChallenge && (
+        <div className="mt-6">
+          <ChallengeButton taskId={task.taskId} />
         </div>
       )}
     </main>
