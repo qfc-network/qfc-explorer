@@ -790,6 +790,32 @@ const en = {
   'miner.progress': 'Progress',
   'miner.cliffEnd': 'Cliff End',
   'miner.endTime': 'End Time',
+
+  // DEX page
+  'nav.dex': 'DEX',
+  'dex.title': 'DEX',
+  'dex.description': 'Swap tokens and explore liquidity pools on QFC DEX.',
+  'dex.swap': 'Swap',
+  'dex.from': 'From',
+  'dex.to': 'To',
+  'dex.amount': 'Amount',
+  'dex.estimatedOutput': 'Estimated Output',
+  'dex.feeNote': '0.3% swap fee applied',
+  'dex.connectWallet': 'Connect Wallet to Swap',
+  'dex.selectToken': 'Select token',
+  'dex.enterAmount': 'Enter amount',
+  'dex.topPools': 'Top Pools',
+  'dex.pair': 'Pair',
+  'dex.reserves': 'Reserves',
+  'dex.volume24h': '24h Volume',
+  'dex.recentSwaps': 'Recent Swaps',
+  'dex.txHash': 'Tx Hash',
+  'dex.fromToken': 'From',
+  'dex.toToken': 'To',
+  'dex.swapAmount': 'Amount',
+  'dex.time': 'Time',
+  'dex.noPools': 'No pools available yet.',
+  'dex.noSwaps': 'No recent swaps.',
 } as const;
 
 export type TranslationKey = keyof typeof en;

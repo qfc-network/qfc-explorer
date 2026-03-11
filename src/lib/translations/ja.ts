@@ -784,6 +784,32 @@ const ja: Record<string, string> = {
   'miner.progress': '進捗',
   'miner.cliffEnd': 'クリフ終了',
   'miner.endTime': '終了時間',
+
+  // DEX page
+  'nav.dex': 'DEX',
+  'dex.title': 'DEX',
+  'dex.description': 'QFC DEXでトークンをスワップし、流動性プールを探索します。',
+  'dex.swap': 'スワップ',
+  'dex.from': '送信元',
+  'dex.to': '送信先',
+  'dex.amount': '数量',
+  'dex.estimatedOutput': '推定出力',
+  'dex.feeNote': '0.3% スワップ手数料適用',
+  'dex.connectWallet': 'ウォレットを接続してスワップ',
+  'dex.selectToken': 'トークンを選択',
+  'dex.enterAmount': '数量を入力',
+  'dex.topPools': 'トッププール',
+  'dex.pair': 'ペア',
+  'dex.reserves': 'リザーブ',
+  'dex.volume24h': '24時間取引量',
+  'dex.recentSwaps': '最近のスワップ',
+  'dex.txHash': 'Txハッシュ',
+  'dex.fromToken': '送信元',
+  'dex.toToken': '送信先',
+  'dex.swapAmount': '数量',
+  'dex.time': '時間',
+  'dex.noPools': '利用可能なプールはまだありません。',
+  'dex.noSwaps': '最近のスワップはありません。',
 };
 
 export default ja;

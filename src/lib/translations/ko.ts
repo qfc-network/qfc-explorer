@@ -784,6 +784,32 @@ const ko: Record<string, string> = {
   'miner.progress': '진행률',
   'miner.cliffEnd': '클리프 종료',
   'miner.endTime': '종료 시간',
+
+  // DEX page
+  'nav.dex': 'DEX',
+  'dex.title': 'DEX',
+  'dex.description': 'QFC DEX에서 토큰을 스왑하고 유동성 풀을 탐색하세요.',
+  'dex.swap': '스왑',
+  'dex.from': '보내기',
+  'dex.to': '받기',
+  'dex.amount': '수량',
+  'dex.estimatedOutput': '예상 출력',
+  'dex.feeNote': '0.3% 스왑 수수료 적용',
+  'dex.connectWallet': '지갑 연결 후 스왑',
+  'dex.selectToken': '토큰 선택',
+  'dex.enterAmount': '수량 입력',
+  'dex.topPools': '인기 풀',
+  'dex.pair': '페어',
+  'dex.reserves': '리저브',
+  'dex.volume24h': '24시간 거래량',
+  'dex.recentSwaps': '최근 스왑',
+  'dex.txHash': 'Tx 해시',
+  'dex.fromToken': '보내기',
+  'dex.toToken': '받기',
+  'dex.swapAmount': '수량',
+  'dex.time': '시간',
+  'dex.noPools': '아직 사용 가능한 풀이 없습니다.',
+  'dex.noSwaps': '최근 스왑이 없습니다.',
 };
 
 export default ko;
