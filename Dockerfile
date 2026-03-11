@@ -10,6 +10,9 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 # Limit build workers to avoid QEMU SIGILL on arm64 cross-compile
 ENV NODE_OPTIONS="--max-old-space-size=1024"
+# NEXT_PUBLIC_* vars must be set at build time (inlined into client bundle)
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 RUN npm run build
 
 FROM node:20-alpine AS runner
