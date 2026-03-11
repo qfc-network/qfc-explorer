@@ -817,6 +817,35 @@ const en = {
   'agents.backToList': 'Back to Agents',
   'agents.viewOwner': 'View Owner',
   'agents.viewAgent': 'View Agent Address',
+  'agents.viewSessionKeys': 'Session Keys',
+  'agents.viewRiskDashboard': 'Risk Dashboard',
+
+  // Navigation - Agents
+  'nav.agentsMenu': 'AI Agents',
+  'nav.agentList': 'Agent List',
+  'nav.sessionKeys': 'Session Keys',
+  'nav.riskDashboard': 'Risk Dashboard',
+
+  // Session Keys page
+  'sessions.title': 'Session Keys',
+  'sessions.description': 'Monitor session keys for AI agents — status, TTL, and activity.',
+  'sessions.totalKeys': 'Total Keys',
+  'sessions.validKeys': 'Valid',
+  'sessions.expiredKeys': 'Expired',
+  'sessions.revokedKeys': 'Revoked',
+  'sessions.noKeys': 'No session keys found.',
+
+  // Risk Dashboard page
+  'risk.title': 'Risk Dashboard',
+  'risk.description': 'Operator dashboard for AI agent wallet risk posture.',
+  'risk.totalAgents': 'Total Agents',
+  'risk.activeAgents': 'Active Agents',
+  'risk.totalViolations': 'Violations',
+  'risk.totalRejections': 'Rejections',
+  'risk.recentViolations': 'Recent Violations',
+  'risk.noViolations': 'No violations recorded.',
+  'risk.dailySpend': 'Daily Spend',
+  'risk.maxPerTx': 'Max Per Tx',
 } as const;
 
 export type TranslationKey = keyof typeof en;

@@ -811,6 +811,35 @@ const zh: Record<string, string> = {
   'agents.backToList': '返回代理列表',
   'agents.viewOwner': '查看所有者',
   'agents.viewAgent': '查看代理地址',
+  'agents.viewSessionKeys': '会话密钥',
+  'agents.viewRiskDashboard': '风险面板',
+
+  // Navigation - Agents
+  'nav.agentsMenu': 'AI 代理',
+  'nav.agentList': '代理列表',
+  'nav.sessionKeys': '会话密钥',
+  'nav.riskDashboard': '风险面板',
+
+  // Session Keys
+  'sessions.title': '会话密钥',
+  'sessions.description': '监控 AI 代理会话密钥的状态、TTL 和活动。',
+  'sessions.totalKeys': '密钥总数',
+  'sessions.validKeys': '有效',
+  'sessions.expiredKeys': '已过期',
+  'sessions.revokedKeys': '已撤销',
+  'sessions.noKeys': '未找到会话密钥。',
+
+  // Risk Dashboard
+  'risk.title': '风险面板',
+  'risk.description': 'AI 代理钱包风险态势运维面板。',
+  'risk.totalAgents': '代理总数',
+  'risk.activeAgents': '活跃代理',
+  'risk.totalViolations': '违规次数',
+  'risk.totalRejections': '拒绝次数',
+  'risk.recentViolations': '近期违规',
+  'risk.noViolations': '无违规记录。',
+  'risk.dailySpend': '每日支出',
+  'risk.maxPerTx': '单笔上限',
 };
 
 export default zh;
