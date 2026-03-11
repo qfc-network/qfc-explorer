@@ -45,6 +45,9 @@ const NAV_ITEMS: NavItem[] = [
     labelKey: 'nav.aiInference',
     children: [
       { labelKey: 'nav.inferenceOverview', href: '/inference' },
+      { labelKey: 'nav.marketplace', href: '/inference/marketplace' },
+      { labelKey: 'nav.submitTask', href: '/inference/submit' },
+      { labelKey: 'nav.myTasks', href: '/inference/my-tasks' },
       { labelKey: 'nav.inferenceTasks', href: '/inference/tasks' },
       { labelKey: 'nav.inferenceAnalytics', href: '/inference/analytics' },
     ],
