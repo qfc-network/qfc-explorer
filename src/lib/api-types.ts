@@ -880,6 +880,56 @@ export type ApiAgentRiskDashboard = ApiOk<{
   violations: ApiAgentRiskViolation[];
 }>;
 
+// --- Agent Dashboard ---
+
+export type ApiAgentDashboard = ApiOk<{
+  stats: {
+    totalAgents: number;
+    activeAgents: number;
+    totalDeposit: string;
+    totalSpentToday: string;
+  };
+  agents: ApiAgentInfo[];
+  alerts: ApiAgentAlert[];
+  spendingTrend: ApiSpendingPoint[];
+}>;
+
+export type ApiAgentAlert = {
+  agentId: string;
+  type: 'high_spend' | 'limit_reached' | 'key_expiring' | 'revoked';
+  message: string;
+  timestamp: string;
+};
+
+export type ApiSpendingPoint = {
+  date: string;
+  amount: string;
+};
+
+// --- Agent Transactions ---
+
+export type ApiAgentTransaction = {
+  hash: string;
+  from: string;
+  to: string;
+  value: string;
+  status: number;
+  timestamp: string;
+  method: string;
+};
+
+export type ApiAgentTransactions = ApiOk<{
+  total: number;
+  items: ApiAgentTransaction[];
+}>;
+
+// --- Agent Session Keys (per agent) ---
+
+export type ApiAgentSessionKeys = ApiOk<{
+  total: number;
+  items: ApiSessionKeyInfo[];
+}>;
+
 export type ApiMinerDetail = ApiOk<{
   address: string;
   totalEarned: string;

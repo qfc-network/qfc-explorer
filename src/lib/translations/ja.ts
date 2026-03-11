@@ -840,6 +840,16 @@ const ja: Record<string, string> = {
   'risk.noViolations': '違反はありません。',
   'risk.dailySpend': '日次支出',
   'risk.maxPerTx': 'Tx毎上限',
+
+  // Agent Dashboard
+  'dashboard.title': 'エージェントダッシュボード',
+  'dashboard.description': 'オペレータービュー — エージェント、アラート、支出トレンド。',
+  'dashboard.spentToday': '本日の支出',
+  'dashboard.alerts': 'アラート',
+  'dashboard.spendingTrend': '支出トレンド (7日)',
+  'dashboard.myAgents': 'マイエージェント',
+  'dashboard.noAlerts': 'アラートなし。',
+  'nav.agentDashboard': 'ダッシュボード',
 };
 
 export default ja;

@@ -840,6 +840,16 @@ const zh: Record<string, string> = {
   'risk.noViolations': '无违规记录。',
   'risk.dailySpend': '每日支出',
   'risk.maxPerTx': '单笔上限',
+
+  // Agent Dashboard
+  'dashboard.title': 'Agent 控制台',
+  'dashboard.description': '运营视图 — 您的 Agent、告警和消费趋势。',
+  'dashboard.spentToday': '今日消费',
+  'dashboard.alerts': '告警',
+  'dashboard.spendingTrend': '消费趋势 (7天)',
+  'dashboard.myAgents': '我的 Agent',
+  'dashboard.noAlerts': '暂无告警。',
+  'nav.agentDashboard': '控制台',
 };
 
 export default zh;

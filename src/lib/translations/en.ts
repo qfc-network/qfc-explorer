@@ -835,6 +835,18 @@ const en = {
   'sessions.revokedKeys': 'Revoked',
   'sessions.noKeys': 'No session keys found.',
 
+  // Agent Dashboard page
+  'dashboard.title': 'Agent Dashboard',
+  'dashboard.description': 'Operator view — your agents, alerts, and spending trends.',
+  'dashboard.spentToday': 'Spent Today',
+  'dashboard.alerts': 'Alerts',
+  'dashboard.spendingTrend': 'Spending Trend (7d)',
+  'dashboard.myAgents': 'My Agents',
+  'dashboard.noAlerts': 'No alerts.',
+
+  // Navigation - Dashboard
+  'nav.agentDashboard': 'Dashboard',
+
   // Risk Dashboard page
   'risk.title': 'Risk Dashboard',
   'risk.description': 'Operator dashboard for AI agent wallet risk posture.',
