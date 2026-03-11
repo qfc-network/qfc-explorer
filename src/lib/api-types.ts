@@ -930,6 +930,28 @@ export type ApiAgentSessionKeys = ApiOk<{
   items: ApiSessionKeyInfo[];
 }>;
 
+// --- Inference Marketplace ---
+
+export type ApiInferenceMarketplace = ApiOk<{
+  totalModels: number;
+  totalTasks: number;
+  totalMiners: number;
+  avgPassRate: number;
+  models: Array<{
+    name: string;
+    version: string;
+    minTier: string;
+    minMemoryMb: number;
+    totalTasks: number;
+    completedTasks: number;
+    failedTasks: number;
+    successRate: number;
+    avgExecutionTimeMs: number;
+    activeMiners: number;
+    avgFee: string;
+  }>;
+}>;
+
 export type ApiMinerDetail = ApiOk<{
   address: string;
   totalEarned: string;
