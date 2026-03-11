@@ -811,6 +811,35 @@ const ja: Record<string, string> = {
   'agents.backToList': 'エージェント一覧に戻る',
   'agents.viewOwner': 'オーナーを表示',
   'agents.viewAgent': 'エージェントアドレスを表示',
+  'agents.viewSessionKeys': 'セッションキー',
+  'agents.viewRiskDashboard': 'リスクダッシュボード',
+
+  // Navigation - Agents
+  'nav.agentsMenu': 'AIエージェント',
+  'nav.agentList': 'エージェント一覧',
+  'nav.sessionKeys': 'セッションキー',
+  'nav.riskDashboard': 'リスクダッシュボード',
+
+  // Session Keys
+  'sessions.title': 'セッションキー',
+  'sessions.description': 'AIエージェントのセッションキーを監視 — ステータス、TTL、アクティビティ。',
+  'sessions.totalKeys': 'キー総数',
+  'sessions.validKeys': '有効',
+  'sessions.expiredKeys': '期限切れ',
+  'sessions.revokedKeys': '取消済み',
+  'sessions.noKeys': 'セッションキーが見つかりません。',
+
+  // Risk Dashboard
+  'risk.title': 'リスクダッシュボード',
+  'risk.description': 'AIエージェントウォレットのリスク管理ダッシュボード。',
+  'risk.totalAgents': 'エージェント総数',
+  'risk.activeAgents': 'アクティブ',
+  'risk.totalViolations': '違反数',
+  'risk.totalRejections': '拒否数',
+  'risk.recentViolations': '最近の違反',
+  'risk.noViolations': '違反はありません。',
+  'risk.dailySpend': '日次支出',
+  'risk.maxPerTx': 'Tx毎上限',
 };
 
 export default ja;

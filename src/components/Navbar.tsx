@@ -49,6 +49,14 @@ const NAV_ITEMS: NavItem[] = [
     ],
   },
   {
+    labelKey: 'nav.agentsMenu',
+    children: [
+      { labelKey: 'nav.agentList', href: '/agents' },
+      { labelKey: 'nav.sessionKeys', href: '/agents/sessions' },
+      { labelKey: 'nav.riskDashboard', href: '/agents/risk' },
+    ],
+  },
+  {
     labelKey: 'nav.network',
     children: [
       { labelKey: 'nav.validators', href: '/validators' },
