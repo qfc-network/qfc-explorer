@@ -799,6 +799,9 @@ const en = {
   'miner.endTime': 'End Time',
   'miner.hardwareProfile': 'Hardware Profile',
 
+  // Inference navigation (legacy keys kept for compatibility)
+  'nav.browseTasks': 'Browse Tasks',
+
   // DEX page
   'nav.dex': 'DEX',
   'dex.title': 'DEX',

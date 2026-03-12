@@ -808,6 +808,40 @@ export type ApiMinersList = ApiOk<{
   items: ApiRegisteredMiner[];
 }>;
 
+// --- Inference Tasks (legacy mock route) ---
+
+export type InferenceTaskItem = {
+  taskId: string;
+  modelId: string;
+  modelName: string;
+  submitter: string;
+  miner: string | null;
+  status: string;
+  maxFee: string;
+  createdAt: number;
+};
+
+// --- Inference Task Detail ---
+
+export type InferenceTaskDetail = {
+  taskId: string;
+  modelId: string;
+  modelName: string;
+  submitter: string;
+  miner: string | null;
+  status: string;
+  maxFee: string;
+  inputHash: string;
+  resultHash: string | null;
+  proof: string | null;
+  createdAt: number;
+  claimedAt: number | null;
+  completedAt: number | null;
+  challengeWindow: number | null;
+};
+
+export type ApiInferenceTaskDetail = ApiOk<InferenceTaskDetail>;
+
 // --- DAO Governance ---
 
 export type GovernanceProposal = {
@@ -852,6 +886,7 @@ export type ApiGovernanceProposalDetail = ApiOk<{
   proposal: GovernanceProposal;
   voters: GovernanceVoter[];
 }>;
+
 
 // --- Miner Revenue ---
 

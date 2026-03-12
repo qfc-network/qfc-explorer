@@ -793,6 +793,9 @@ const zh: Record<string, string> = {
   'miner.endTime': '结束时间',
   'miner.hardwareProfile': '硬件配置',
 
+  // Inference navigation (legacy)
+  'nav.browseTasks': '浏览任务',
+
   // DEX page
   'nav.dex': 'DEX',
   'dex.title': 'DEX',

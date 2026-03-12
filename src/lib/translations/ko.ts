@@ -793,6 +793,9 @@ const ko: Record<string, string> = {
   'miner.endTime': '종료 시간',
   'miner.hardwareProfile': '하드웨어 프로필',
 
+  // Inference navigation (legacy)
+  'nav.browseTasks': '작업 탐색',
+
   // DEX page
   'nav.dex': 'DEX',
   'dex.title': 'DEX',

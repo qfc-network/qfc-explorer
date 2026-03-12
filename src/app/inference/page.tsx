@@ -51,12 +51,26 @@ export default async function InferencePage() {
           title="AI Inference"
           description="Network inference statistics and validator compute contributions."
         />
-        <Link
-          href="/inference/analytics"
-          className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors"
-        >
-          View Analytics
-        </Link>
+        <div className="flex gap-2">
+          <Link
+            href="/inference/submit"
+            className="rounded-lg bg-cyan-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-cyan-500"
+          >
+            Submit Task
+          </Link>
+          <Link
+            href="/inference/tasks"
+            className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors"
+          >
+            Browse Tasks
+          </Link>
+          <Link
+            href="/inference/analytics"
+            className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors"
+          >
+            View Analytics
+          </Link>
+        </div>
       </div>
 
       {/* Overview Stats */}

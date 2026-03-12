@@ -793,6 +793,9 @@ const ja: Record<string, string> = {
   'miner.endTime': '終了時間',
   'miner.hardwareProfile': 'ハードウェアプロファイル',
 
+  // Inference navigation (legacy)
+  'nav.browseTasks': 'タスク一覧',
+
   // DEX page
   'nav.dex': 'DEX',
   'dex.title': 'DEX',
