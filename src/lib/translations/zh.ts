@@ -24,6 +24,9 @@ const zh: Record<string, string> = {
   'nav.analytics': '数据分析',
   'nav.leaderboard': '排行榜',
   'nav.governance': '治理',
+  'nav.daoOverview': 'DAO 概览',
+  'nav.daoProposals': '所有提案',
+  'nav.modelGovernance': '模型治理',
 
   // Search
   'search.placeholder': '搜索地址 / 交易哈希 / 区块 / 代币',
@@ -789,6 +792,9 @@ const zh: Record<string, string> = {
   'miner.cliffEnd': '锁定期结束',
   'miner.endTime': '结束时间',
   'miner.hardwareProfile': '硬件配置',
+
+  // Inference navigation (legacy)
+  'nav.browseTasks': '浏览任务',
 
   // DEX page
   'nav.dex': 'DEX',

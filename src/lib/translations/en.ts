@@ -24,6 +24,9 @@ const en = {
   'nav.analytics': 'Analytics',
   'nav.leaderboard': 'Leaderboard',
   'nav.governance': 'Governance',
+  'nav.daoOverview': 'DAO Overview',
+  'nav.daoProposals': 'All Proposals',
+  'nav.modelGovernance': 'Model Governance',
 
   // Search
   'search.placeholder': 'Search by Address / Tx Hash / Block / Token',
@@ -795,6 +798,9 @@ const en = {
   'miner.cliffEnd': 'Cliff End',
   'miner.endTime': 'End Time',
   'miner.hardwareProfile': 'Hardware Profile',
+
+  // Inference navigation (legacy keys kept for compatibility)
+  'nav.browseTasks': 'Browse Tasks',
 
   // DEX page
   'nav.dex': 'DEX',

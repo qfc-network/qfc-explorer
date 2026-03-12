@@ -24,6 +24,9 @@ const ja: Record<string, string> = {
   'nav.analytics': '分析',
   'nav.leaderboard': 'リーダーボード',
   'nav.governance': 'ガバナンス',
+  'nav.daoOverview': 'DAO 概要',
+  'nav.daoProposals': 'すべての提案',
+  'nav.modelGovernance': 'モデルガバナンス',
 
   // Search
   'search.placeholder': 'アドレス / Txハッシュ / ブロック / トークンで検索',
@@ -789,6 +792,9 @@ const ja: Record<string, string> = {
   'miner.cliffEnd': 'クリフ終了',
   'miner.endTime': '終了時間',
   'miner.hardwareProfile': 'ハードウェアプロファイル',
+
+  // Inference navigation (legacy)
+  'nav.browseTasks': 'タスク一覧',
 
   // DEX page
   'nav.dex': 'DEX',

@@ -24,6 +24,9 @@ const ko: Record<string, string> = {
   'nav.analytics': '분석',
   'nav.leaderboard': '리더보드',
   'nav.governance': '거버넌스',
+  'nav.daoOverview': 'DAO 개요',
+  'nav.daoProposals': '모든 제안',
+  'nav.modelGovernance': '모델 거버넌스',
 
   // Search
   'search.placeholder': '주소 / Tx 해시 / 블록 / 토큰으로 검색',
@@ -789,6 +792,9 @@ const ko: Record<string, string> = {
   'miner.cliffEnd': '클리프 종료',
   'miner.endTime': '종료 시간',
   'miner.hardwareProfile': '하드웨어 프로필',
+
+  // Inference navigation (legacy)
+  'nav.browseTasks': '작업 탐색',
 
   // DEX page
   'nav.dex': 'DEX',
