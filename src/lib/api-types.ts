@@ -642,6 +642,7 @@ export type NftTransfer = {
   from_address: string;
   to_address: string;
   value: string;
+  timestamp?: number;
 };
 
 export type NftAttribute = {
