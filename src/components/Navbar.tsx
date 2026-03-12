@@ -42,6 +42,14 @@ const NAV_ITEMS: NavItem[] = [
   },
   { labelKey: 'nav.aiInference', href: '/inference' },
   {
+    labelKey: 'nav.governance',
+    children: [
+      { labelKey: 'nav.daoOverview', href: '/governance' },
+      { labelKey: 'nav.daoProposals', href: '/governance/proposals' },
+      { labelKey: 'nav.modelGovernance', href: '/governance/models' },
+    ],
+  },
+  {
     labelKey: 'nav.network',
     children: [
       { labelKey: 'nav.validators', href: '/validators' },
@@ -50,7 +58,6 @@ const NAV_ITEMS: NavItem[] = [
       { labelKey: 'nav.analytics', href: '/analytics' },
       { labelKey: 'nav.leaderboard', href: '/leaderboard' },
       { labelKey: 'nav.richList', href: '/richlist' },
-      { labelKey: 'nav.governance', href: '/governance/models' },
     ],
   },
 ];

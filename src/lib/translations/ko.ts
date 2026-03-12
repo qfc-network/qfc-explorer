@@ -21,6 +21,9 @@ const ko: Record<string, string> = {
   'nav.analytics': '분석',
   'nav.leaderboard': '리더보드',
   'nav.governance': '거버넌스',
+  'nav.daoOverview': 'DAO 개요',
+  'nav.daoProposals': '모든 제안',
+  'nav.modelGovernance': '모델 거버넌스',
 
   // Search
   'search.placeholder': '주소 / Tx 해시 / 블록 / 토큰으로 검색',
