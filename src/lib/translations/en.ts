@@ -24,6 +24,9 @@ const en = {
   'nav.analytics': 'Analytics',
   'nav.leaderboard': 'Leaderboard',
   'nav.governance': 'Governance',
+  'nav.daoOverview': 'DAO Overview',
+  'nav.daoProposals': 'All Proposals',
+  'nav.modelGovernance': 'Model Governance',
 
   // Search
   'search.placeholder': 'Search by Address / Tx Hash / Block / Token',

@@ -24,6 +24,9 @@ const ja: Record<string, string> = {
   'nav.analytics': '分析',
   'nav.leaderboard': 'リーダーボード',
   'nav.governance': 'ガバナンス',
+  'nav.daoOverview': 'DAO 概要',
+  'nav.daoProposals': 'すべての提案',
+  'nav.modelGovernance': 'モデルガバナンス',
 
   // Search
   'search.placeholder': 'アドレス / Txハッシュ / ブロック / トークンで検索',

@@ -808,6 +808,51 @@ export type ApiMinersList = ApiOk<{
   items: ApiRegisteredMiner[];
 }>;
 
+// --- DAO Governance ---
+
+export type GovernanceProposal = {
+  id: number;
+  title: string;
+  description: string;
+  type: 'Parameter Change' | 'Protocol Upgrade' | 'Treasury' | 'General';
+  status: 'Active' | 'Passed' | 'Failed' | 'Pending';
+  proposer: string;
+  forVotes: number;
+  againstVotes: number;
+  abstainVotes: number;
+  quorum: number;
+  quorumRequired: number;
+  startTime: number;
+  endTime: number;
+  createdAt: number;
+  executedAt: number | null;
+  paramKey?: string;
+  paramCurrentValue?: string;
+  paramProposedValue?: string;
+};
+
+export type GovernanceVoter = {
+  address: string;
+  vote: 'For' | 'Against' | 'Abstain';
+  votingPower: number;
+  timestamp: number;
+};
+
+export type ApiGovernanceProposals = ApiOk<{
+  proposals: GovernanceProposal[];
+  stats: {
+    totalProposals: number;
+    activeProposals: number;
+    participationRate: string;
+    quorumThreshold: string;
+  };
+}>;
+
+export type ApiGovernanceProposalDetail = ApiOk<{
+  proposal: GovernanceProposal;
+  voters: GovernanceVoter[];
+}>;
+
 // --- Miner Revenue ---
 
 // --- AI Agents ---
