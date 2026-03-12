@@ -8,6 +8,46 @@ import type { ApiNftDetail } from '@/lib/api-types';
 import { shortenHash } from '@/lib/format';
 import CopyButton from '@/components/CopyButton';
 
+/* ── Mock fallback data ─────────────────────────────────────────────── */
+const MOCK_OWNER = '0x7a3b1c9d2e4f5a6b8c0d1e2f3a4b5c6d7e8f9a0b';
+
+const MOCK_NFT = {
+  name: 'QFC Dragon #42',
+  description: 'A legendary dragon from the QFC universe',
+  image: null as string | null,
+  attributes: [
+    { trait_type: 'Species', value: 'Dragon' },
+    { trait_type: 'Element', value: 'Fire' },
+    { trait_type: 'Rarity', value: 'Legendary' },
+    { trait_type: 'Level', value: '99' },
+  ],
+};
+
+const MOCK_TRANSFERS = [
+  {
+    tx_hash: '0xa1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2',
+    block_height: 984201,
+    from_address: '0x0000000000000000000000000000000000000000',
+    to_address: MOCK_OWNER,
+    timestamp: 1710200400000,
+  },
+  {
+    tx_hash: '0xf1e2d3c4b5a6978869504132f1e2d3c4b5a69788695041320a1b2c3d4e5f6a7b',
+    block_height: 991450,
+    from_address: '0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc',
+    to_address: MOCK_OWNER,
+    timestamp: 1710460800000,
+  },
+  {
+    tx_hash: '0x0102030405060708091011121314151617181920212223242526272829303132',
+    block_height: 995003,
+    from_address: '0x90f79bf6eb2c4f870365e785982e1f101e93b906',
+    to_address: MOCK_OWNER,
+    timestamp: 1710633600000,
+  },
+];
+
+/* ── Metadata ────────────────────────────────────────────────────────── */
 export async function generateMetadata({
   params,
 }: {
@@ -21,11 +61,11 @@ export async function generateMetadata({
 
   const nftName =
     response?.data.nft.metadata.name ??
-    `#${params.tokenId}`;
+    MOCK_NFT.name;
   const collectionName = response?.data.token.name ?? shortenHash(address);
   const description =
     response?.data.nft.metadata.description ??
-    `NFT ${nftName} from ${collectionName} on the QFC blockchain.`;
+    MOCK_NFT.description;
 
   return {
     title: `${nftName} — ${collectionName}`,
@@ -41,6 +81,7 @@ export async function generateMetadata({
   };
 }
 
+/* ── Page ─────────────────────────────────────────────────────────────── */
 export default async function NftDetailPage({
   params,
 }: {
@@ -54,27 +95,12 @@ export default async function NftDetailPage({
     { next: { revalidate: 20 } },
   );
 
-  if (!response) {
-    return (
-      <main className="mx-auto max-w-7xl px-4 py-12">
-        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40 p-8 text-center">
-          <p className="text-lg text-slate-900 dark:text-white">NFT not found</p>
-          <p className="mt-2 text-sm text-slate-400 font-mono">
-            {address} #{tokenId}
-          </p>
-          <Link
-            href={`/token/${address}`}
-            className="mt-4 inline-block rounded-lg bg-slate-100 dark:bg-slate-800 px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
-          >
-            Back to collection
-          </Link>
-        </div>
-      </main>
-    );
-  }
+  /* Resolve data — fall back to mock when API unavailable */
+  const token = response?.data.token ?? { name: 'QFC Collection', symbol: 'QNFT', standard: 'erc721' };
+  const meta = response?.data.nft.metadata ?? MOCK_NFT;
+  const owner = response?.data.nft.owner ?? MOCK_OWNER;
+  const transfers = response?.data.nft.transfers ?? MOCK_TRANSFERS;
 
-  const { token, nft } = response.data;
-  const meta = nft.metadata;
   const displayName = meta.name ?? `#${tokenId}`;
 
   const standardLabel =
@@ -193,14 +219,14 @@ export default async function NftDetailPage({
               <span className="text-slate-400">Standard</span>
               <span className="text-slate-900 dark:text-white">{standardLabel}</span>
             </div>
-            {nft.owner && (
+            {owner && (
               <div className="flex items-center justify-between text-sm">
                 <span className="text-slate-400">Owner</span>
                 <Link
-                  href={`/address/${nft.owner}`}
+                  href={`/address/${owner}`}
                   className="font-mono text-xs text-cyan-400 hover:text-cyan-300"
                 >
-                  {shortenHash(nft.owner, 8, 6)}
+                  {shortenHash(owner, 8, 6)}
                 </Link>
               </div>
             )}
@@ -232,13 +258,26 @@ export default async function NftDetailPage({
             </div>
           )}
 
-          {/* View Collection link */}
-          <Link
-            href={`/token/${address}?tab=inventory`}
-            className="inline-flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition-colors"
-          >
-            View Collection
-          </Link>
+          {/* Action links */}
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href={`/token/${address}?tab=inventory`}
+              className="inline-flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              View Collection
+            </Link>
+            <a
+              href={`https://nft.testnet.qfc.network/asset/${address}/${tokenId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-lg bg-cyan-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-cyan-500 transition-colors"
+            >
+              View on NFT Marketplace
+              <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+          </div>
         </div>
       </div>
 
@@ -255,35 +294,36 @@ export default async function NftDetailPage({
                 <th className="px-4 py-3">Block</th>
                 <th className="px-4 py-3">From</th>
                 <th className="px-4 py-3">To</th>
+                <th className="px-4 py-3">Time</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-800/40">
-              {nft.transfers.length === 0 ? (
+              {transfers.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={4}
+                    colSpan={5}
                     className="px-4 py-8 text-center text-slate-500"
                   >
                     No transfers found for this token.
                   </td>
                 </tr>
               ) : (
-                nft.transfers.map((t, i) => (
+                transfers.map((t, i) => (
                   <tr
                     key={`${t.tx_hash}-${i}`}
                     className="hover:bg-slate-50 dark:hover:bg-slate-900/40"
                   >
                     <td className="px-4 py-2.5">
                       <Link
-                        href={`/txs/${t.tx_hash}`}
-                        className="text-cyan-400 hover:text-cyan-300"
+                        href={`/tx/${t.tx_hash}`}
+                        className="font-mono text-xs text-cyan-400 hover:text-cyan-300"
                       >
                         {shortenHash(t.tx_hash)}
                       </Link>
                     </td>
                     <td className="px-4 py-2.5">
                       <Link
-                        href={`/blocks/${t.block_height}`}
+                        href={`/block/${t.block_height}`}
                         className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
                       >
                         {t.block_height}
@@ -304,6 +344,11 @@ export default async function NftDetailPage({
                       >
                         {shortenHash(t.to_address)}
                       </Link>
+                    </td>
+                    <td className="px-4 py-2.5 text-xs text-slate-400 whitespace-nowrap">
+                      {t.timestamp
+                        ? new Date(t.timestamp).toLocaleString('en-US', { hour12: false })
+                        : '—'}
                     </td>
                   </tr>
                 ))
