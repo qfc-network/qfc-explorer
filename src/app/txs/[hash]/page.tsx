@@ -61,8 +61,9 @@ export default async function TransactionDetailPage({
   const addrList = [tx.from_address, tx.to_address].filter(Boolean) as string[];
   const labels = await resolveAddressLabels(addrList);
 
-  const decoded = decodeInput(tx.data);
-  const methodSelector = tx.data && tx.data.length >= 10 ? tx.data.slice(0, 10) : null;
+  const _inputData = tx.input_data ?? tx.data;
+  const decoded = decodeInput(_inputData);
+  const methodSelector = _inputData && _inputData.length >= 10 ? _inputData.slice(0, 10) : null;
   const gasLimit = Number(tx.gas_limit);
   const gasUsed = tx.gas_used ? Number(tx.gas_used) : null;
   const gasPercent = gasUsed && gasLimit > 0 ? Math.min(100, (gasUsed / gasLimit) * 100) : null;
@@ -196,10 +197,10 @@ export default async function TransactionDetailPage({
       <div className="mt-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/40">
         <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800/40 px-5 py-3">
           <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Input Data</h2>
-          {tx.data && <CopyButton value={tx.data} label="Copy" />}
+          {_inputData && <CopyButton value={_inputData} label="Copy" />}
         </div>
         <div className="p-5">
-          {!tx.data || tx.data === '0x' ? (
+          {!_inputData || _inputData === '0x' ? (
             <p className="text-sm text-slate-500">No input data (simple transfer)</p>
           ) : decoded ? (
             <div className="space-y-3">
@@ -248,16 +249,16 @@ export default async function TransactionDetailPage({
                 <summary className="cursor-pointer text-xs text-slate-500 hover:text-slate-400">
                   Raw hex data
                 </summary>
-                <p className="mt-2 break-all font-mono text-xs text-slate-400">{tx.data}</p>
+                <p className="mt-2 break-all font-mono text-xs text-slate-400">{_inputData}</p>
               </details>
             </div>
           ) : (
             <div className="space-y-2">
               <p className="text-xs text-slate-500">
-                Function selector: <span className="font-mono text-slate-400">{tx.data.slice(0, 10)}</span>
+                Function selector: <span className="font-mono text-slate-400">{_inputData.slice(0, 10)}</span>
                 <span className="ml-2 text-slate-600">(not decoded)</span>
               </p>
-              <p className="break-all font-mono text-xs text-slate-400">{tx.data}</p>
+              <p className="break-all font-mono text-xs text-slate-400">{_inputData}</p>
             </div>
           )}
         </div>

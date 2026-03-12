@@ -15,6 +15,7 @@ export default function GasTracker() {
 
   useEffect(() => {
     let active = true;
+    let interval: ReturnType<typeof setInterval> | null = null;
 
     async function fetchGas() {
       try {
@@ -28,15 +29,19 @@ export default function GasTracker() {
           setError(false);
         }
       } catch {
-        if (active) setError(true);
+        // Stop polling on failure (endpoint likely doesn't exist)
+        if (active) {
+          setError(true);
+          if (interval) { clearInterval(interval); interval = null; }
+        }
       }
     }
 
     fetchGas();
-    const interval = setInterval(fetchGas, 12_000);
+    interval = setInterval(fetchGas, 12_000);
     return () => {
       active = false;
-      clearInterval(interval);
+      if (interval) clearInterval(interval);
     };
   }, []);
 

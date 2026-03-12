@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { apiUrl } from '@/lib/client-api';
 
 type Label = {
   address: string;
@@ -33,7 +34,7 @@ export default function AddressLabelsManager({ labels: initialLabels }: Props) {
       return;
     }
     try {
-      const res = await fetch('/api/admin/labels', {
+      const res = await fetch(apiUrl('/api/admin/labels'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ address, label, category: category || undefined }),

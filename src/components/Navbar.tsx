@@ -40,13 +40,33 @@ const NAV_ITEMS: NavItem[] = [
       { labelKey: 'nav.apiDocs', href: '/api-docs' },
     ],
   },
+  { labelKey: 'nav.dex', href: '/dex' },
   {
     labelKey: 'nav.aiInference',
     children: [
       { labelKey: 'nav.inferenceOverview', href: '/inference' },
+      { labelKey: 'nav.marketplace', href: '/inference/marketplace' },
       { labelKey: 'nav.submitTask', href: '/inference/submit' },
-      { labelKey: 'nav.browseTasks', href: '/inference/tasks' },
+      { labelKey: 'nav.myTasks', href: '/inference/my-tasks' },
+      { labelKey: 'nav.inferenceTasks', href: '/inference/tasks' },
       { labelKey: 'nav.inferenceAnalytics', href: '/inference/analytics' },
+    ],
+  },
+  {
+    labelKey: 'nav.agentsMenu',
+    children: [
+      { labelKey: 'nav.agentList', href: '/agents' },
+      { labelKey: 'nav.agentDashboard', href: '/agents/dashboard' },
+      { labelKey: 'nav.sessionKeys', href: '/agents/sessions' },
+      { labelKey: 'nav.riskDashboard', href: '/agents/risk' },
+    ],
+  },
+  {
+    labelKey: 'nav.governance',
+    children: [
+      { labelKey: 'nav.daoOverview', href: '/governance' },
+      { labelKey: 'nav.daoProposals', href: '/governance/proposals' },
+      { labelKey: 'nav.modelGovernance', href: '/governance/models' },
     ],
   },
   {
@@ -58,7 +78,6 @@ const NAV_ITEMS: NavItem[] = [
       { labelKey: 'nav.analytics', href: '/analytics' },
       { labelKey: 'nav.leaderboard', href: '/leaderboard' },
       { labelKey: 'nav.richList', href: '/richlist' },
-      { labelKey: 'nav.governance', href: '/governance/models' },
     ],
   },
 ];
@@ -212,15 +231,15 @@ export default function Navbar() {
 
   return (
     <nav aria-label="Main navigation" className="border-b border-slate-200 bg-white/80 dark:border-slate-800/60 dark:bg-slate-950/80 backdrop-blur-sm sticky top-0 z-40">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-0">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-0 min-h-[56px]">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 py-3">
+        <Link href="/" className="flex items-center gap-2.5 py-3 min-w-0">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 text-xs font-bold text-slate-900 dark:text-white">
             Q
           </div>
-          <div>
-            <span className="text-sm font-semibold text-slate-900 dark:text-white">QFC Explorer</span>
-            <span className="ml-2 rounded bg-cyan-500/10 px-1.5 py-0.5 text-[10px] font-medium text-cyan-600 dark:text-cyan-400">
+          <div className="min-w-0">
+            <span className="text-sm font-semibold text-slate-900 dark:text-white truncate">QFC Explorer</span>
+            <span className="ml-2 hidden sm:inline rounded bg-cyan-500/10 px-1.5 py-0.5 text-[10px] font-medium text-cyan-600 dark:text-cyan-400">
               Testnet
             </span>
           </div>
@@ -247,31 +266,19 @@ export default function Navbar() {
           <ThemeToggle />
         </div>
 
-        {/* Mobile hamburger button */}
+        {/* Mobile hamburger button (Etherscan-style: icon + Menu label) */}
         <button
-          className="relative z-50 flex h-10 w-10 items-center justify-center rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white md:hidden"
+          className={`relative z-[60] flex items-center gap-2 rounded-lg border border-slate-200 px-2.5 py-1.5 text-slate-600 dark:border-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white md:hidden ${mobileOpen ? 'opacity-0 pointer-events-none' : ''}`}
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-expanded={mobileOpen}
           aria-label={t('nav.menu')}
         >
-          {/* Animated hamburger / X icon */}
-          <div className="flex h-5 w-5 flex-col items-center justify-center">
-            <span
-              className={`block h-0.5 w-5 rounded-full bg-current transition-all duration-300 ease-in-out ${
-                mobileOpen ? 'translate-y-[3px] rotate-45' : ''
-              }`}
-            />
-            <span
-              className={`mt-1 block h-0.5 w-5 rounded-full bg-current transition-all duration-300 ease-in-out ${
-                mobileOpen ? 'opacity-0' : ''
-              }`}
-            />
-            <span
-              className={`mt-1 block h-0.5 w-5 rounded-full bg-current transition-all duration-300 ease-in-out ${
-                mobileOpen ? '-translate-y-[7px] -rotate-45' : ''
-              }`}
-            />
+          <div className="flex h-4 w-4 flex-col items-center justify-center">
+            <span className="block h-0.5 w-4 rounded-full bg-current" />
+            <span className="mt-0.5 block h-0.5 w-4 rounded-full bg-current" />
+            <span className="mt-0.5 block h-0.5 w-4 rounded-full bg-current" />
           </div>
+          <span className="text-xs font-medium">{t('nav.menu')}</span>
         </button>
       </div>
 
@@ -287,12 +294,12 @@ export default function Navbar() {
       {/* Mobile slide-in panel */}
       <div
         ref={panelRef}
-        className={`fixed right-0 top-0 z-40 flex h-full w-[280px] max-w-[85vw] flex-col bg-white dark:bg-slate-950 shadow-2xl transition-transform duration-300 ease-in-out md:hidden ${
+        className={`fixed right-0 top-0 z-[70] flex h-full w-full max-w-full flex-col bg-white dark:bg-slate-950 shadow-2xl transition-transform duration-300 ease-in-out md:hidden ${
           mobileOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         {/* Panel header */}
-        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800/60 px-4 py-3">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800/60 px-4 py-3 pt-[max(env(safe-area-inset-top),0.75rem)]">
           <span className="text-sm font-semibold text-slate-900 dark:text-white">{t('nav.menu')}</span>
           <button
             onClick={closeMobile}

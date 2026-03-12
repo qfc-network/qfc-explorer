@@ -75,8 +75,11 @@ export function useSSE(eventTypes: string[] = ['message']): SSEState {
       es.close();
       esRef.current = null;
 
-      // Exponential backoff: 1s, 2s, 4s, 8s, 16s, 30s cap
-      const delay = Math.min(1000 * Math.pow(2, retryRef.current), 30000);
+      // Give up after 3 retries (endpoint likely doesn't exist)
+      if (retryRef.current >= 3) return;
+
+      // Exponential backoff: 2s, 4s, 8s
+      const delay = Math.min(2000 * Math.pow(2, retryRef.current), 30000);
       retryRef.current += 1;
       timerRef.current = setTimeout(connect, delay);
     };

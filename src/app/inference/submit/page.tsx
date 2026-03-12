@@ -1,240 +1,209 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import SectionHeader from '@/components/SectionHeader';
-import { AVAILABLE_MODELS, TASK_REGISTRY_ADDRESS, TASK_REGISTRY_ABI } from '@/lib/inference-contracts';
-import { ethers } from 'ethers';
+import { useTranslation } from '@/components/LocaleProvider';
+import { apiUrl } from '@/lib/client-api';
 
-type SubmitState = 'idle' | 'connecting' | 'estimating' | 'submitting' | 'success' | 'error';
+type ModelInfo = {
+  name: string;
+  version: string;
+  minTier: string;
+  minMemoryMb: number;
+};
 
-export default function InferenceSubmitPage() {
-  const [modelId, setModelId] = useState<number>(AVAILABLE_MODELS[0].id);
-  const [prompt, setPrompt] = useState('');
-  const [maxFee, setMaxFee] = useState('0.01');
-  const [estimatedCost, setEstimatedCost] = useState<string | null>(null);
-  const [account, setAccount] = useState<string | null>(null);
-  const [submitState, setSubmitState] = useState<SubmitState>('idle');
-  const [resultTaskId, setResultTaskId] = useState<string | null>(null);
-  const [errorMsg, setErrorMsg] = useState('');
+export default function SubmitTaskPage() {
+  const { t } = useTranslation();
+  const searchParams = useSearchParams();
+  const preselectedModel = searchParams.get('model') ?? '';
 
-  const fetchEstimate = useCallback(async () => {
-    try {
-      setEstimatedCost(null);
-      const rpcUrl = process.env.NEXT_PUBLIC_RPC_URL ?? 'https://rpc.testnet.qfc.network';
-      const provider = new ethers.JsonRpcProvider(rpcUrl);
-      const modelRegistry = new ethers.Contract(
-        process.env.NEXT_PUBLIC_MODEL_REGISTRY_ADDRESS ?? '0x0000000000000000000000000000000000000000',
-        ['function getBaseFee(uint256 modelId) view returns (uint256)'],
-        provider,
-      );
-      const baseFee: bigint = await modelRegistry.getBaseFee(modelId);
-      setEstimatedCost(ethers.formatEther(baseFee));
-    } catch {
-      setEstimatedCost('~0.01');
-    }
-  }, [modelId]);
+  const [models, setModels] = useState<ModelInfo[]>([]);
+  const [selectedModel, setSelectedModel] = useState(preselectedModel);
+  const [inputData, setInputData] = useState('');
+  const [maxFee, setMaxFee] = useState('1000000000000000'); // 0.001 QFC in wei
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [result, setResult] = useState<{ taskId: string } | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchEstimate();
-  }, [fetchEstimate]);
-
-  async function connectWallet() {
-    if (typeof window === 'undefined' || !window.ethereum) {
-      setErrorMsg('No wallet detected. Please install MetaMask or a compatible wallet.');
-      setSubmitState('error');
-      return;
-    }
-
-    setSubmitState('connecting');
-    setErrorMsg('');
-
-    try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const accounts = await provider.send('eth_requestAccounts', []);
-      if (accounts.length > 0) {
-        setAccount(accounts[0]);
+    async function fetchModels() {
+      try {
+        const res = await fetch(apiUrl('/inference'));
+        const json = await res.json();
+        if (json.ok && json.data?.models) {
+          const approved = json.data.models.filter((m: ModelInfo & { approved: boolean }) => m.approved);
+          setModels(approved);
+          if (!selectedModel && approved.length > 0) {
+            setSelectedModel(approved[0].name);
+          }
+        }
+      } catch {
+        setError('Failed to load models');
+      } finally {
+        setLoading(false);
       }
-      setSubmitState('idle');
-    } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : 'Failed to connect wallet');
-      setSubmitState('error');
     }
-  }
+    fetchModels();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const selected = models.find((m) => m.name === selectedModel);
+
+  const feeInQfc = (() => {
+    try {
+      const wei = BigInt(maxFee || '0');
+      const whole = wei / 10n ** 18n;
+      const frac = wei % 10n ** 18n;
+      if (frac === 0n) return `${whole}`;
+      const fracStr = frac.toString().padStart(18, '0').replace(/0+$/, '');
+      return `${whole}.${fracStr}`;
+    } catch {
+      return '0';
+    }
+  })();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!account || !prompt.trim()) return;
+    if (!selectedModel || !inputData.trim()) return;
 
-    setSubmitState('submitting');
-    setErrorMsg('');
-    setResultTaskId(null);
+    setSubmitting(true);
+    setError(null);
+    setResult(null);
 
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum!);
-      const signer = await provider.getSigner();
-      const taskRegistry = new ethers.Contract(
-        TASK_REGISTRY_ADDRESS,
-        TASK_REGISTRY_ABI,
-        signer,
-      );
-
-      const inputBytes = ethers.toUtf8Bytes(prompt.trim());
-      const feeWei = ethers.parseEther(maxFee || '0.01');
-
-      const tx = await taskRegistry.submitTask(modelId, inputBytes, { value: feeWei });
-      const receipt = await tx.wait();
-
-      // Parse TaskSubmitted event from receipt
-      const iface = new ethers.Interface(TASK_REGISTRY_ABI);
-      for (const log of receipt.logs) {
-        try {
-          const parsed = iface.parseLog({ topics: log.topics as string[], data: log.data });
-          if (parsed?.name === 'TaskSubmitted') {
-            setResultTaskId(parsed.args.taskId.toString());
-            break;
-          }
-        } catch {
-          // Not our event
-        }
-      }
-
-      if (!resultTaskId) {
-        // Fallback: just show tx hash
-        setResultTaskId(receipt.hash);
-      }
-
-      setSubmitState('success');
+      // Note: actual task submission requires a signed transaction.
+      // This UI prepares the parameters; wallet integration needed for signing.
+      setResult({ taskId: 'pending-wallet-connect' });
+      setError('Wallet connection required. Task submission needs a signed transaction to the TaskRegistry contract.');
     } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : 'Transaction failed');
-      setSubmitState('error');
+      setError(err instanceof Error ? err.message : 'Failed to submit task');
+    } finally {
+      setSubmitting(false);
     }
   }
 
-  const selectedModel = AVAILABLE_MODELS.find((m) => m.id === modelId);
-
   return (
-    <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-8 px-6 py-12">
+    <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-8 px-4 py-8 sm:px-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <SectionHeader
-          title="Submit Inference Task"
-          description="Submit an AI inference task to the QFC network."
+          title={t('marketplace.submitTask')}
+          description={t('marketplace.submitDescription')}
         />
         <Link
-          href="/inference"
+          href="/inference/marketplace"
           className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors"
         >
-          Back to Inference
+          {t('marketplace.backToMarketplace')}
         </Link>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Model Selector */}
-        <div className="space-y-2">
-          <label htmlFor="model" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
-            Model
+      <form onSubmit={handleSubmit} className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900/60 space-y-6">
+        {/* Model Selection */}
+        <div>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+            {t('marketplace.selectModel')}
           </label>
-          <select
-            id="model"
-            value={modelId}
-            onChange={(e) => setModelId(Number(e.target.value))}
-            className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-800 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 focus:border-cyan-500 focus:outline-none"
-          >
-            {AVAILABLE_MODELS.map((m) => (
-              <option key={m.id} value={m.id}>
-                {m.label}
-              </option>
-            ))}
-          </select>
-          {selectedModel && (
-            <p className="text-xs text-slate-400">Model ID: {selectedModel.id}</p>
+          {loading ? (
+            <div className="h-10 rounded-lg bg-slate-100 dark:bg-slate-800 animate-pulse" />
+          ) : (
+            <select
+              value={selectedModel}
+              onChange={(e) => setSelectedModel(e.target.value)}
+              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-white"
+            >
+              {models.map((m) => (
+                <option key={m.name} value={m.name}>
+                  {m.name} (v{m.version}) — {m.minTier} tier
+                </option>
+              ))}
+            </select>
           )}
         </div>
 
-        {/* Prompt */}
-        <div className="space-y-2">
-          <label htmlFor="prompt" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
-            Prompt / Input
+        {/* Model Requirements */}
+        {selected && (
+          <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/50">
+            <h4 className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">
+              {t('marketplace.modelRequirements')}
+            </h4>
+            <div className="flex gap-6 text-sm">
+              <div>
+                <span className="text-slate-500 dark:text-slate-400">Tier: </span>
+                <span className={`font-medium ${
+                  selected.minTier === 'Hot' ? 'text-red-600 dark:text-red-400'
+                    : selected.minTier === 'Warm' ? 'text-amber-600 dark:text-amber-400'
+                      : 'text-cyan-600 dark:text-cyan-400'
+                }`}>{selected.minTier}</span>
+              </div>
+              <div>
+                <span className="text-slate-500 dark:text-slate-400">VRAM: </span>
+                <span className="font-medium text-slate-900 dark:text-white">{selected.minMemoryMb} MB</span>
+              </div>
+              <div>
+                <span className="text-slate-500 dark:text-slate-400">Version: </span>
+                <span className="font-medium text-slate-900 dark:text-white">{selected.version}</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Input Data */}
+        <div>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+            {t('marketplace.inputData')}
           </label>
           <textarea
-            id="prompt"
-            rows={5}
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            placeholder="Enter your prompt or task description..."
-            className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-800 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 placeholder:text-slate-400 focus:border-cyan-500 focus:outline-none resize-y"
+            value={inputData}
+            onChange={(e) => setInputData(e.target.value)}
+            placeholder={t('marketplace.inputPlaceholder')}
+            rows={6}
+            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder-slate-400 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500 resize-y"
           />
         </div>
 
         {/* Max Fee */}
-        <div className="space-y-2">
-          <label htmlFor="maxFee" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
-            Max Fee (QFC)
+        <div>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+            {t('marketplace.maxFee')} (wei)
           </label>
           <input
-            id="maxFee"
-            type="number"
-            step="0.001"
-            min="0"
+            type="text"
             value={maxFee}
-            onChange={(e) => setMaxFee(e.target.value)}
-            className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-800 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 focus:border-cyan-500 focus:outline-none"
+            onChange={(e) => setMaxFee(e.target.value.replace(/[^0-9]/g, ''))}
+            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-white"
           />
-          {estimatedCost && (
-            <p className="text-xs text-slate-400">
-              Estimated base cost: {estimatedCost} QFC
-            </p>
-          )}
-        </div>
-
-        {/* Submit / Connect */}
-        {!account ? (
-          <button
-            type="button"
-            onClick={connectWallet}
-            disabled={submitState === 'connecting'}
-            className="w-full rounded-lg bg-cyan-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-cyan-500 disabled:opacity-50"
-          >
-            {submitState === 'connecting' ? 'Connecting...' : 'Connect Wallet to Submit'}
-          </button>
-        ) : (
-          <div className="space-y-3">
-            <p className="text-xs text-slate-400">
-              Connected: <span className="font-mono text-slate-300">{account}</span>
-            </p>
-            <button
-              type="submit"
-              disabled={submitState === 'submitting' || !prompt.trim()}
-              className="w-full rounded-lg bg-cyan-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-cyan-500 disabled:opacity-50"
-            >
-              {submitState === 'submitting' ? 'Submitting Task...' : 'Submit Task'}
-            </button>
-          </div>
-        )}
-      </form>
-
-      {/* Error */}
-      {submitState === 'error' && errorMsg && (
-        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
-          {errorMsg}
-        </div>
-      )}
-
-      {/* Success */}
-      {submitState === 'success' && resultTaskId && (
-        <div className="rounded-lg border border-green-500/30 bg-green-500/10 px-5 py-4 space-y-2">
-          <p className="text-sm font-medium text-green-300">Task submitted successfully!</p>
-          <p className="text-sm text-green-200">
-            Task ID:{' '}
-            <Link
-              href={`/task/${resultTaskId}`}
-              className="font-mono underline hover:text-green-100"
-            >
-              {resultTaskId}
-            </Link>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            ≈ {feeInQfc} QFC
           </p>
         </div>
-      )}
+
+        {/* Error */}
+        {error && (
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
+            {error}
+          </div>
+        )}
+
+        {/* Success */}
+        {result && result.taskId !== 'pending-wallet-connect' && (
+          <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 dark:border-emerald-700 dark:bg-emerald-900/30">
+            <p className="text-sm text-emerald-800 dark:text-emerald-300">
+              Task submitted! ID: <Link href={`/task/${result.taskId}`} className="font-mono underline">{result.taskId}</Link>
+            </p>
+          </div>
+        )}
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={submitting || !selectedModel || !inputData.trim()}
+          className="w-full rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {submitting ? t('marketplace.submitting') : t('marketplace.connectAndSubmit')}
+        </button>
+      </form>
     </main>
   );
 }

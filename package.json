@@ -8,10 +8,6 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "db:migrate": "node scripts/migrate.js",
-    "indexer": "tsx src/indexer/index.ts",
-    "indexer:health": "node scripts/indexer-health.js",
-    "data:check": "node scripts/data-check.js",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -20,10 +16,8 @@
     "ethers": "^6.16.0",
     "js-sha3": "^0.9.3",
     "next": "^14.1.0",
-    "pg": "^8.11.3",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "solc": "^0.8.28"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.1",
@@ -31,7 +25,6 @@
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "^20.11.0",
-    "@types/pg": "^8.10.9",
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
     "autoprefixer": "^10.4.17",
@@ -40,7 +33,6 @@
     "jsdom": "^28.1.0",
     "postcss": "^8.4.33",
     "tailwindcss": "^3.4.1",
-    "tsx": "^4.7.0",
     "typescript": "^5.3.3",
     "vitest": "^1.0.0"
   }
