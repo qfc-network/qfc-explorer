@@ -783,6 +783,8 @@ export type ApiTokenTransfersList = ApiOk<{
   }>;
 }>;
 
+export type ApiNftActivityList = ApiTokenTransfersList;
+
 // --- Registered Miners List ---
 
 export type ApiRegisteredMiner = {

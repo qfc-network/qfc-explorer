@@ -8,7 +8,7 @@ import SectionHeader from '@/components/SectionHeader';
 import Table from '@/components/Table';
 import AddressTag from '@/components/AddressTag';
 import { resolveAddressLabels } from '@/lib/labels';
-import type { ApiTokenTransfersList } from '@/lib/api-types';
+import type { ApiNftActivityList } from '@/lib/api-types';
 
 export const metadata: Metadata = {
   title: 'Latest NFT Transfers',
@@ -22,11 +22,11 @@ export const metadata: Metadata = {
 
 const PAGE_SIZE = 25;
 
-type TransferRow = ApiTokenTransfersList['data']['items'][number];
+type TransferRow = ApiNftActivityList['data']['items'][number];
 
-async function fetchTransfers(type: 'ERC-721' | 'ERC-1155', page: number) {
-  const response = await fetchJsonSafe<ApiTokenTransfersList>(
-    `/api/tokens/transfers?page=${page}&limit=${PAGE_SIZE}&type=${encodeURIComponent(type)}`,
+async function fetchTransfers(page: number) {
+  const response = await fetchJsonSafe<ApiNftActivityList>(
+    `/api/tokens/nfts/transfers?page=${page}&limit=${PAGE_SIZE}`,
     { next: { revalidate: 10 } }
   );
   return response?.data?.items ?? [];
@@ -38,14 +38,7 @@ export default async function NftTransfersPage({
   searchParams: { page?: string };
 }) {
   const page = Math.max(1, Number(searchParams.page ?? '1'));
-  const [erc721Transfers, erc1155Transfers] = await Promise.all([
-    fetchTransfers('ERC-721', page),
-    fetchTransfers('ERC-1155', page),
-  ]);
-
-  const transfers = [...erc721Transfers, ...erc1155Transfers]
-    .sort((a, b) => Number(b.block_height) - Number(a.block_height))
-    .slice(0, PAGE_SIZE);
+  const transfers = await fetchTransfers(page);
 
   const allAddresses = transfers.flatMap((t) => [t.from_address, t.to_address]);
   const labels = await resolveAddressLabels(allAddresses);
