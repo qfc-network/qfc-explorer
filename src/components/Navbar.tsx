@@ -31,7 +31,14 @@ const NAV_ITEMS: NavItem[] = [
       { labelKey: 'nav.tokenomics', href: '/token/qfc' },
     ],
   },
-  { labelKey: 'nav.nfts', href: '/nfts' },
+  {
+    labelKey: 'nav.nfts',
+    children: [
+      { labelKey: 'nav.topNfts', href: '/nfts' },
+      { labelKey: 'nav.latestNftTransfers', href: '/nfts/transfers' },
+      { labelKey: 'nav.latestNftMints', href: '/nfts/mints' },
+    ],
+  },
   {
     labelKey: 'nav.contracts',
     children: [
