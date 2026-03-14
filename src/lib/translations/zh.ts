@@ -11,6 +11,7 @@ const zh: Record<string, string> = {
   'nav.tokenTransfers': '代币转账',
   'nav.approvalChecker': '授权检查器',
   'nav.tokenomics': 'QFC 代币经济',
+  'nav.nfts': 'NFT',
   'nav.contracts': '合约',
   'nav.verifiedContracts': '已验证合约',
   'nav.abiTools': 'ABI 工具',
@@ -223,6 +224,16 @@ const zh: Record<string, string> = {
   'tokens.decimals': '精度',
   'tokens.totalSupply': '总供应量',
   'tokens.noTokens': '暂无代币数据。',
+
+  // NFTs page
+  'nfts.title': 'NFT 合集',
+  'nfts.description': 'QFC 网络上已索引的 ERC-721 与 ERC-1155 合集。',
+  'nfts.erc721': 'ERC-721 合集',
+  'nfts.erc1155': 'ERC-1155 合集',
+  'nfts.collection': '合集',
+  'nfts.items': '项目数',
+  'nfts.holders': '持有者',
+  'nfts.noCollections': '暂无已索引的 NFT 合集。',
 
   // Network page
   'network.title': '网络',

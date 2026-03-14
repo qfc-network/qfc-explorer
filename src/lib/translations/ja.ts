@@ -11,6 +11,7 @@ const ja: Record<string, string> = {
   'nav.tokenTransfers': 'トークン送金',
   'nav.approvalChecker': '承認チェッカー',
   'nav.tokenomics': 'QFC トークノミクス',
+  'nav.nfts': 'NFT',
   'nav.contracts': 'コントラクト',
   'nav.verifiedContracts': '検証済みコントラクト',
   'nav.abiTools': 'ABI ツール',
@@ -223,6 +224,16 @@ const ja: Record<string, string> = {
   'tokens.decimals': '桁数',
   'tokens.totalSupply': '総供給量',
   'tokens.noTokens': 'トークンデータがありません。',
+
+  // NFTs page
+  'nfts.title': 'NFT コレクション',
+  'nfts.description': 'QFCネットワーク上でインデックスされた ERC-721 と ERC-1155 コレクション。',
+  'nfts.erc721': 'ERC-721 コレクション',
+  'nfts.erc1155': 'ERC-1155 コレクション',
+  'nfts.collection': 'コレクション',
+  'nfts.items': 'アイテム数',
+  'nfts.holders': '保有者',
+  'nfts.noCollections': 'インデックス済みの NFT コレクションはありません。',
 
   // Network page
   'network.title': 'ネットワーク',

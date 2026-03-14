@@ -11,6 +11,7 @@ const en = {
   'nav.tokenTransfers': 'Token Transfers',
   'nav.approvalChecker': 'Approval Checker',
   'nav.tokenomics': 'QFC Tokenomics',
+  'nav.nfts': 'NFTs',
   'nav.contracts': 'Contracts',
   'nav.verifiedContracts': 'Verified Contracts',
   'nav.abiTools': 'ABI Tools',
@@ -229,6 +230,16 @@ const en = {
   'tokens.decimals': 'Decimals',
   'tokens.totalSupply': 'Total Supply',
   'tokens.noTokens': 'No tokens indexed yet.',
+
+  // NFTs page
+  'nfts.title': 'NFT Collections',
+  'nfts.description': 'Featured ERC-721 and ERC-1155 collections indexed on QFC network.',
+  'nfts.erc721': 'ERC-721 Collections',
+  'nfts.erc1155': 'ERC-1155 Collections',
+  'nfts.collection': 'Collection',
+  'nfts.items': 'Items',
+  'nfts.holders': 'Holders',
+  'nfts.noCollections': 'No NFT collections indexed yet.',
 
   // Network page
   'network.title': 'Network',

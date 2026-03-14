@@ -31,6 +31,7 @@ const NAV_ITEMS: NavItem[] = [
       { labelKey: 'nav.tokenomics', href: '/token/qfc' },
     ],
   },
+  { labelKey: 'nav.nfts', href: '/nfts' },
   {
     labelKey: 'nav.contracts',
     children: [

@@ -11,6 +11,7 @@ const ko: Record<string, string> = {
   'nav.tokenTransfers': '토큰 전송',
   'nav.approvalChecker': '승인 확인',
   'nav.tokenomics': 'QFC 토큰이코노믹스',
+  'nav.nfts': 'NFT',
   'nav.contracts': '컨트랙트',
   'nav.verifiedContracts': '검증된 컨트랙트',
   'nav.abiTools': 'ABI 도구',
@@ -223,6 +224,16 @@ const ko: Record<string, string> = {
   'tokens.decimals': '소수점',
   'tokens.totalSupply': '총 공급량',
   'tokens.noTokens': '토큰 데이터가 없습니다.',
+
+  // NFTs page
+  'nfts.title': 'NFT 컬렉션',
+  'nfts.description': 'QFC 네트워크에 인덱싱된 ERC-721 및 ERC-1155 컬렉션.',
+  'nfts.erc721': 'ERC-721 컬렉션',
+  'nfts.erc1155': 'ERC-1155 컬렉션',
+  'nfts.collection': '컬렉션',
+  'nfts.items': '아이템 수',
+  'nfts.holders': '보유자',
+  'nfts.noCollections': '인덱싱된 NFT 컬렉션이 없습니다.',
 
   // Network page
   'network.title': '네트워크',
