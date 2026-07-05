@@ -1,84 +1,59 @@
 # QFC Explorer
 
-QFC 区块浏览器（Next.js + PostgreSQL + Indexer）。
+**English** | [中文](./README.zh-CN.md)
 
-## 环境变量
+Block explorer **frontend** for the QFC blockchain, built with Next.js 14 (App Router), React 18, TypeScript, and Tailwind CSS.
 
-| 变量 | 说明 | 示例 |
+Live: https://explorer.testnet.qfc.network
+
+> All backend logic — REST API, PostgreSQL, and the chain indexer — lives in [qfc-explorer-api](https://github.com/qfc-network/qfc-explorer-api). This repo is the UI only and talks to that service over HTTP.
+
+## Features
+
+- Blocks, transactions, addresses, tokens (ERC-20 / NFT), and contract pages
+- Contract read/write interaction and source verification
+- AI inference tasks, miner revenue dashboard, validators and network analytics
+- DEX, bridge, and gas-tracker views
+- i18n (English / 中文 / 日本語 / 한국어), dark mode, live updates
+
+## Environment Variables
+
+| Variable | Description | Example |
 | --- | --- | --- |
-| `DATABASE_URL` | PostgreSQL 连接串 | `postgres://qfc:qfc@localhost:5432/qfc_explorer` |
-| `RPC_URL` | QFC 节点 JSON-RPC 地址 | `http://127.0.0.1:8545` |
-| `NEXT_PUBLIC_BASE_URL` | SSR 请求 API 的基础 URL | `http://localhost:3000` |
-| `INDEXER_START_HEIGHT` | 索引起始高度 | `0` |
-| `INDEXER_END_HEIGHT` | 索引结束高度（可选） | `1000` |
-| `INDEXER_POLL_INTERVAL_MS` | 轮询间隔 | `10000` |
-| `INDEXER_USE_FINALIZED` | 使用 finalized 高度 | `true` |
-| `INDEXER_BLOCK_RETRIES` | 单块重试次数 | `3` |
-| `INDEXER_SKIP_ON_ERROR` | 失败跳过 | `false` |
-| `INDEXER_RETRY_FAILED` | 启动时重试失败块 | `false` |
-| `INDEXER_HEALTH_MAX_AGE_MS` | 健康检查最大滞后 | `300000` |
-| `SSE_INTERVAL_MS` | 实时推送间隔（最小 3000） | `5000` |
+| `API_URL` | Backend base URL for server-side (SSR) fetches; not exposed to the browser | `http://explorer-api:3001` |
+| `NEXT_PUBLIC_API_URL` | Backend base URL for browser fetches; also the SSR fallback | `https://api.explorer.testnet.qfc.network` |
 
-生产环境模板：`.env.production.example`
+If neither is set, the app falls back to relative `/api` routes (useful behind a reverse proxy that routes `/api` to the backend).
 
-## 快速开始（本地）
+## Quick Start
 
 ```bash
 npm install
-cp .env.example .env
-# set DATABASE_URL and RPC_URL
-npm run db:migrate
+export NEXT_PUBLIC_API_URL=https://api.explorer.testnet.qfc.network
 npm run dev
 ```
 
-## 快速开始（Docker）
+Open `http://localhost:3000`.
+
+## Commands
 
 ```bash
-export RPC_URL=http://127.0.0.1:8545
-
-docker compose up --build
-
-docker compose exec explorer npm run db:migrate
+npm run dev        # dev server
+npm run build      # production build
+npm run start      # serve the production build
+npm run lint       # eslint
+npm run typecheck  # tsc --noEmit
+npm test           # vitest
 ```
 
-使用 profiles 只启动某个服务：
-```bash
-docker compose --profile explorer up --build
-docker compose --profile indexer up --build
-```
+## Deployment
 
-访问：`http://localhost:3000`
+A `Dockerfile` is included; images are built by CI from the `staging` branch and deployed via [qfc-testnet](https://github.com/qfc-network/qfc-testnet). Point `API_URL` / `NEXT_PUBLIC_API_URL` at a running qfc-explorer-api instance.
 
-## 常用命令
+## Related Repositories
 
-```bash
-npm run db:migrate        # 迁移
-npm run indexer           # 运行索引器
-npm run indexer:health    # 索引器健康检查
-npm run data:check        # 数据一致性检查
-npm test                  # 测试
-```
-
-## API 概览
-
-- `GET /api/blocks?page&limit&order&producer`
-- `GET /api/blocks/:height?page&limit&order`
-- `GET /api/transactions?page&limit&order&address&status`
-- `GET /api/txs/:hash`
-- `GET /api/address/:address?page&limit&order`
-- `GET /api/tokens?page&limit&order`
-- `GET /api/tokens/:address?page&limit&order`
-- `GET /api/tokens/:address/holders?limit`
-- `GET /api/search?q=`
-- `GET /api/search/suggest?q=`
-- `GET /api/network`
-- `GET /api/stats`
-
-响应统一格式：
-```json
-{ "ok": true, "data": { ... } }
-```
-
-## 备注
-- Indexer 需要可用的 QFC RPC。
-- API 集成测试要求服务可访问（`NEXT_PUBLIC_BASE_URL`）。
+| Repo | Role |
+| --- | --- |
+| [qfc-explorer-api](https://github.com/qfc-network/qfc-explorer-api) | REST API + PostgreSQL + chain indexer |
+| [qfc-core](https://github.com/qfc-network/qfc-core) | Blockchain node (JSON-RPC source) |
+| [qfc-testnet](https://github.com/qfc-network/qfc-testnet) | Testnet deployment infrastructure |
