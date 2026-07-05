@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { formatNumber, shortenHash, formatTimestampMs } from '@/lib/format';
 import { formatHexWeiToQfc, formatFlops } from '@/lib/qfc-format';
 import SectionHeader from '@/components/SectionHeader';
@@ -67,18 +68,9 @@ export default async function MinerDetailPage({
     console.error('Failed to fetch miner data:', e);
   }
 
+  // Real 404 status so crawlers drop stale URLs instead of re-crawling.
   if (!miner) {
-    return (
-      <main className="mx-auto flex min-h-screen max-w-4xl flex-col gap-6 px-6 py-12">
-        <SectionHeader title="Miner not found" description={`Address ${address}`} />
-        <Link
-          href="/"
-          className="inline-block rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
-        >
-          <TranslatedText tKey="common.backToHome" />
-        </Link>
-      </main>
-    );
+    notFound();
   }
 
   return (

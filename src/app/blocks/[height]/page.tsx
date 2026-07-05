@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { fetchJsonSafe } from '@/lib/api-client';
 import type { ApiBlockDetail } from '@/lib/api-types';
 import { formatNumber, formatTimestampMs, formatWeiToQfc, shortenHash } from '@/lib/format';
@@ -35,6 +36,11 @@ export default async function BlockDetailPage({
   searchParams: { page?: string };
 }) {
   const height = params.height;
+  // Reject non-numeric heights before spending an API round trip — crawler
+  // traffic on garbage/stale URLs was driving SSR memory on the container.
+  if (!/^\d+$/.test(height)) {
+    notFound();
+  }
   const page = Math.max(1, Number(searchParams.page ?? '1'));
   const response = await fetchJsonSafe<ApiBlockDetail>(
     `/api/blocks/${height}?page=${page}&limit=${PAGE_SIZE}`,
@@ -42,25 +48,18 @@ export default async function BlockDetailPage({
   );
 
   const block = response?.data.block ?? null;
+
+  // A real 404 status (not a 200 "not found" body) so crawlers drop stale
+  // URLs from the pre-reset chain instead of re-crawling them forever.
+  if (!block) {
+    notFound();
+  }
+
   const transactions = response?.data.transactions ?? [];
 
   // Resolve address labels for transactions
   const allAddresses = transactions.flatMap((tx) => [tx.from_address, tx.to_address].filter(Boolean) as string[]);
   const labels = await resolveAddressLabels(allAddresses);
-
-  if (!block) {
-    return (
-      <main className="mx-auto flex min-h-screen max-w-4xl flex-col gap-6 px-6 py-12">
-        <SectionHeader title="Block not found" description={`Height ${height}`} />
-        <Link
-          href="/blocks"
-          className="rounded-full border border-slate-300 dark:border-slate-700 px-4 py-2 text-xs uppercase tracking-[0.2em] text-slate-800 dark:text-slate-200"
-        >
-          Back to blocks
-        </Link>
-      </main>
-    );
-  }
 
   return (
     <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 px-6 py-12">
