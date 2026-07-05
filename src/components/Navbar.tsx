@@ -242,9 +242,13 @@ export default function Navbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-0 min-h-[56px]">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 py-3 min-w-0">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 text-xs font-bold text-slate-900 dark:text-white">
-            Q
-          </div>
+          <img
+            src="/icon-192.png?v=2"
+            alt="QFC"
+            width={32}
+            height={32}
+            className="h-8 w-8 rounded-full"
+          />
           <div className="min-w-0">
             <span className="text-sm font-semibold text-slate-900 dark:text-white truncate">QFC Explorer</span>
             <span className="ml-2 hidden sm:inline rounded bg-cyan-500/10 px-1.5 py-0.5 text-[10px] font-medium text-cyan-600 dark:text-cyan-400">
