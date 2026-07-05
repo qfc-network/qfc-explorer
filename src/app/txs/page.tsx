@@ -36,8 +36,8 @@ export default async function TransactionsPage({
 
   // Use cursor-based fetch when cursor is present, otherwise fall back to page-based
   const apiQuery = cursor
-    ? `/api/transactions?cursor=${encodeURIComponent(cursor)}&limit=${PAGE_SIZE}`
-    : `/api/transactions?page=${page}&limit=${PAGE_SIZE}`;
+    ? `/api/txs?cursor=${encodeURIComponent(cursor)}&limit=${PAGE_SIZE}`
+    : `/api/txs?page=${page}&limit=${PAGE_SIZE}`;
 
   const response = await fetchJsonSafe<ApiTransactionsList>(apiQuery, {
     next: { revalidate: 10 },
