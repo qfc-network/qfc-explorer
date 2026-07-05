@@ -13,7 +13,7 @@ import MinerScoreGauge from '@/components/MinerScoreGauge';
 import MinerEarningsChart from '@/components/MinerEarningsChart';
 import VestingTimeline from '@/components/VestingTimeline';
 import MinerRoiCalculator from '@/components/MinerRoiCalculator';
-import { fetchJsonSafe, getApiBaseUrl } from '@/lib/api-client';
+import { fetchJsonSafe } from '@/lib/api-client';
 
 export async function generateMetadata({ params }: { params: { address: string } }): Promise<Metadata> {
   const address = params.address;
@@ -39,28 +39,36 @@ export default async function MinerDetailPage({
   let miner: any = null;
   try {
     if (/^0x[0-9a-fA-F]{40}$/.test(address)) {
-      const data = await fetchJsonSafe<Record<string, any>>(`${getApiBaseUrl()}/miners/${address}`);
-      if (data) {
+      // Pass /api/... so resolveApiPath strips the prefix when routing to the external API.
+      const data = await fetchJsonSafe<{ ok?: boolean; data?: Record<string, any> } | Record<string, any>>(
+        `/api/miners/${address}`,
+        { next: { revalidate: 30 } }
+      );
+      // The /miners/:address endpoint wraps the payload in { ok: true, data: {...} }
+      const payload: Record<string, any> | null = data
+        ? ((data as any).data ?? data)
+        : null;
+      if (payload) {
         miner = {
           address,
-          totalEarned: data.totalEarned ?? '0x0',
-          locked: data.locked ?? '0x0',
-          available: data.available ?? '0x0',
-          activeTranches: data.activeTranches ?? 0,
-          contributionScore: data.contributionScore ?? 0,
-          earnings: data.earnings ?? [],
-          tranches: data.tranches ?? [],
-          gpuModel: data.gpuModel,
-          vramMb: data.vramMb,
-          backend: data.backend,
-          cpuModel: data.cpuModel,
-          cpuCores: data.cpuCores,
-          totalMemoryMb: data.totalMemoryMb,
-          os: data.os,
-          arch: data.arch,
-          tier: data.tier,
-          benchmarkScore: data.benchmarkScore,
-          version: data.version,
+          totalEarned: payload.totalEarned ?? '0x0',
+          locked: payload.locked ?? '0x0',
+          available: payload.available ?? '0x0',
+          activeTranches: payload.activeTranches ?? 0,
+          contributionScore: payload.contributionScore ?? 0,
+          earnings: payload.earnings ?? [],
+          tranches: payload.tranches ?? [],
+          gpuModel: payload.gpuModel,
+          vramMb: payload.vramMb,
+          backend: payload.backend,
+          cpuModel: payload.cpuModel,
+          cpuCores: payload.cpuCores,
+          totalMemoryMb: payload.totalMemoryMb,
+          os: payload.os,
+          arch: payload.arch,
+          tier: payload.tier,
+          benchmarkScore: payload.benchmarkScore,
+          version: payload.version,
         };
       }
     }

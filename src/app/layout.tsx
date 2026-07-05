@@ -22,6 +22,16 @@ export const metadata: Metadata = {
   description:
     'QFC blockchain explorer — track blocks, transactions, accounts, tokens, and smart contracts on the QFC network.',
   manifest: '/manifest.json',
+  // Explicit icon links with a cache-busting version: the page previously
+  // served no <link rel="icon"> at all, so browsers kept whatever favicon
+  // they had cached from old deployments.
+  icons: {
+    icon: [
+      { url: '/favicon.ico?v=2', sizes: '32x32' },
+      { url: '/icon-192.png?v=2', type: 'image/png', sizes: '192x192' },
+    ],
+    apple: '/icon-192.png?v=2',
+  },
   openGraph: {
     siteName: 'QFC Explorer',
     type: 'website',
@@ -52,9 +62,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <footer className="border-t border-slate-200 dark:border-slate-800/40 mt-16">
               <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-10 md:flex-row md:items-center md:justify-between">
                 <div className="flex items-center gap-2.5">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-to-br from-cyan-400 to-blue-600 text-[10px] font-bold text-slate-900 dark:text-white">
-                    Q
-                  </div>
+                  <img
+                    src="/icon-192.png?v=2"
+                    alt="QFC"
+                    width={28}
+                    height={28}
+                    className="h-7 w-7 rounded-full"
+                  />
                   <span className="text-sm text-slate-500">QFC Explorer</span>
                 </div>
                 <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-slate-500">

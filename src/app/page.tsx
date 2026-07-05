@@ -21,7 +21,7 @@ export default async function Home() {
       { next: { revalidate: 5 } }
     ),
     fetchJsonSafe<ApiTransactionsList>(
-      '/api/transactions?limit=8&page=1',
+      '/api/txs?limit=8&page=1',
       { next: { revalidate: 5 } }
     ),
     fetchJsonSafe<ApiStats>(
