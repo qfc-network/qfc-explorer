@@ -22,6 +22,16 @@ export const metadata: Metadata = {
   description:
     'QFC blockchain explorer — track blocks, transactions, accounts, tokens, and smart contracts on the QFC network.',
   manifest: '/manifest.json',
+  // Explicit icon links with a cache-busting version: the page previously
+  // served no <link rel="icon"> at all, so browsers kept whatever favicon
+  // they had cached from old deployments.
+  icons: {
+    icon: [
+      { url: '/favicon.ico?v=2', sizes: '32x32' },
+      { url: '/icon-192.png?v=2', type: 'image/png', sizes: '192x192' },
+    ],
+    apple: '/icon-192.png?v=2',
+  },
   openGraph: {
     siteName: 'QFC Explorer',
     type: 'website',
